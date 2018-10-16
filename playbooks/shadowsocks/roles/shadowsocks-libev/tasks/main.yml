@@ -20,25 +20,10 @@
     dest: "/etc/shadowsocks-libev/{{ item }}"
    with_items:
     - "config.json"
-    - "client.config.json"
 
  - name: Start Shadowsocks-libev
    service: 
     name: "shadowsocks-libev"
     state: restarted
     enabled: yes
-   when: install_type == "server"
 
- - name: Copy Shadowsocks-client.service
-   template:
-    src: "{{ item }}.j2"
-    dest: "/etc/systemd/system/{{ item }}"
-   with_items:
-    - "shadowsocks-client.service"
-   when: install_type == "client"
-
- - name: Start Shadowsocks-client
-   service: 
-    name: "shadowsocks-client"
-    state: restarted
-   when: install_type == "client"
