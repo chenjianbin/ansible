@@ -1,0 +1,5 @@
+**hosts
+**/vars/secret.yml
+*.retry
+**/*.pub
+**/public_keys/*
