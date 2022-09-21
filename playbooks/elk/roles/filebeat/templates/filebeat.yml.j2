@@ -1,0 +1,64 @@
+#==========================  Modules configuration ============================
+filebeat.modules:
+- module: system
+  syslog:
+    enabled: false
+  auth:
+    enabled: true
+
+- module: mysql
+  error:
+    enabled: true
+    var.paths:
+      - /data0/mysql/3306/logs/errorlog/*.log
+  slowlog:
+    enabled: true
+    var.paths:
+      - /data0/mysql/3306/logs/slowlog/*.log
+
+- module: nginx
+  access:
+    enabled: true
+    var.paths:
+      - /data0/logs/nginx/*.access.log
+  error:
+    enabled: false
+    var.paths:
+      - /data0/logs/nginx/*.error.log
+
+#================================ Outputs ======================================
+#----------------------------- Console output ---------------------------------
+output.console:
+  enabled: false
+  pretty: false
+
+output.kafka:
+  enabled: false
+  hosts: [ "{{ kafka.host }}:{{ kafka.port }}" ]
+  topic: "%{[service.type]}-%{[fileset.name]}"
+  worker: 1
+  max_retries: 3
+  bulk_max_size: 2048
+  timeout: 30s
+  broker_timeout: 10s
+  channel_buffer_size: 256
+  keep_alive: 60s
+  compression: gzip
+  max_message_bytes: 1000000
+  required_acks: 1
+  flush_interval: 10s
+#  client_id: beats
+
+output.redis:
+  enabled: true
+  loadbalance: true
+  hosts: {{ redis.host|tojson }}
+  key: "%{[service.type]}-%{[fileset.name]}"
+  password: ${REDIS_PWD}
+  db: 0
+  datatype: list #channel
+  worker: 1
+  max_retries: 3
+  timeout: 5s
+  bulk_max_size: 2048
+    

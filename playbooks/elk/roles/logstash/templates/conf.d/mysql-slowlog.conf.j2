@@ -1,0 +1,34 @@
+input {
+    redis {
+        batch_count => 3000
+        host => "{{ redis.host }}"
+        port => {{ redis.port }}
+        password => "{{ redis.password }}"
+        db => 0
+        key => "mysql-slowlog"
+        data_type => "list"
+        timeout => 5
+    }
+}
+
+filter {
+    grok {
+        match => { "message" => ["^(# Time: .*?\n)?# User@Host: %{USER:[mysql][slowlog][user]}(\[[^\]]+\])? @ %{HOSTNAME:[mysql][slowlog][host]}? \[%{IP:[mysql][slowlog][ip]}?\](\s*Id:\s* %{NUMBER:[mysql][slowlog][id]})?\n# Schema: %{DATA:[mysql][slowlog][schema]}?\s* Last_errno: %{NUMBER:[mysql][slowlog][last_errno]}\s* Killed: %{NUMBER:[mysql][slowlog][killed]}\n# Query_time: %{NUMBER:[mysql][slowlog][query_time][sec]}\s* Lock_time: %{NUMBER:[mysql][slowlog][lock_time][sec]}\s* Rows_sent: %{NUMBER:[mysql][slowlog][rows_sent]}\s* Rows_examined: %{NUMBER:[mysql][slowlog][rows_examined]}\s* Rows_affected: %{NUMBER:[mysql][slowlog][rows_affected]}\n# Bytes_sent: %{NUMBER:[mysql][slowlog][bytes_sent]}\n(use .*?\n)?(SET timestamp=%{NUMBER:[mysql][slowlog][timestamp]};\n)?%{GREEDYMULTILINE:[mysql][slowlog][query]}"]}
+        pattern_definitions => {
+            "GREEDYMULTILINE" => "(.|\n)*"
+        }
+    }
+    date {
+        match => [ "[mysql][slowlog][timestamp]", "UNIX" ]
+    }
+}
+
+output {
+    elasticsearch {
+        hosts => ["{{ es.host }}:{{ es.port }}"]
+        #user => "{{ es.user }}"
+        #password => "{{ es.password }}"
+        index => "logstash-mysql-slowlog-%{+YYYY.MM.dd}"
+    }
+#    stdout { codec => rubydebug }
+}

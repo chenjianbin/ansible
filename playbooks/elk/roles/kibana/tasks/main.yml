@@ -1,0 +1,8 @@
+---
+ - name: Import Secret Vars
+   include_vars: "{{ item }}"
+   with_items:
+     - "secret.yml"
+
+ - name: Include OS Tasks
+   include_tasks: "{{ ansible_os_family }}.yml"

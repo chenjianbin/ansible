@@ -1,0 +1,42 @@
+input {
+    redis {
+        batch_count => 3000
+        host => "{{ redis.host }}"
+        port => {{ redis.port }}
+        password => "{{ redis.password }}"
+        db => 0
+        key => "mysql-error"
+        data_type => "list"
+        timeout => 5
+    }
+}
+
+filter {
+    grok {
+        match => { "message" => ["%{LOCALDATETIME:[mysql][error][timestamp]} (\[%{DATA:[mysql][error][level]}\] )?%{GREEDYDATA:[mysql][error][message]}",
+          "%{TIMESTAMP_ISO8601:[mysql][error][timestamp]} %{NUMBER:[mysql][error][thread_id]} \[%{DATA:[mysql][error][level]}\] %{GREEDYDATA:[mysql][error][message1]}",
+          "%{GREEDYDATA:[mysql][error][message2]}"] }
+        pattern_definitions => {
+          "LOCALDATETIME" => "[0-9]+ %{TIME}"
+        }
+    }
+    mutate {
+        rename => { "[mysql][error][message1]" => "[mysql][error][message]" }
+    }
+    mutate {
+        rename => { "[mysql][error][message2]" => "[mysql][error][message]" }
+    }
+    date {
+        match => [ "[mysql][error][timestamp]", "ISO8601", "YYMMdd H:m:s" ]
+    }
+}
+
+output {
+    elasticsearch {
+        hosts => ["{{ es.host }}:{{ es.port }}"]
+        #user => "{{ es.user }}"
+        #password => "{{ es.password }}"
+        index => "logstash-mysql-error-%{+YYYY.MM.dd}"
+    }
+#    stdout { codec => rubydebug }
+}

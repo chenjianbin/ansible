@@ -1,0 +1,104 @@
+---
+ - name: Import Secret Vars
+   include_vars: "{{ item }}"
+   with_items:
+     - "secret.yml"
+
+ - name: Disable DNF Nginx Module
+   command: dnf module disable nginx -y
+   when: ansible_distribution_major_version  >= "8"
+
+ - name: Install Nginx
+   yum:
+     name: "{{ nginx_package_url }}"
+     allow_downgrade: yes
+     disable_gpg_check: yes
+     state: present
+   when: not install_naxsi
+ 
+ - name: Install Nginx Waf
+   yum:
+     name: "{{ nginx_naxsi_package_url }}"
+     allow_downgrade: yes
+     state: present
+   when: install_naxsi|bool
+
+ - name: Determine The Configuration Directory Of Git
+   stat:
+     path: "{{ nginx_install_dir }}/conf/.git"
+   register: git_stat
+
+ - name: Delete Configuration Directory
+   file:
+     path: "{{ nginx_install_dir }}/conf"
+     state: absent
+   when: not git_stat.stat.exists
+
+ - name: Git Clone Configuration
+   git:
+     repo: "{{ nginx_conf_url }}"
+     dest: "{{ nginx_install_dir }}/conf"
+     clone: yes
+     force: yes
+
+ - name: Create Default Password File
+   file:
+     path: "{{ nginx_install_dir }}/conf/setup/auth/htpasswd/default.htpasswd"
+     state: touch
+
+ - name: Include Naxsi Config
+   copy:
+     src: "{{ nginx_install_dir }}/conf/setup/functions/naxsi.conf_disable"
+     dest: "{{ nginx_install_dir }}/conf/setup/functions/naxsi.conf"
+     remote_src: yes
+   when: install_naxsi|bool
+
+ - name: Include Cache Config
+   copy:
+     src: "{{ nginx_install_dir }}/conf/setup/functions/cache.conf_disable"
+     dest: "{{ nginx_install_dir }}/conf/setup/functions/cache.conf"
+     remote_src: yes
+   when: ansible_hostname is search('CACHE')
+
+ - name: Create Cache Dir
+   file:
+     path: "/data0/nginx/cache"
+     owner: "{{ nginx_user }}"
+     group: "{{ nginx_user }}"
+     recurse: yes
+     state: directory
+   when: ansible_hostname is search('CACHE')
+
+ - name: Create Logs Dir
+   file:
+     path: "{{ nginx_logs_dir }}" 
+     owner: "{{ nginx_user }}"
+     group: "{{ nginx_user }}"
+     state: directory
+
+ - name: Set Regular Clean Nginx Logs
+   template: 
+     src: nginx.logrotate.j2
+     dest: /etc/logrotate.d/nginx
+
+ - name: Set Environment PATH 
+   blockinfile:
+     marker: "# {mark} ANSIBLE MANAGED BLOCK FOR NGINX"
+     block: "export PATH={{ nginx_install_dir }}/sbin:$PATH"
+     dest: /etc/profile
+
+ - name: Start Daemon When System Boot
+   template:
+     src: nginx.service.j2
+     dest: /etc/systemd/system/nginx.service
+
+ - name: Enable Nginx
+   systemd:
+     name: nginx
+     state: restarted
+     enabled: yes
+     daemon_reload: yes
+
+ - name: Include Firewall Tasks
+   import_tasks: "firewall.yml"
+...

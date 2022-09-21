@@ -1,0 +1,31 @@
+---
+ - name: Install Logstash
+   yum: 
+     name: "logstash"
+     state: latest
+
+ - name: Set Pipelines
+   template:
+     src: "pipelines.yml.j2"
+     dest: "{{ confdir }}/pipelines.yml"
+
+ - name: Copy Pipeline Configure
+   template:
+     src: "conf.d/{{ item }}.conf.j2"
+     dest: "{{ confdir }}/conf.d/{{ item }}.conf"
+   with_items: "{{ modules }}"
+
+ - name: "Setup Logstash Auto Start On Centos 6"
+   service:
+     name: "logstash" 
+     state: "restarted"    
+     enabled: yes
+   when: ansible_distribution_major_version == '6'
+
+ - name: "Setup Logstash Auto Start"
+   systemd:
+     name: "logstash" 
+     state: "restarted"    
+     enabled: yes
+   when: ansible_distribution_major_version >= '7'
+...

@@ -1,0 +1,14 @@
+---
+ - name: Include OS Tasks
+   include_tasks: "{{ ansible_os_family }}.yml"
+
+ - name: Modify Limits
+   pam_limits:
+     domain: "*"
+     limit_item: "{{ item.item }}"
+     limit_type: "{{ item.type }}"
+     value: "{{ item.value }}"
+   with_items: 
+     - {item: nproc, type: -, value: 102400}
+     - {item: nofile, type: -, value: 102400}
+...

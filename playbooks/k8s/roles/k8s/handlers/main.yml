@@ -1,0 +1,7 @@
+---
+ - name: Restart Kubernetes
+   systemd:
+     name: kubelet
+     state: restarted
+     enabled: yes
+...

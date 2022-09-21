@@ -1,0 +1,11 @@
+---
+ - name: Import Repo Key
+   rpm_key:
+     key: "https://artifacts.elastic.co/GPG-KEY-elasticsearch"
+     state: present
+
+ - name: Add Elastic Repo
+   copy:
+     src: "elastic.repo"
+     dest: "/etc/yum.repos.d/elastic.repo"
+

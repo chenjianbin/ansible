@@ -1,0 +1,109 @@
+---
+ - name: Install Basic Software
+   yum: 
+     name: "{{ packages }}"
+     state: present
+   vars:
+     packages:
+       - automake
+       - autoconf
+       - bash-completion
+       - bzip2
+       - firewalld
+       - gcc
+       - gcc-c++
+         #- glibc
+       - glibc-devel
+       - glib2
+       - glib2-devel
+       - git
+       - httpd-tools
+       - libffi-devel
+       - lrzsz
+       - make
+       - psmisc
+       - rsync
+       - smartmontools
+       - subversion
+       - screen
+       - tree
+       - unzip
+       - vim-enhanced
+       - wget
+       - zip
+       - tar
+
+ - name: Install Debug Software
+   yum: 
+     name: "{{ packages }}"
+     state: present
+   vars:
+     packages:
+       - bind-utils
+       - dstat
+       - iptraf
+       - iftop
+       - iotop
+       - lsof
+       - net-tools
+       - nethogs
+       - mtr
+       - perf
+       - strace
+       - sysstat
+       - tcpdump
+       - telnet
+       - traceroute
+#       - tcping
+#       - rkhunter
+       
+ - name: Install Software In Rhel 7
+   yum: 
+     name: "{{ packages }}"
+     state: present
+   when: ansible_distribution_major_version == '7'
+   vars:
+     packages:
+       - deltarpm
+       - libselinux-python
+       - nload
+       - python2-pip
+       - python36
+       - python-simplejson
+       - python-httplib2
+
+ - name: Install Software When Rhel Major Version Greater Than Or Equal To 9
+   yum: 
+     name: "{{ packages }}"
+     state: present
+   when: ansible_distribution_major_version >= '9'
+   vars:
+     packages:
+       - python3-pip
+       - python3-libselinux
+
+ - name: Install Python Software
+   pip:
+     name: "{{ packages }}"
+     state: latest
+     executable: pip3
+   vars:
+     packages:
+       - pip
+       - setuptools
+
+ - name: Install Certbot
+   pip:
+     name: "{{ packages }}"
+     state: latest
+     executable: pip3
+   vars:
+     packages:
+       - certbot
+
+ - name: Add Certbot path
+   file:
+     src: /usr/local/bin/certbot
+     dest: /usr/bin/certbot
+     state: link
+...

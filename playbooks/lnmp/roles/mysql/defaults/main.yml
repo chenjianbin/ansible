@@ -1,0 +1,13 @@
+---
+version: "8.0.28"
+mysql_os_user:
+  name: "mysql"
+  id: 300 
+  comment: "Mysql Server"
+mysql_repl_user:
+  name: "repl"
+  host: "%"
+  passwd: "Faw1gt2wtikpuf597Hrw_"
+mysql_port: 3306
+mysql_datadir: /data0/mysql
+mysql_slave_host: "1.1.1.1"

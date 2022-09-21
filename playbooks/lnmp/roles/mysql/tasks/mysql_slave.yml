@@ -1,0 +1,109 @@
+---
+ - name: Set Mode
+   set_fact:
+     mode: "slave"
+
+ - name: Find Instance
+   find:
+     paths: 
+       - "{{ mysql_datadir }}"
+     file_type: directory
+     patterns: "^[1-5]?[0-9][0-9]?[0-9]?[0-9]?$"
+     use_regex: True
+   register: instance_list
+
+ - name: Set master_port
+   set_fact:
+     master_port: "{{ mysql_port }}"
+
+ - name: Set mysql_port
+   set_fact:
+     mysql_port: "3306"
+   when: instance_list.matched == 0
+
+ - name: Sort Instance List
+   set_fact:
+     instance_sort_list: "{{ instance_list.files|sort(attribute='path') }}"
+   when: instance_list.matched != 0
+
+ - name: Set mysql_port
+   set_fact:
+     mysql_port: "{{ instance_sort_list[-1].path|basename|int + 1 }}"
+   when: instance_list.matched != 0
+
+ - name: Initail Mysql Instance Directory
+   file:
+     path: "{{ mysql_datadir }}/{{ mysql_port }}/{{ item }}"
+     owner: "{{ mysql_os_user.name }}"
+     group: "{{ mysql_os_user.name }}"
+     recurse: yes
+     state: directory
+   with_items:
+     - data
+     - logs/binlog
+     - logs/relaylog
+     - logs/errorlog
+     - logs/slowlog
+
+ - name: Copy my.cnf
+   template:
+     src: "my.cnf.j2"
+     dest: "/etc/my.cnf"
+     owner: "{{ mysql_os_user.name }}"
+     group: "{{ mysql_os_user.name }}"
+     mode: "600"
+
+ - name: Copy mysqld.cnf
+   template:
+     src: "mysqld.cnf.j2"
+     dest: "/etc/my.cnf.d/mysqld@{{ mysql_port }}.cnf"
+     owner: "{{ mysql_os_user.name }}"
+     group: "{{ mysql_os_user.name }}"
+     mode: "600"
+
+ - name: Set Initialize-insecure Args
+   lineinfile:
+     path: /etc/my.cnf.d/mysqld@{{ mysql_port }}.cnf
+     line: 'initialize_insecure=1'
+
+ - name: Initialize Instance
+   command: /usr/bin/mysqld_pre_systemd {{ mysql_port }}
+
+ - name: Delete Initialize-insecure Args
+   lineinfile:
+     path: /etc/my.cnf.d/mysqld@{{ mysql_port }}.cnf
+     line: 'initialize_insecure=1'
+     state: absent
+
+ - name: Start Mysql
+   systemd:
+     name: "mysqld@{{ mysql_port }}"
+     state: restarted
+     enabled: yes
+     daemon_reload: yes
+
+ - name: Change To Master
+   mysql_replication:
+     login_user: "root"
+     login_unix_socket: "{{ mysql_datadir }}/{{ mysql_port }}/mysql.sock"
+     master_host: "{{ inventory_hostname }}"
+     master_port: "{{ master_port }}"
+     master_user: "{{ mysql_repl_user.name }}"
+     master_password: "{{ mysql_repl_user.passwd }}"
+     master_connect_retry: "50"
+     master_ssl: "1"
+     master_auto_position: "1"
+     mode: "changeprimary"
+   no_log: true
+
+ - name: Start Replication
+   mysql_replication:
+     login_user: "root"
+     login_unix_socket: "{{ mysql_datadir }}/{{ mysql_port }}/mysql.sock"
+     mode: "startreplica"
+
+ - name: Record Mysql Slave Info
+   blockinfile:
+     marker: "# {mark} ANSIBLE MANAGED BLOCK FOR Mysql Slave On Port {{ mysql_port }}"
+     block: "{{ inventory_hostname }}      {{ mysql_port }}"
+     path: "/root/mysqlslave.txt" 

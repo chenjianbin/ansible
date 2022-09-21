@@ -1,0 +1,27 @@
+---
+ - name: Install Kibana
+   yum:
+     name: "kibana"
+     state: latest
+
+ - name: Copy Kibana Main Config
+   template:
+     src: "{{ item }}.j2"
+     dest: "/etc/kibana/{{ item }}"
+   with_items:
+     - "kibana.yml"
+
+ - name: Setup Kibana AutoStart On Centos 6
+   service:
+     name: "kibana"
+     state: "restarted"
+     enabled: yes
+   when: ansible_distribution_major_version == '6'
+
+ - name: Setup Kibana AutoStart
+   systemd:
+     name: "kibana"
+     state: "restarted"
+     enabled: yes
+   when: ansible_distribution_major_version >= '7'
+...

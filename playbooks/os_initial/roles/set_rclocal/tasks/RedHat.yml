@@ -1,0 +1,13 @@
+---
+ - name: Chmod /etc/rc.d/rc.local
+   file: 
+     path: '/etc/rc.d/rc.local'
+     mode: 0750
+     state: file
+
+ - name: Enable rc-local service
+   systemd:
+     name: rc-local
+     enabled: yes
+   when: ansible_distribution_major_version >= '7'
+

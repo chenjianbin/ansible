@@ -1,0 +1,14 @@
+---
+ - name: Close Selinux
+   ansible.posix.selinux:
+     state: disabled
+ 
+ - name: Deny Maildrop
+   cron:
+     name: MAILTO
+     env: yes
+     value: ""
+
+ - name: Include OS Tasks
+   include_tasks: "{{ ansible_os_family }}.yml"
+ 

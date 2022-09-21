@@ -1,0 +1,43 @@
+---
+ - name: Import Secret Vars
+   include_vars: "{{ item }}"
+   with_items:
+     - "secret.yml"
+
+ - name: Add Open Ports
+   firewalld:
+     zone: public
+     port: "{{ item }}"
+     immediate: yes
+     permanent: true
+     state: enabled
+   with_items:
+     - "{{ JumpPort }}/tcp"
+
+ - name: Install Haproxy
+   yum: 
+     name: "{{ packages }}"
+     state: present
+   vars:
+     packages:
+       - haproxy
+
+ - name: Copy haproxy.cfg
+   template: 
+     src: "haproxy.cfg.j2" 
+     dest: "/etc/haproxy/haproxy.cfg"
+
+ - name: Copy rsyslog haproxy configure
+   copy:
+     src: "haproxy.conf"
+     dest: "/etc/rsyslog.d/haproxy.conf"
+
+ - name: Restart haproxy And rsyslog
+   service:
+     name: "{{ item }}"
+     state: restarted
+     enabled: yes
+   with_items:
+     - "haproxy"
+     - "rsyslog"
+...

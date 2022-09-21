@@ -1,0 +1,11 @@
+---
+ - name: Add Http Services
+   firewalld:
+     zone: public
+     service: "{{ item }}"
+     immediate: yes
+     permanent: true
+     state: enabled
+   with_items:
+     - "http"
+     - "https"

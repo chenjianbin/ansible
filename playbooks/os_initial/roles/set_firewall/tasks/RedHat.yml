@@ -1,0 +1,21 @@
+---
+ - name: Enable Firewalld
+   systemd:
+     name: firewalld
+     enabled: yes
+     state: started
+   when: ansible_distribution_major_version  >= "7"
+
+ - name: Set WhiteList
+   firewalld:
+     zone: trusted
+     source: "{{ item }}"
+     immediate: yes
+     permanent: true
+     state: enabled
+   when: ansible_distribution_major_version  >= "7"
+   with_items:
+     - "10.0.0.0/8"
+     - "192.168.0.0/16"
+
+...

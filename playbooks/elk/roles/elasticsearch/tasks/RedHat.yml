@@ -1,0 +1,62 @@
+---
+ - name: Install Elasticsearch
+   yum:
+     name: elasticsearch
+     state: latest
+
+ - name: Copy Config
+   template:
+     src: "{{ item }}.j2"
+     dest: "/etc/elasticsearch/{{ item }}"
+   with_items:
+     - "elasticsearch.yml"
+
+ - name: Sysctl Set
+   sysctl:
+     name: "{{ item.name }}"
+     value: "{{ item.value }}"
+     state: present
+     reload: yes
+   with_items:
+     - {name: vm.max_map_count, value: 262144}
+     - {name: net.ipv4.tcp_retries2, value: 5}
+
+ - name: Unlimit Mlockall
+   pam_limits:
+     domain: "*"
+     limit_item: "{{ item.item }}"
+     limit_type: "{{ item.type }}"
+     value: "{{ item.value }}"
+   with_items:
+     - {item: memlock, type: -, value: unlimited}
+
+ - name: Unlimit Mlockall For Systemd
+   copy:
+     src: "elasticsearch.service.d"
+     dest: "/etc/systemd/system"
+
+ - name: Create Data Directory
+   file:
+     path: "{{ item }}"
+     owner: "elasticsearch"
+     group: "elasticsearch"
+     recurse: yes
+     state: directory
+   with_items: 
+     - "{{ datadir }}"
+     - "{{ backdir }}"
+
+ - name: Setup Elasticsearch AutoStart On Centos 6
+   service:
+     name: "elasticsearch"
+     state: "restarted"
+     enabled: yes
+   when: ansible_distribution_major_version == '6'
+
+ - name: Setup Elasticsearch AutoStart
+   systemd:
+     name: "elasticsearch"
+     state: "restarted"
+     enabled: yes
+   when: ansible_distribution_major_version >= '7'
+...

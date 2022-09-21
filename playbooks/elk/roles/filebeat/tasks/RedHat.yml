@@ -1,0 +1,38 @@
+---
+ - name: Install Filebeat
+   yum: 
+     name: "filebeat"
+     state: latest
+
+ - name: Copy Templates
+   template:
+     dest: "/etc/filebeat/filebeat.yml"
+     src: "filebeat.yml.j2"
+
+ - name: Create Data Directory
+   file:
+     path: "/var/lib/filebeat/"
+     mode: 0750
+     recurse: yes
+     state: directory
+
+ - name: Copy KeyStore
+   copy:
+     src: "filebeat.keystore"
+     dest: "/var/lib/filebeat/filebeat.keystore"
+     mode: 0600
+
+ - name: Set Filebet Auto Start On Centos 6
+   service:
+     name: "filebeat"
+     state: "restarted"
+     enabled: yes
+   when: ansible_distribution_major_version == '6'
+
+ - name: Set Filebet Auto Start
+   systemd:
+     name: "filebeat"
+     state: "restarted"
+     enabled: yes
+   when: ansible_distribution_major_version >= '7'
+...

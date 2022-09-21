@@ -1,0 +1,16 @@
+---
+ - name: Download Docker.repo
+   uri:
+     url: "https://download.docker.com/linux/centos/docker-ce.repo"
+     dest: /etc/yum.repos.d/docker-ce.repo
+     creates: /etc/yum.repos.d/docker-ce.repo
+
+ - name: Yum Install Docker-ce
+   yum: 
+#    name: docker-ce-18.06.1.ce-3.el7
+     name: docker-ce
+     state: present 
+     update_cache: yes
+   notify: 
+     - Restart Docker-ce
+...

@@ -1,0 +1,19 @@
+---
+ - name: Define Services Of Will Be Disabled
+   set_fact:
+     services:
+       - ntpd
+       - postfix
+       - systemd-resolved
+
+ - name: Disable Service
+   systemd:
+     name: "{{ item }}"
+     state: stopped
+     enabled: no
+     daemon_reload: yes
+     masked: yes
+   ignore_errors: True
+   with_items: "{{ services }}"
+   when: ansible_distribution_major_version >= "7"
+

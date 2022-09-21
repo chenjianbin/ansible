@@ -1,0 +1,33 @@
+input {
+    redis {
+        batch_count => 3000
+        host => "{{ redis.host }}"
+        port => {{ redis.port }}
+        password => "{{ redis.password }}"
+        db => 0
+        key => "system-syslog"
+        data_type => "list"
+        timeout => 5
+    }
+}
+
+filter {
+    grok {
+        match => { "message" => ["%{SYSLOGTIMESTAMP:[system][syslog][timestamp]} %{SYSLOGHOST:[system][syslog][hostname]} %{DATA:[system][syslog][program]}(?:\[%{POSINT:[system][syslog][pid]}\])?: %{GREEDYMULTILINE:[system][syslog][message]}"] }
+        pattern_definitions => { "GREEDYMULTILINE" => "(.|\n)*" }
+    }
+
+    date {
+        match => [ "[system][syslog][timestamp]", "MMM  d HH:mm:ss", "MMM dd HH:mm:ss" ]
+    }
+}
+
+output {
+    elasticsearch {
+        hosts => ["{{ es.host }}:{{ es.port }}"]
+        #user => "{{ es.user }}"
+        #password => "{{ es.password }}"
+        index => "logstash-system-syslog-%{+YYYY.MM.dd}"
+    }
+    #stdout { codec => rubydebug }
+}

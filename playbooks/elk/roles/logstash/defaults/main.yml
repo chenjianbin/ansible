@@ -1,0 +1,9 @@
+---
+confdir: '/etc/logstash'
+modules:
+  - nginx-access
+  - nginx-error
+  - mysql-slowlog
+  - mysql-error
+  - system-auth
+  - system-syslog

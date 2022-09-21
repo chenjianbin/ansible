@@ -1,0 +1,21 @@
+---
+ - hosts: lnmp
+   serial: 1
+   roles:
+     - nginx
+     - php
+     - mysql
+
+ - hosts: nginx
+   roles:
+     - nginx
+
+ - hosts: php
+   roles:
+     - php
+
+ - hosts: mysql
+   serial: 1
+   roles:
+     - mysql
+...

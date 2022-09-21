@@ -1,0 +1,10 @@
+---
+ - hosts: consul
+   roles:
+     - role: consul
+
+ - hosts: consul-template
+   roles:
+     - role: consul-template
+   
+

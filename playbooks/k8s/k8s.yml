@@ -1,0 +1,9 @@
+---
+ - hosts: docker
+   roles:
+     - role: docker-ce
+
+ - hosts: k8s
+   roles:
+     - role: k8s
+...

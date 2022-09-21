@@ -1,0 +1,28 @@
+---
+ - name: Add kubernetes.repo
+   copy:
+     src: "kubernetes.repo"
+     dest: "/etc/yum.repos.d/kubernetes.repo"
+
+ - name: Yum Install Kubernetes
+   yum:
+     name: "{{ item }}"
+     state: latest
+     disable_excludes: "kubernetes"
+   with_items:
+     - "kubelet"
+     - "kubeadm"
+     - "kubectl"
+   notify: 
+     - Restart Kubernetes
+
+# - name: Config Kernel Args
+#   sysctl:
+#     name: "{{ item.name }}"
+#     value: "{{ item.value }}"
+#     state: present
+#     reload: yes
+#   with_items:
+#     - {name: net.bridge.bridge-nf-call-ip6tables, value: 1}
+#     - {name: net.bridge.bridge-nf-call-iptables, value: 1}
+...

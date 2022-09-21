@@ -1,0 +1,25 @@
+---
+ - name: Create Trash Directory
+   file:
+     path: "/trash"
+     mode: "u+rwx,g+rwx,o+rwt"
+     state: directory
+
+ - name: Rename rm command
+   blockinfile:
+     marker: "# {mark} ANSIBLE MANAGED BLOCK FOR rm command"
+     block: "alias rm=trash
+             \ntrash()
+             \n{
+             \n\    mv $@ /trash/ --backup=t
+             \n}"
+     path: "/etc/bashrc"
+
+ - name: Cron for clear Trash
+   cron:
+     name: "Clear Trash"
+     minute: "00"
+     hour: "5"
+     weekday: "3"
+     job: "find /trash ! -path /trash -ctime +7 -delete"
+     state: present

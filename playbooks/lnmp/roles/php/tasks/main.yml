@@ -1,0 +1,69 @@
+---
+ - name: Import Secret Vars
+   include_vars: "{{ item }}"
+   with_items:
+     - "secret.yml"
+
+# - name: Set Server Type
+#   set_fact:
+#     servertype: "{{ ansible_hostname.split('-')[4] }}"
+
+ - name: Disable DNF PHP module
+   command: dnf module disable php -y
+   when: ansible_distribution_major_version  >= "8"
+
+ - name: Install PHP
+   yum:
+     name: "{{ php_package_url }}"
+     allow_downgrade: yes
+     disable_gpg_check: yes
+     state: present
+
+ - name: Copy Default Process Pool Configure
+   copy:
+     src: "php.demo.com.conf"
+     dest: "{{ php_install_dir }}/etc/php-fpm.d/php.demo.com.conf"
+
+ - name: Copy php-fpm.conf
+   copy:
+     src: "{{ php_install_dir }}/etc/php-fpm.conf.default"
+     dest: "{{ php_install_dir }}/etc/php-fpm.conf"
+     remote_src: yes
+
+ - name: Copy php.ini
+   template:
+     src: "php.ini_{{ large_version }}.j2"
+     dest: "{{ php_install_dir }}/etc/php.ini"
+
+ - name: Generate Logs Directory
+   file:
+     path: "{{ php_logs_dir }}"
+     owner: "{{ php_user }}"
+     group: "{{ php_user }}"
+     recurse: yes
+     state: directory
+
+ - name: Set Regular Clean PHP-FPM Logs
+   template:
+     src: php-fpm.logrotate.j2
+     dest: /etc/logrotate.d/php-fpm
+
+ - name: Set Environment PATH
+   blockinfile:
+     marker: "# {mark} ANSIBLE MANAGED BLOCK FOR PHP"
+     block: "export PATH={{ php_install_dir }}/bin:$PATH"
+     dest: /etc/profile
+
+ - name: Set Systemd Manage
+   template:
+     src: "php-fpm.service.j2"
+     dest: "/etc/systemd/system/php-fpm.service"
+
+ - name: Enable PHP-Fpm
+   systemd:
+     name: php-fpm
+     state: restarted
+     enabled: yes
+     daemon_reload: yes
+
+...

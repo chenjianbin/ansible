@@ -1,0 +1,11 @@
+# This file is where you define your pipelines. You can define multiple.
+# For more information on multiple pipelines, see the documentation:
+#   https://www.elastic.co/guide/en/logstash/current/multiple-pipelines.html
+
+{% for module in modules %}
+- pipeline.id: {{ module }}
+  pipeline.workers: {{ ansible_processor_vcpus }}
+  pipeline.batch.size: 500
+  pipeline.batch.delay: 10
+  path.config: "{{ confdir }}/conf.d/{{ module }}.conf"
+{% endfor %}

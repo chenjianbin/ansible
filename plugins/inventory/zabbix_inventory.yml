@@ -1,0 +1,15 @@
+---
+plugin: community.zabbix.zabbix_inventory
+server_url: https://zabbix.demo.com
+login_user: ansible
+login_password: LrhvIJXRTMjZxH5c2Ak
+host_zapi_query:
+        #  selectInterfaces: ['ip']
+  selectHostGroups: 'extend'
+  selectInventory: 'extend'
+  output: 'extend'
+#  selectApplications: ['name', 'applicationid']
+#  selectParentTemplates: ['name']
+#  selectGroups: ['name']
+#add_zabbix_groups: true
+validate_certs: true

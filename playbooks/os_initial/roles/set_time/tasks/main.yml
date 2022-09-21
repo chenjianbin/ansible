@@ -1,0 +1,28 @@
+---
+ - name: Set Timezone
+   timezone:
+     name: Asia/Shanghai
+
+ - name: Install Chrony
+   yum:
+     name: chrony
+     state: latest
+   when: ansible_distribution_major_version >= "7"
+
+ - name: Enable Chrony To Sync Datetime
+   systemd:
+     name: chronyd
+     state: restarted
+     enabled: yes
+   when: ansible_distribution_major_version >= "7"
+
+ - name: Restart Chronyd
+   cron:
+     name: "Restart Chronyd"
+     minute: "*/30"
+     hour: "*"
+     weekday: "*"
+     job: "systemctl restart chronyd"
+     state: present
+   when: ansible_distribution_major_version >= "7"
+...

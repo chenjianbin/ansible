@@ -1,0 +1,11 @@
+---
+#elasticsearch install info
+datadir:
+  - "/data0/elasticsearch"
+  - "/data1/elasticsearch"
+backdir: 
+  - "/data0/backups/elasticsearch"
+nodelist:
+  - "10.10.1.214"
+  - "10.10.1.215"
+  - "10.10.1.216"

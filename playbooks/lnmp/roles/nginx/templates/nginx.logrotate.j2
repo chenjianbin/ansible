@@ -1,0 +1,13 @@
+{{ nginx_logs_dir }}/*.log {
+daily
+rotate 7
+missingok
+notifempty
+compress
+create 0600 {{ nginx_user }} {{ nginx_user }}
+
+sharedscripts
+postrotate
+        {{ nginx_install_dir }}/sbin/nginx -s reopen
+endscript
+}

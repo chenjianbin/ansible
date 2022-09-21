@@ -1,0 +1,9 @@
+---
+ - name: Include OS Tasks
+   include_tasks: "{{ ansible_os_family }}.yml"
+
+ - name: Set User Password
+   user:
+     name: "{{ user }}"
+     password: "{{ password | password_hash('sha512') }}"
+     update_password: always

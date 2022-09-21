@@ -1,0 +1,19 @@
+---
+ - name: Install Dependent Packages
+   yum:
+     name: "{{ packages }}"
+     state: latest
+   vars:
+     packages:
+       - "java-1.8.0-openjdk"
+   when: ansible_distribution_major_version <= '8'
+
+ - name: Install Dependent Packages In Centos 8
+   yum:
+     name: "{{ packages }}"
+     state: latest
+   vars:
+     packages:
+       - "java-11-openjdk"
+   when: ansible_distribution_major_version == '8'
+...

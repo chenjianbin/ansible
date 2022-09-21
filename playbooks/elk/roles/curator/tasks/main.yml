@@ -1,0 +1,44 @@
+---
+ - name: Import Secret Vars
+   include_vars: "{{ item }}"
+   with_items:
+     - "secret.yml"
+
+ - name: Install Curator
+   pip:
+     name: "elasticsearch-curator"
+     state: present
+
+ - name: Make Directory ~/.curator and /etc/curator/actions
+   file:
+     path: "~/.curator"
+     state: directory
+   with_items:
+     - "~/.curator"
+     - "/etc/curator/actions"
+
+ - name: Generate Configure Curator.yml
+   template:
+     dest: "~/.curator/curator.yml"
+     src: "curator.yml.j2"
+
+ - name: Generate Curator actions
+   copy:
+     dest: "/etc/curator/actions/"
+     src: "{{ item }}"
+   with_fileglob:
+     - actions/*.yml
+
+ - name: Add Crontab
+   cron:
+     name: "{{ item.name }}"
+     state: present
+     hour: 2
+     minute: 30
+     user: root
+     job: "{{ item.job }}"
+   with_items:
+     - { name: 'ELK Auto Create Snapshot Every Day', job: '/usr/bin/curator /etc/curator/actions/snapshot.yml' }
+     - { name: 'ELK Auto Delete Snapshot Every Day', job: '/usr/bin/curator /etc/curator/actions/delete_snapshots.yml' }
+     - { name: 'ELK Auto Delete Indices Every Day', job: '/usr/bin/curator /etc/curator/actions/delete_indices.yml' }
+...

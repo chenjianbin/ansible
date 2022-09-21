@@ -1,0 +1,48 @@
+---
+ - name: Copy NetworkManager Config
+   copy: 
+     src: conf.d/
+     dest: /etc/NetworkManager/conf.d
+   when: ansible_distribution_major_version >= '7' and ansible_hostname is not search('ALIYUN') and ansible_hostname is not search('AWS')
+
+ - name: Restart Network
+   systemd:
+     name: NetworkManager
+     state: restarted
+     enabled: yes
+   when: ansible_distribution_major_version > '7' and ansible_hostname is not search('ALIYUN') and ansible_hostname is not search('AWS')
+
+ - name: Restart Network
+   systemd:
+     name: network
+     state: restarted
+     enabled: yes
+   when: ansible_distribution_major_version == '7' and ansible_hostname is not search('ALIYUN') and ansible_hostname is not search('AWS')
+
+ - name: Add Nameserver
+   template: 
+     src: resolv.conf.j2 
+     dest: /etc/resolv.conf
+   when: ansible_hostname is not search('ALIYUN') and ansible_hostname is not search('AWS')
+
+
+#对于使用dns进行负载均衡的应用,不建议开启此功能
+ - name: Install nscd
+   yum:
+     name: nscd
+     state: present
+
+ - name: Copy Nscd Config
+   copy: 
+     src: nscd.conf
+     dest: /etc/nscd.conf
+   when: ansible_distribution_major_version >= '7'
+
+ - name: Restart Nscd
+   systemd:
+     name: nscd
+     state: restarted
+     enabled: yes
+   when: ansible_distribution_major_version >= '7' 
+
+...
