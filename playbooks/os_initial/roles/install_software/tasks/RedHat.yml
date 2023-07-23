@@ -54,7 +54,7 @@
        - tcpdump
        - telnet
        - traceroute
-#       - tcping
+       - tcping
 #       - rkhunter
        
  - name: Install Software In Rhel 7

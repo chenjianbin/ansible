@@ -1,3 +1,23 @@
 ---
- - name: Include OS Tasks
-   include_tasks: "{{ ansible_os_family }}.yml"
+# - name: Include OS Tasks
+#   include_tasks: "{{ ansible_os_family }}.yml"
+
+ - name: Modify /etc/ssh/sshd_config
+   copy:
+     src: admin-def.conf
+     dest: /etc/ssh/sshd_config.d/admin-def.conf
+   notify:
+     - Restart Sshd
+
+ - name: Add Authorized_keys
+   authorized_key:
+     user: root
+     key: "{{ item }}"
+   with_file:
+     - public_keys/ops
+
+ - name: Set Ssh Timeout
+   blockinfile:
+     marker: "# {mark} ANSIBLE MANAGED BLOCK FOR SSH TIMEOUT"
+     dest: "/etc/profile"
+     block: "export TMOUT=900"

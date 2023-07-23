@@ -1,5 +1,15 @@
 ---
+ - name: Don't use Swap
+   sysctl:
+     name: "{{ item.name }}"
+     value: "{{ item.value }}"
+     state: present
+     reload: yes
+   loop:
+     - {name: vm.swappiness, value: 0}
+
  - name: Umount Swapfile
    ansible.posix.mount: 
      path: swap
      state: absent
+

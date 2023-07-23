@@ -5,7 +5,7 @@
      value: "{{ item.value }}" 
      state: present 
      reload: yes
-   with_items: 
+   loop: 
      - {name: net.core.netdev_max_backlog, value: 65535}
      - {name: net.core.somaxconn, value: 65535}
      - {name: net.ipv4.tcp_max_tw_buckets, value: 10000}
@@ -20,27 +20,7 @@
      - {name: net.ipv4.tcp_timestamps, value: 1}
      - {name: net.ipv4.tcp_tw_reuse, value: 1}
      - {name: net.ipv4.ip_local_port_range, value: 10000 65000}
-     - {name: vm.swappiness, value: 0}
-
- - name: Deny Ping For Web Server
-   sysctl:
-     name: "{{ item.name }}"
-     value: "{{ item.value }}"
-     state: present
-     reload: yes
-   with_items:
-     - {name: net.ipv4.icmp_echo_ignore_all, value: 1}
-   when: ansible_hostname is search('WEB')
-
- - name: SET AIO For Database Backup Server
-   sysctl:
-     name: "{{ item.name }}"
-     value: "{{ item.value }}"
-     state: present
-     reload: yes
-   with_items:
-     - {name: fs.aio-max-nr, value: 262144}
-   when: ansible_hostname is search('DBB')
+#     - {name: net.ipv4.icmp_echo_ignore_all, value: 1}
 
  - name: Set Google BBR 
    sysctl: 
@@ -48,8 +28,8 @@
      value: "{{ item.value }}" 
      state: present 
      reload: yes
-   with_items: 
+   loop: 
      - { name: 'net.core.default_qdisc', value: 'fq' }
      - { name: 'net.ipv4.tcp_congestion_control', value: 'bbr' }
-   when: ansible_distribution_major_version >= "8"
+   when: ansible_kernel.split('-')[0] is version_compare('4.9', '>=')
 ...

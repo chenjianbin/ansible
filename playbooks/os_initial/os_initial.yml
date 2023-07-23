@@ -3,11 +3,12 @@
      - os
    roles:
      - role: set_hostname    
+     - role: set_firewall
      - role: set_swap
      - role: set_nameserver
      - role: set_repo
      - role: set_journald
-     - role: install_base_soft
+     - role: install_software
      - role: set_sysctl
      - role: set_time
      - role: set_sshd
@@ -15,7 +16,6 @@
      - role: set_git
      - role: set_trash
      - role: set_history_format
-     - role: set_firewall
      - role: set_limits
      - role: update_kernel
      - role: set_rclocal

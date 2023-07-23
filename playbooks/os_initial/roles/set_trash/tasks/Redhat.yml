@@ -1,0 +1,10 @@
+---
+ - name: Rename rm command
+   blockinfile:
+     marker: "# {mark} ANSIBLE MANAGED BLOCK FOR rm command"
+     block: "alias rm=trash
+             \ntrash()
+             \n{
+             \n\    mv $@ /trash/ --backup=t
+             \n}"
+     path: "/etc/bashrc"

@@ -1,0 +1,26 @@
+---
+ - name: Start UFW Service
+   systemd:
+     name: ufw
+     enabled: yes
+     state: started
+
+ - name: Enable UFW Service
+   ufw:
+     state: enabled
+
+ - name: Allow SSH Connection And Set limit
+   ufw:
+     rule: limit
+     port: ssh
+     proto: tcp
+
+ - name: Set IP WhiteList
+   ufw:
+     rule: allow
+     src: "{{ item }}"
+   loop:
+     - "10.0.0.0/8"
+     - "172.16.0.0/12"
+     - "192.168.0.0/16"
+

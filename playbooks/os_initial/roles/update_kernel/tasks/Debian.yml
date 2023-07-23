@@ -1,0 +1,6 @@
+ - name: Update Kernel
+   apt:
+     upgrade: dist
+   notify:
+     - Reboot
+

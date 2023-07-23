@@ -3,6 +3,16 @@
    set_fact:
      servertype: "{{ ansible_hostname.split('-')[4] }}"
 
+ - name: SET AIO For Database Backup Server
+   sysctl:
+     name: "{{ item.name }}"
+     value: "{{ item.value }}"
+     state: present
+     reload: yes
+   with_items:
+     - {name: fs.aio-max-nr, value: 262144}
+   when: ansible_hostname is search('DBB')
+
  - name: Include Master Tasks
    import_tasks: "mysql_master.yml"
 

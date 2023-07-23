@@ -1,0 +1,70 @@
+---
+ - name: Install Basic Software
+   apt: 
+     name: "{{ packages }}"
+     state: present
+   vars:
+     packages:
+       - bash-completion
+       - git
+       - lrzsz
+       - rsync
+       - screen
+       - tree
+       - vim
+       - wget
+       - python3-pip
+       - apt-file
+       - cron
+       - python3-selinux
+       - policycoreutils
+
+ - name: Install Debug Software
+   apt: 
+     name: "{{ packages }}"
+     state: present
+   vars:
+     packages:
+       - bind9-dnsutils        #dig
+       - dstat
+       - iptraf
+       - iftop
+       - iotop
+       - lsof
+       - net-tools
+       - nethogs
+       - mtr
+       - linux-tools-common    #perf
+       - strace
+       - sysstat
+       - tcpdump
+       - telnet
+       - traceroute
+#       - rkhunter
+       
+
+ - name: Install Python Software
+   pip:
+     name: "{{ packages }}"
+     state: latest
+     executable: pip3
+   vars:
+     packages:
+       - pip
+       - setuptools
+
+ - name: Install Certbot
+   pip:
+     name: "{{ packages }}"
+     state: latest
+     executable: pip3
+   vars:
+     packages:
+       - certbot
+
+# - name: Add Certbot path
+#   file:
+#     src: /usr/local/bin/certbot
+#     dest: /usr/bin/certbot
+#     state: link
+...

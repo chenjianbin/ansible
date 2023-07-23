@@ -21,7 +21,7 @@
 
  - name: Add Nameserver
    template: 
-     src: resolv.conf.j2 
+     src: redhat.resolv.conf.j2 
      dest: /etc/resolv.conf
    when: ansible_hostname is not search('ALIYUN') and ansible_hostname is not search('AWS')
 
