@@ -1,5 +1,5 @@
 ---
- - name: Don't use Swap
+ - name: Set Swap System ARGS
    sysctl:
      name: "{{ item.name }}"
      value: "{{ item.value }}"
