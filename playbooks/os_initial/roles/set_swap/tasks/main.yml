@@ -1,4 +1,7 @@
 ---
+ - name: Include OS Tasks
+   include_tasks: "{{ ansible_os_family }}.yml"
+
  - name: Set Swap System ARGS
    sysctl:
      name: "{{ item.name }}"
@@ -7,9 +10,3 @@
      reload: yes
    loop:
      - {name: vm.swappiness, value: 0}
-
- - name: Umount Swapfile
-   ansible.posix.mount: 
-     path: swap
-     state: absent
-

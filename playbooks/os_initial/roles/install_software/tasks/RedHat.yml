@@ -9,7 +9,6 @@
        - autoconf
        - bash-completion
        - bzip2
-       - firewalld
        - gcc
        - gcc-c++
          #- glibc

@@ -7,17 +7,20 @@
      packages:
        - bash-completion
        - git
+       - unzip
        - lrzsz
        - rsync
        - screen
        - tree
        - vim
        - wget
+       - psmisc               #pstree
        - python3-pip
        - apt-file
        - cron
        - python3-selinux
        - policycoreutils
+       - inetutils-ping
 
  - name: Install Debug Software
    apt: 

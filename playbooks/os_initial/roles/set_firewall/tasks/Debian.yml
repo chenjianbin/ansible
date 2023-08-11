@@ -1,4 +1,9 @@
 ---
+ - name: Install UFW
+   apt:
+     name: ufw
+     state: present
+
  - name: Start UFW Service
    systemd:
      name: ufw

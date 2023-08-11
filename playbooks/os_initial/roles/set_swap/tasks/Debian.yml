@@ -1,0 +1,15 @@
+---
+ - name: Umount Swapfile At Fstab
+   ansible.posix.mount: 
+     path: none
+     src: /swap.img
+     fstype: swap
+     state: absent
+
+ - name: Umount Swapfile
+   shell: swapoff -a
+
+ - name: Delete Swapfile
+   file: 
+     path: /swap.img
+     state: absent
