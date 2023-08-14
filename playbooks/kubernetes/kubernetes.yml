@@ -1,0 +1,6 @@
+---
+ - hosts: all
+   roles:
+     - role: prerequisites
+     - role: container
+     - role: kube-cluster

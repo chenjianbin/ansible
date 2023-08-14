@@ -1,0 +1,53 @@
+---
+ - name: Get IP geolocation data
+   ipinfoio_facts:
+
+ - name: Setting up k8s repository in china
+   block:
+     - name: Add kubernetes apt key
+       ansible.builtin.apt_key: 
+         url: https://mirrors.aliyun.com/kubernetes/apt/doc/apt-key.gpg
+         keyring: /etc/apt/keyrings/kubernetes-archive-keyring.gpg
+         state: present
+    
+     - name: Add kubernetes repo
+       ansible.builtin.apt_repository:
+         repo: "deb [signed-by=/etc/apt/keyrings/kubernetes-archive-keyring.gpg] https://mirrors.aliyun.com/kubernetes/apt kubernetes-xenial main"
+         filename: kubernetes
+         state: present
+   when:  country == 'CN'
+
+ - name: Setting up k8s repository outside of China
+   block:
+     - name: Add kubernetes apt key
+       ansible.builtin.apt_key: 
+         url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
+         keyring: /etc/apt/keyrings/kubernetes-archive-keyring.gpg
+         state: present
+    
+     - name: Add kubernetes repo
+       ansible.builtin.apt_repository:
+         repo: "deb [signed-by=/etc/apt/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main"
+         filename: kubernetes
+         state: present
+   when:  country != 'CN'
+
+ - name: Install kube tools
+   apt:
+     name: "{{ item }}"
+     update_cache: true
+     state: present
+   loop:
+     - kubeadm
+     - kubelet
+     - kubectl
+
+ - name: Hold kube tools   # equivalent to apt-mark hold ...
+   ansible.builtin.dpkg_selections:
+     name: "{{ item }}"
+     selection: hold
+   loop:
+     - kubelet
+     - kubeadm
+     - kubectl
+

@@ -1,0 +1,40 @@
+---
+ - name: Get IP geolocation data
+   ipinfoio_facts:
+
+ - name: Install container runtime
+   apt:
+     name: docker.io
+     state: present
+
+ - name: Make container config directory
+   file:
+     path: /etc/containerd/
+     state: directory
+
+ - name: Touch container config file
+   file:
+     path: /etc/containerd/config.toml
+     state: touch
+
+ - name: Configuration container
+   shell: containerd  config default > /etc/containerd/config.toml
+
+ - name: Replace mirror source
+   replace:
+     path: /etc/containerd/config.toml
+     regexp: 'registry.k8s.io'
+     replace: 'registry.aliyuncs.com/google_containers'
+   when:  country == 'CN'
+
+ - name: Set systemdcgroup
+   replace:
+     path: /etc/containerd/config.toml
+     regexp: 'SystemdCgroup = false'
+     replace: 'SystemdCgroup = true'
+     
+ - name: Restart containerd
+   systemd:
+     name: containerd
+     state: restarted
+     enabled: yes

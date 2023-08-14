@@ -1,0 +1,4 @@
+[all:vars]
+master_hostname = "replace with master IP or master hostname"
+[master]
+[worker]

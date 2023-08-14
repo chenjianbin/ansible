@@ -1,0 +1,24 @@
+---
+ - name: Include OS Tasks
+   include_tasks: "{{ ansible_os_family }}.yml"
+
+ - name: Load kernel modules
+   modprobe:
+     name: "{{ item }}"
+     state: present
+   loop:
+     - overlay
+     - br_netfilter
+
+ - name: Set Swap System ARGS
+   sysctl:
+     name: "{{ item.name }}"
+     value: "{{ item.value }}"
+     state: present
+     reload: yes
+   loop:
+     - {name: vm.swappiness, value: 0}
+     - {name: net.bridge.bridge-nf-call-iptables , value: 1}
+     - {name: net.bridge.bridge-nf-call-ip6tables, value: 1}
+     - {name: net.ipv4.ip_forward, value: 1}
+
