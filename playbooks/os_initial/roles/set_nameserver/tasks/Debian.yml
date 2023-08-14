@@ -1,1 +1,14 @@
 ---
+ - name: Set nameserver
+   blockinfile:
+     marker: "# {mark} ANSIBLE MANAGED BLOCK FOR NAMESERVER"
+     path: "/etc/systemd/resolved.conf"
+     block: |
+       DNS=1.1.1.1 1.0.0.1
+       FallbackDNS=8.8.8.8 8.8.4.4
+
+ - name: Restart resolve service
+   systemd:
+     name: systemd-resolved
+     state: restarted
+     enabled: yes
