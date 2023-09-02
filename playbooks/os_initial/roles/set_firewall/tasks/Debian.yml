@@ -16,7 +16,7 @@
 
  - name: Allow SSH Connection And Set limit
    ufw:
-     rule: limit
+     rule: allow
      port: ssh
      proto: tcp
 
