@@ -2,13 +2,16 @@
  - name: Include OS Tasks
    include_tasks: "{{ ansible_os_family }}.yml"
 
-# - block: 
-#     - debug:
-#         msg: "Change PYPI Source"
-#     - file:
-#         path: "~/.pip"
-#         state: directory
-#     - copy:
-#         src: "pip.conf"
-#         dest: "~/.pip/pip.conf"
+ - name: Get ip info
+   ipinfoio_facts:  
+
+ - name: Set pip mirror
+   block: 
+   - file:
+       path: "~/.pip"
+       state: directory
+   - copy:
+       src: "pip.conf"
+       dest: "~/.pip/pip.conf"
+   when:  country == 'CN'
 ...
