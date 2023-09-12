@@ -1,6 +1,8 @@
 apiVersion: kubeadm.k8s.io/v1beta3
 kind: ClusterConfiguration
-kubernetesVersion: "1.27.0"
+{% if kube_version is defined %}
+kubernetesVersion: "{{ kube_version }}"
+{% endif %}
 {% if country == 'CN' %}
 imageRepository: registry.aliyuncs.com/google_containers
 {% endif %}

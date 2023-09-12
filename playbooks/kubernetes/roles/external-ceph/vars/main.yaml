@@ -1,0 +1,8 @@
+---
+clusterID: "fd3bab0e-3c27-11ee-9f72-000c2901731a"
+monitors:
+  - "192.168.136.144:6789"
+  - "192.168.136.145:6789"
+  - "192.168.136.146:6789"
+userID: k8s
+userKey: AQBoXPBkAEuxBxAANMHCrqiwEOOP9iu629Eeyg==

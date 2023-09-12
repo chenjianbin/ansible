@@ -1,4 +1,0 @@
- - hosts:
-     - firewall
-   roles:
-     - role: set_swap

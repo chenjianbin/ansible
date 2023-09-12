@@ -31,21 +31,21 @@
      packages:
        - bind9-dnsutils        #dig
        - dstat
+       - lsof
+       - linux-tools-common    #perf
        - iptraf
        - iftop
        - iotop
-       - lsof
+       - inetutils-ping
        - nload
        - net-tools
        - nethogs
        - mtr
-       - linux-tools-common    #perf
        - strace
        - sysstat
        - tcpdump
        - telnet
        - traceroute
-       - inetutils-ping
 #       - rkhunter
        
 

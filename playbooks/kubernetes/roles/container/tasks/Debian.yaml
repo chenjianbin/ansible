@@ -2,10 +2,13 @@
  - name: Get IP geolocation data
    ipinfoio_facts:
 
- - name: Install container runtime
+ - name: Install container runtime and debug tool
    apt:
-     name: docker.io
+     name: "{{ item }}"
      state: present
+   loop:
+     - docker.io
+     - util-linux    # nsenter
 
  - name: Make container config directory
    file:
@@ -38,3 +41,11 @@
      name: containerd
      state: restarted
      enabled: yes
+
+ - name: Copy crictl config
+   copy:
+     src: crictl.yaml
+     dest: /etc/crictl.yaml
+
+ - name: Set crictl bash completion
+   shell: "crictl completion bash >/etc/bash_completion.d/crictl"

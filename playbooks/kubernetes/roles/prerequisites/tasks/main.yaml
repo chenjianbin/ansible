@@ -1,6 +1,6 @@
 ---
  - name: Include OS Tasks
-   include_tasks: "{{ ansible_os_family }}.yml"
+   include_tasks: "{{ ansible_os_family }}.yaml"
 
  - name: Load kernel modules
    modprobe:

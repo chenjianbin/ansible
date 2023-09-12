@@ -1,6 +1,0 @@
----
- - name: Umount Swapfile
-   ansible.posix.mount: 
-     path: swap
-     state: absent
-

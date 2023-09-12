@@ -11,5 +11,8 @@
 
  - name: Delete Swapfile
    file: 
-     path: /swap.img
+     path: "{{ item }}"
      state: absent
+   loop:
+     - /swap.img
+     - /swapfile

@@ -1,0 +1,56 @@
+---
+ - name: Get ip info
+   ipinfoio_facts:
+
+ - name: Set temporary directory
+   set_fact:
+     CEPHDIR: "~/k8s/external-ceph"
+
+ - name: Prepare configuration files
+   block:
+   - name: Create temporary directory
+     file:
+       path: "{{ CEPHDIR }}"
+       state: directory
+
+   - name: Copy files
+     copy:
+       src: "{{ item }}"
+       dest: "{{ CEPHDIR }}"
+     with_fileglob:
+       - "files/*"
+
+   - name: Copy template files
+     template:
+       src: "{{ item }}"
+       dest: "{{ CEPHDIR }}/{{ item.split('/')[-1][:-3] }}"
+     with_fileglob:
+       - "templates/*"
+
+   - name: Get rbd configuration files from remote
+     uri:
+       url: "{{ item }}"
+       dest: "{{ CEPHDIR }}"
+       creates: "{{ CEPHDIR }}/{{ item.split('/')[-1] }}"
+     register: result
+     until: result is succeeded
+     retries: 5
+     delay: 10
+     loop:
+       - "https://raw.githubusercontent.com/ceph/ceph-csi/master/deploy/rbd/kubernetes/csi-provisioner-rbac.yaml"
+       - "https://raw.githubusercontent.com/ceph/ceph-csi/master/deploy/rbd/kubernetes/csi-nodeplugin-rbac.yaml"
+       - "https://raw.githubusercontent.com/ceph/ceph-csi/master/deploy/rbd/kubernetes/csi-rbdplugin-provisioner.yaml"
+       - "https://raw.githubusercontent.com/ceph/ceph-csi/master/deploy/rbd/kubernetes/csi-rbdplugin.yaml"
+
+   - name: Replace mirror address in CN
+     replace:
+       path: "{{ CEPHDIR }}/{{ item[0] }}"
+       regexp: "{{ item[1].old_mirror }}"
+       replace:  "{{ item[1].new_mirror }}"
+     when: country == "CN"
+     with_nested:
+       - ["csi-rbdplugin-provisioner.yaml", "csi-rbdplugin.yaml"]
+       - [{old_mirror: "registry.k8s.io/sig-storage", new_mirror: "registry.aliyuncs.com/google_containers"}, {old_mirror: "gcr.io", new_mirror: "gcr.nju.edu.cn"}]
+     
+ - name: Deploy ceph-csi plugin
+   shell: "kubectl apply -R -f {{ CEPHDIR }}"

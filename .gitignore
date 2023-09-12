@@ -1,4 +1,4 @@
-**hosts
+**/hosts
 **/vars/main.yml
 *.retry
 **/*.pub

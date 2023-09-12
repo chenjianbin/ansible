@@ -1,0 +1,8 @@
+---
+clusterID: "b9127830-b0cc-4e34-aa47-9d1a2e9949a8"
+monitors:
+  - "192.168.1.1:6789"
+  - "192.168.1.2:6789"
+  - "192.168.1.3:6789"
+userID: kubernetes
+userKey: AQD9o0Fd6hQRChAAt7fMaSZXduT3NWEqylNpmg==
