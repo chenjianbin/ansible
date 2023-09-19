@@ -1,5 +1,9 @@
-#!/usr/bin/env python
-# coding: utf8
+# -*- coding: utf-8 -*-
+# 后续有时间改成filter plugin
+# Copyright: (c) 2019, tony chen <keep0tony@gmail.com>
+
+from __future__ import absolute_import, division, print_function
+__metaclass__ = type
 
 ANSIBLE_METADATA = {
     'metadata_version': '0.1',
@@ -9,7 +13,7 @@ ANSIBLE_METADATA = {
 
 DOCUMENTATION = '''
 ---
-module: ali_auth
+module: aliyun_sign
 
 short_description: The module provide signature function of aliyun Restful api
 
@@ -44,12 +48,12 @@ extends_documentation_fragment:
     - aliyun
 
 author:
-    - jianbin chen (546391242@qq.com)
+    - tony chen (keep0tony@gmail.com)
 '''
 
 EXAMPLES = '''
 Example signature for oss api service
- - ali_auth:
+ - aliyun_sign:
     name: oss
     key_id: sdfsdfsd9sdfsd7
     secret_key: slis786sdf678sd97
@@ -77,7 +81,7 @@ if platform.python_version().split('.')[0] == '3':
 else:
     from urlparse import urlparse as urlparse
 
-class OssAuth(object):
+class Sign(object):
     def __init__(self, module):
         self.module = module
         self.service = module.params['service']
@@ -87,7 +91,7 @@ class OssAuth(object):
         self.verb = module.params['verb']
         self.datetime = formatdate(None, usegmt=True)
 
-    def sign(self):
+    def __call__(self):
         args = self.verb.upper() + '\n\n\n' + self.datetime + '\n/' + urlparse(self.url).netloc.split('.')[0] + urlparse(self.url).path
         h = hmac.new(self.secret_key, args, hashlib.sha1)
         signature = base64.b64encode(h.digest())
@@ -116,11 +120,11 @@ def main():
     if module.check_mode:
         return result
 
-    if module.params['service'].upper() == 'OSS':
-        result['authorization'], result['date'] = OssAuth(module).sign()
+    try:
+        result['authorization'], result['date'] = Sign(module)()
         result['changed'] = True
-    else:
-        module.fail_json(msg='Not service', **result)
+    except:
+        module.fail_json(msg='Signature failed!', **result)
 
     module.exit_json(**result)
 
