@@ -1,0 +1,34 @@
+{
+  "inbounds": [
+    {
+      "tag": "VLess-WS-{{subdomain}}.{{ zone }}.json",
+      "port": {{ port }},
+      "listen": "0.0.0.0",
+      "protocol": "vless",
+      "settings": {
+        "clients": [
+          {
+            "id": "{{ uuid }}"
+          }
+        ]
+      },
+      "streamSettings": {
+        "network": "ws",
+        "security": "none",
+        "wsSettings": {
+          "path": "/wsv3",
+          "headers": {
+            "Host": "{{ subdomain }}.{{ zone }}"
+          }
+        }
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,5 @@
+---
+- name: Install caddy
+  yum:
+    name: haproxy
+    state: present

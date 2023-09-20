@@ -1,0 +1,34 @@
+{
+  "inbounds": [
+    {
+      "tag": "VMess-WS-{{subdomain}}-cdn.{{ zone }}.json",
+      "port": {{ cdn_port }},
+      "listen": "127.0.0.1",
+      "protocol": "vmess",
+      "settings": {
+        "clients": [
+          {
+            "id": "{{ uuid }}"
+          }
+        ]
+      },
+      "streamSettings": {
+        "network": "ws",
+        "security": "none",
+        "wsSettings": {
+          "path": "/wsv3",
+          "headers": {
+            "Host": "{{ subdomain }}-cdn.{{ zone }}"
+          }
+        }
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ]
+      }
+    }
+  ]
+}

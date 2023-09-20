@@ -1,0 +1,11 @@
+---
+- name: Stop ufw service
+  systemd:
+    name: ufw
+    enabled: no
+    state: stopped
+
+- name: Install haproxy
+  apt:
+    name: haproxy
+    state: present

@@ -1,0 +1,5 @@
+# https://caddyserver.com/docs/caddyfile/options
+{
+  admin off
+}
+import /etc/caddy/sites/*.conf

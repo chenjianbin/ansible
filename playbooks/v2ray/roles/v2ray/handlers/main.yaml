@@ -1,0 +1,10 @@
+---
+- name: Restart v2ray
+  systemd:
+    name: v2ray
+    state: restarted
+
+- name: Restart haproxy
+  systemd:
+    name: haproxy
+    state: restarted

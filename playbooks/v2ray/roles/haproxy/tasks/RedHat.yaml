@@ -1,0 +1,11 @@
+---
+- name: Stop firewalld service
+  systemd:
+    name: firewalld
+    enabled: no
+    state: stopped
+
+- name: Install haproxy
+  yum:
+    name: haproxy
+    state: present

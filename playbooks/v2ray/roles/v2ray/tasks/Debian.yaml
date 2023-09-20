@@ -1,0 +1,7 @@
+---
+- name: Stop ufw service
+  systemd:
+    name: ufw
+    enabled: no
+    state: stopped
+

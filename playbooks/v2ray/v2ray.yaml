@@ -1,0 +1,6 @@
+---
+ - hosts:
+     - v2ray
+   roles:
+     - role: v2ray
+

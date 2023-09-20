@@ -1,0 +1,12 @@
+[direct]
+# hostip  domain='xx.aa.com'
+
+
+[proxy]
+# hostip  domain='xx.aa.com' proxyip='ip'
+
+
+[cdn]
+# hostip  domain='xx.aa.com'
+[all:vars]
+protocol=
