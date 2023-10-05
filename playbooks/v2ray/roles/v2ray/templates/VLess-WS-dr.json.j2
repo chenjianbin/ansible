@@ -1,8 +1,8 @@
 {
   "inbounds": [
     {
-      "tag": "VLess-WS-{{subdomain}}.{{ zone }}.json",
-      "port": {{ port }},
+      "tag": "VLess-WS-{{subdomain}}-dr.{{ zone }}.json",
+      "port": {{ dr_port }},
       "listen": "0.0.0.0",
       "protocol": "vless",
       "settings": {
@@ -19,7 +19,7 @@
         "wsSettings": {
           "path": "/wsv3",
           "headers": {
-            "Host": "{{ subdomain }}.{{ zone }}"
+            "Host": "{{ subdomain }}-dr.{{ zone }}"
           }
         }
       },

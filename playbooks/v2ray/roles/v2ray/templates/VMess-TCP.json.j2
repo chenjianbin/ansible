@@ -1,25 +1,22 @@
 {
   "inbounds": [
     {
-      "tag": "VLess-WS-{{subdomain}}.{{ zone }}.json",
-      "port": {{ port }},
+      "tag": "VMess-TCP-{{ dr_port }}.json",
+      "port": {{ dr_port }},
       "listen": "0.0.0.0",
-      "protocol": "vless",
+      "protocol": "vmess",
       "settings": {
         "clients": [
           {
             "id": "{{ uuid }}"
           }
-        ],
-        "decryption":"none"
+        ]
       },
       "streamSettings": {
-        "network": "ws",
-        "security": "none",
-        "wsSettings": {
-          "path": "/wsv3",
-          "headers": {
-            "Host": "{{ subdomain }}.{{ zone }}"
+        "network": "tcp",
+        "tcpSettings": {
+          "header": {
+            "type": "none"
           }
         }
       },

@@ -12,7 +12,7 @@
 - name: Set link vars
   set_fact:
     link: '{"v":2,"ps":"{{ subdomain }}.{{ zone }}","add":"{{ subdomain }}.{{ zone }}","port":"{{ port }}","id":"{{ uuid }}","aid":"0","net":"ws","host":"{{ subdomain }}.{{ zone }}","path":"/wsv3","tls":"none"}'
-    dr_link: '{"v":2,"ps":"{{ subdomain }}-dr.{{ zone }}","add":"{{ subdomain }}-dr.{{ zone }}","port":"{{ dr_port }}","id":"{{ uuid }}","aid":"0","net":"ws","host":"{{ subdomain }}-dr.{{ zone }}","path":"/wsv3","tls":"none"}'
+    dr_link: '{"v":2,"ps":"{{ subdomain }}-dr.{{ zone }}","add":"{{ subdomain }}-dr.{{ zone }}","port":"{{ dr_port }}","id":"{{ uuid }}","aid":"0","net":"tcp","type":"none","path":""}'
     cdn_link: '{"v":2,"ps":"{{ subdomain }}-cdn.{{ zone }}","add":"{{ subdomain }}-cdn.{{ zone }}","port":"443","id":"{{ uuid }}","aid":"0","net":"ws","host":"{{ subdomain }}-cdn.{{ zone }}","path":"/wsv3","tls":"tls"}'
 
 - name: Include OS Tasks
@@ -38,8 +38,8 @@
   loop:
     - src: "{{ protocol }}-WS.json.j2"
       dest: "/etc/v2ray/conf/{{ protocol }}-WS-{{ subdomain }}.{{ zone }}.json"
-    - src: "{{ protocol }}-WS-dr.json.j2"
-      dest: "/etc/v2ray/conf/{{ protocol }}-WS-{{ subdomain }}-dr.{{ zone }}.json"
+    - src: "{{ protocol }}-TCP.json.j2"
+      dest: "/etc/v2ray/conf/{{ protocol }}-TCP-{{ dr_port }}.json"
     - src: "{{ protocol }}-WS-cdn.json.j2"
       dest: "/etc/v2ray/conf/{{ protocol }}-WS-{{ subdomain }}-cdn.{{ zone }}.json"
 
