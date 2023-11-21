@@ -1,7 +1,4 @@
 ---
- - name: Include OS Tasks
-   include_tasks: "{{ ansible_os_family }}.yml"
-
  - name: Get ip info
    ipinfoio_facts:  
 
@@ -14,4 +11,7 @@
        src: "pip.conf"
        dest: "~/.pip/pip.conf"
    when:  country == 'CN'
-...
+
+ - name: Include OS Tasks
+   include_tasks: "{{ ansible_os_family }}.yml"
+

@@ -2,7 +2,7 @@
  - name: Install systemd-timesyncd
    apt:
      name: systemd-timesyncd
-     state: latest
+     state: present
 
  - name: Enable systemd-timesyncd To Sync Datetime
    systemd:

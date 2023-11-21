@@ -10,8 +10,8 @@
     url: https://dl.cloudsmith.io/public/caddy/stable/debian.deb.txt
     dest: /etc/apt/sources.list.d/caddy-stable.list
 
-#- name: Install caddy
-#  apt:
-#    name: caddy
-#    state: present
-#    update_cache: yes
+- name: Install caddy
+  apt:
+    name: caddy
+    state: present
+    update_cache: yes
