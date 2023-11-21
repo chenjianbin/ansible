@@ -1,6 +1,7 @@
 tmp/
 **/hosts
 **/vars/main.yml
+**/vars/main.yaml
 *.retry
 **/*.pub
 **/public_keys/*
