@@ -1,0 +1,12 @@
+---
+ - name: Disable Service
+   systemd:
+     name: "{{ item }}"
+     state: stopped
+     enabled: no
+     daemon_reload: yes
+     masked: yes
+   ignore_errors: True
+   loop:
+     - cups-browsed
+     - cups
