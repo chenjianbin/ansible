@@ -1,0 +1,14 @@
+---
+ - name: Install Nginx
+   apt:
+     name: "nginx"
+     state: latest
+
+ - name: Allow Http And Https Connections
+   ufw:
+     rule: allow
+     port: {{ item }}
+     proto: tcp
+   with_items:
+     - "http"
+     - "https"

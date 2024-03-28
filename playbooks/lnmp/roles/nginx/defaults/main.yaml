@@ -1,0 +1,4 @@
+---
+nginx_user: www
+nginx_logs_dir: "/data0/logs/nginx"
+nginx_conf_url: "https://github.com/chenjianbin/nginx_conf.git"

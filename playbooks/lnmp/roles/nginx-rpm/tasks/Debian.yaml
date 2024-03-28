@@ -1,0 +1,9 @@
+---
+ - name: Allow Http And Https Connections
+   ufw:
+     rule: allow
+     port: {{ item }}
+     proto: tcp
+   with_items:
+     - "http"
+     - "https"

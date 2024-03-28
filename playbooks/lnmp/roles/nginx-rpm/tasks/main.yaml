@@ -4,6 +4,9 @@
    with_items:
      - "secret.yml"
 
+ - name: Include Firewall Tasks
+   include_tasks: "{{ ansible_os_family }}.yaml"
+
  - name: Disable DNF Nginx Module
    command: dnf module disable nginx -y
    when: ansible_distribution_major_version  >= "8"
@@ -99,6 +102,4 @@
      enabled: yes
      daemon_reload: yes
 
- - name: Include Firewall Tasks
-   import_tasks: "firewall.yml"
 ...

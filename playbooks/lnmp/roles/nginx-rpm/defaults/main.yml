@@ -5,7 +5,7 @@ nginx_version: "1.22.0-1"
 nginx_package_url: "{{ package_url_prefix }}/nginx/nginx-{{ nginx_version }}.el{{ ansible_distribution_major_version }}.{{ ansible_architecture }}.rpm"
 nginx_naxsi_package_url: "{{ package_url_prefix }}/nginx/naxsi/nginx-{{ nginx_version }}.el{{ ansible_distribution_major_version }}.{{ ansible_architecture }}.rpm"
 nginx_cache_package_url: "{{ package_url_prefix }}/nginx/cache/nginx-{{ nginx_version }}.el{{ ansible_distribution_major_version }}.{{ ansible_architecture }}.rpm"
-nginx_user: www
 nginx_install_dir: "/usr/local/webserver/nginx"
+nginx_user: www
 nginx_logs_dir: "/data0/logs/nginx"
 nginx_conf_url: "https://github.com/chenjianbin/nginx_conf.git"
