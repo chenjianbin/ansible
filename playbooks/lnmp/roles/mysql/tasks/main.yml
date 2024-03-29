@@ -16,9 +16,9 @@
  - name: Include Master Tasks
    import_tasks: "mysql_master.yml"
 
- - name: Include Slave Tasks
-   import_tasks: "mysql_slave.yml"
-   delegate_to: "{{ mysql_slave_host }}"
-   when: ansible_hostname is not search('TS')
+# - name: Include Slave Tasks
+#   import_tasks: "mysql_slave.yml"
+#   delegate_to: "{{ mysql_slave_host }}"
+#   when: ansible_hostname is not search('TS')
 
 ...

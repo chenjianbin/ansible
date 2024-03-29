@@ -3,11 +3,12 @@
 #   include_tasks: "{{ ansible_os_family }}.yml"
 
  - name: Modify /etc/ssh/sshd_config
-   copy:
-     src: admin-def.conf
-     dest: /etc/ssh/sshd_config.d/admin-def.conf
-   notify:
-     - Restart Sshd
+   blockinfile:
+     marker: "# {mark} ANSIBLE MANAGED BLOCK FOR SSHD"
+     path: "/etc/ssh/sshd_config"
+     block: |
+       UseDNS no
+       PasswordAuthentication no
 
  - name: Add Authorized_keys
    authorized_key:

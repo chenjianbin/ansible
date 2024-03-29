@@ -26,8 +26,11 @@
      disable_gpg_check: yes
      state: present
 
- - name: Enable The Repository
-   shell: echo 'y'|percona-release setup ps80
+ - name: Enable Percona 8x Release
+   shell: percona-release enable-only ps-8x-innovation release
+
+ - name: Enable Percona Tool Release
+   shell: percona-release enable tools release
 
  - name: Install Percona Server
    yum:
@@ -42,7 +45,7 @@
    vars:
      packages:
        - "percona-toolkit"
-       - "percona-xtrabackup-80"
+       - "percona-xtrabackup-83"
 
  - name: Initail Mysql Instance Directory
    file:
@@ -137,4 +140,4 @@
      immediate: yes
      permanent: true
      state: enabled
-   when: ansible_distribution_major_version  >= "7"
+   when: ansible_distribution_major_version  >= "7" and mysql_slave_host != ""
