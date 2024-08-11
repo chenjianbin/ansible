@@ -1,0 +1,26 @@
+---
+- name: Ensure prerequisites are installed
+  apt:
+    name: software-properties-common
+    state: latest
+
+- name: Add Ondřej Surý's PPA for PHP
+  apt_repository:
+    repo: ppa:ondrej/php
+    state: present
+    update_cache: yes
+
+- name: Install PHP and its extensions
+  apt:
+    name:
+      - "php{{ version }}"
+      - "php{{ version }}-fpm"
+      - "php{{ version }}-gd"
+      - "php{{ version }}-bcmath"
+      - "php{{ version }}-cli"
+      - "php{{ version }}-zip"
+      - "php{{ version }}-mysql"
+      - "php{{ version }}-mcrypt"  # 注意：在 PHP 7.2 及以上版本中已被废弃
+      - "php{{ version }}-redis"  
+      - "php{{ version }}-igbinary" 
+    state: latest

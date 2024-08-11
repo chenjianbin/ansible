@@ -1,0 +1,9 @@
+gogs_name: 'gogs'
+gogs_version: '0.13.0'
+gogs_url: 'https://dl.gogs.io/{{ gogs_version }}/{{ gogs_name }}_{{ gogs_version }}_linux_amd64.tar.gz'
+gogs_install_path: '/usr/local/webserver'
+gogs_data_dir: '/data0/gogs'
+gogs_logs_dir: '/data0/logs/gogs'
+git_user:
+  name: 'git'
+  comment: 'Git Server'

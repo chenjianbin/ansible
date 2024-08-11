@@ -1,9 +1,0 @@
----
- - hosts: zabbix_agent
-   roles:
-     - role: zabbix_agent
-
- - hosts: grafana
-   roles:
-     - role: grafana
-...

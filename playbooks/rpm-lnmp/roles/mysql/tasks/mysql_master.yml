@@ -1,0 +1,166 @@
+ - name: Set Mode
+   set_fact:
+     mode: "master"
+
+ - name: Add Mysql User Group
+   group:
+     name: "{{ mysql_os_user.name }}"
+     gid: "{{ mysql_os_user.id }}"
+     state: present
+     system: yes
+
+ - name: Add Mysql User
+   user:
+     name: "{{ mysql_os_user.name }}"
+     group: "{{ mysql_os_user.name }}"
+     uid: "{{ mysql_os_user.id }}"
+     createhome: no
+     comment: "{{ mysql_os_user.comment }}"
+     shell: /sbin/nologin
+     state: present
+     system: yes
+
+ - name: Install Percona Release Repo
+   yum:
+     name: "https://repo.percona.com/yum/percona-release-latest.noarch.rpm"
+     disable_gpg_check: yes
+     state: present
+
+ - name: Enable Percona 8x Release
+   shell: percona-release enable-only ps-8x-innovation release
+
+ - name: Enable Percona Tool Release
+   shell: percona-release enable tools release
+
+ - name: Install Percona Server
+   yum:
+     name: "percona-server-server-{{ version }}"
+     disable_gpg_check: yes
+     state: present
+ 
+ - name: Install Percona Tools
+   yum:
+     name: "{{ packages }}"
+     state: latest
+   vars:
+     packages:
+       - "percona-toolkit"
+       - "percona-xtrabackup-83"
+
+ - name: Initail Mysql Instance Directory
+   file:
+     path: "{{ mysql_datadir }}/{{ mysql_port }}/{{ item }}"
+     owner: "{{ mysql_os_user.name }}"
+     group: "{{ mysql_os_user.name }}"
+     recurse: yes
+     state: directory
+   with_items:
+     - data
+     - logs/binlog
+     - logs/relaylog
+     - logs/errorlog
+     - logs/slowlog
+
+ - name: Copy my.cnf
+   template:
+     src: "my.cnf.j2"
+     dest: "/etc/my.cnf"
+     owner: "{{ mysql_os_user.name }}"
+     group: "{{ mysql_os_user.name }}"
+     mode: "600"
+ 
+ - name: Copy mysqld.cnf
+   template:
+     src: "mysqld.cnf.j2"
+     dest: "/etc/my.cnf.d/mysqld.cnf"
+     owner: "{{ mysql_os_user.name }}"
+     group: "{{ mysql_os_user.name }}"
+     mode: "600"
+ 
+ - name: Set Initialize-insecure Args
+   lineinfile:
+     path: /etc/my.cnf.d/mysqld.cnf
+     line: 'initialize_insecure=1'
+
+ - name: Initialize Instance
+   command: /usr/bin/mysqld_pre_systemd
+   
+ - name: Delete Initialize-insecure Args
+   lineinfile:
+     path: /etc/my.cnf.d/mysqld.cnf
+     line: 'initialize_insecure=1'
+     state: absent
+
+ - name: Set Regular Clean Mysql Logs
+   template: 
+     src: mysql.logrotate.j2
+     dest: /etc/logrotate.d/mysql
+
+ - name: Set Mysqldump Alias
+   blockinfile:
+     marker: "# {mark} ANSIBLE MANAGED BLOCK FOR mysqldump alias"
+     block: "alias mysqldump='mysqldump --single-transaction --order-by-primary --set-gtid-purged=OFF'"
+     path: "/etc/bashrc" 
+
+ - name: Start Mysql
+   systemd:
+     name: mysqld
+     state: restarted
+     enabled: yes
+     daemon_reload: yes
+
+ - name: Install Ansible Module Dependent Software On RHEL 7
+   pip:
+     name: PyMySQL
+     state: present
+     executable: pip2
+     extra_args: "--trusted-host pypi.python.org"
+     version: 0.8.0
+   when: ansible_distribution_major_version  == "7"
+
+ - name: Install Ansible Module Dependent Software
+   pip:
+     name: PyMySQL
+     state: present
+   when: ansible_distribution_major_version  >= "8"
+
+ - name: Add Mysql Repl User
+   mysql_user:
+     name: "{{ mysql_repl_user.name }}"
+     host: "{{ mysql_repl_user.host }}"
+     password: "{{ mysql_repl_user.passwd }}"
+     priv: "*.*:REPLICATION SLAVE,REPLICATION CLIENT"
+     login_unix_socket: "{{ mysql_datadir }}/{{ mysql_port }}/mysql.sock"
+     login_user: "root"
+     state: present
+   delegate_to: "{{ inventory_hostname }}"
+
+ - name: Add Zabbix Monitor User
+   mysql_user:
+     name: "{{ zabbix_user.name }}"
+     host: "{{ zabbix_user.host }}"
+     password: "{{ zabbix_user.passwd }}"
+     priv: "*.*:REPLICATION CLIENT,PROCESS,SHOW DATABASES,SHOW VIEW"
+     login_unix_socket: "{{ mysql_datadir }}/{{ mysql_port }}/mysql.sock"
+     login_user: "root"
+     state: present
+   delegate_to: "{{ inventory_hostname }}"
+
+ - name: Add Jumpserver User
+   mysql_user:
+     name: "{{ jumpserver_user.name }}"
+     host: "{{ jumpserver_user.host }}"
+     password: "{{ jumpserver_user.passwd }}"
+     login_unix_socket: "{{ mysql_datadir }}/{{ mysql_port }}/mysql.sock"
+     login_user: "root"
+     state: present
+   delegate_to: "{{ inventory_hostname }}"
+
+ - name: Set WhiteList
+   firewalld:
+     zone: trusted
+     source: "{{ mysql_slave_host }}/32"
+     immediate: yes
+     permanent: true
+     state: enabled
+   when: ansible_distribution_major_version  >= "7" and mysql_slave_host != ""

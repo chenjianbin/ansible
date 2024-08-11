@@ -1,0 +1,12 @@
+{{ log_path }}/*.log {
+    create 0600 {{ user }} {{ group }}
+    daily
+    rotate 10
+    missingok
+    notifempty
+    compress
+    sharedscripts
+    postrotate
+        /usr/sbin/nginx -s reopen
+    endscript
+}

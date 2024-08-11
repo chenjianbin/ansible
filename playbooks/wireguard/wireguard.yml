@@ -1,0 +1,4 @@
+---
+ - hosts: wireguard
+   roles:
+     - wireguard

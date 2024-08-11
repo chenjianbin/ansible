@@ -1,0 +1,54 @@
+---
+- name: Include os tasks
+  include_tasks: "{{ ansible_os_family }}.yml"
+
+- name: Set grafana mysql password
+  set_fact:
+    grafana_mysql_password: "{{ lookup('community.general.random_string', min_lower=1, min_upper=1, min_special=1,override_special='_', min_numeric=1, length=16) }}" 
+
+- name: Create grafana DB
+  community.mysql.mysql_db:
+    name: "grafana"
+    state: present
+    login_unix_socket: "{{ mysql_socket_path }}"
+      #  delegate_to: "{{ inventory_hostname }}"
+
+- name: Add mysql grafana user
+  mysql_user:
+    name: "grafana"
+    host: "127.0.0.1"
+    password: "{{ grafana_mysql_password }}"
+    priv: "grafana.*:ALL"
+    login_unix_socket: "{{ mysql_socket_path }}"
+    login_user: "root"
+    state: present
+      #  delegate_to: "{{ inventory_hostname }}"
+
+- name: Setup grafana mysql configuration
+  blockinfile:
+    path: "/etc/grafana/grafana.ini"
+    insertafter: "^\\[database\\]$"
+    marker: "# {mark} ANSIBLE MANAGED BLOCK MYSQL"
+    block: |
+      type = mysql
+      host = 127.0.0.1:3306
+      name = grafana
+      user = grafana
+      password ={{ grafana_mysql_password }}
+
+- name: Start grafana
+  systemd:
+    name: "grafana-server"
+    state: restarted
+    enabled: yes
+    daemon_reload: yes
+
+- name: Setup grafana nginx configure file
+  template:
+    src: "nginx.grafana.conf.j2"
+    dest: "/etc/nginx/vhosts/{{ grafana_server_hostname }}.conf"
+
+- name: Reload nginx
+  systemd:
+    name: "nginx"
+    state: reloaded

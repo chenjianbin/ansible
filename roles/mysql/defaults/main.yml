@@ -1,0 +1,20 @@
+---
+version: "8.3.0"
+mode: "master"
+mysql_port: 3306
+mysql_data_path: /data0/mysql
+mysql_os_user:
+  name: "mysql"
+  comment: "Mysql Server"
+mysql_repl_user:
+  name: "repl"
+  host: "%"
+  passwd: "Faw1gt2wtikpuf597Hrw_"
+jumpserver_user:
+  name: "jumpserver"
+  host: "%"
+  passwd: "T7Amfi6a7e+ddknV"
+zabbix_user:
+  name: "zbx_monitor"
+  host: "127.0.0.1"
+  passwd: "kdlbVhVkr-37fV3Z6"

@@ -1,0 +1,25 @@
+---
+- name: Install zabbix-server
+  apt: 
+    name: "{{ item }}"
+    state: latest
+    update_cache: yes
+  loop:
+    - "zabbix-server-mysql"
+    - "zabbix-sql-scripts"
+    - "zabbix-web-mysql"
+
+- name: Install chinese package
+  yum:
+    name: "{{ item }}"
+    state: latest
+  loop:
+    - "language-pack-zh-hans"
+
+- name: Allow zabbix-server listen port connections
+  ufw:
+    rule: allow
+    port: "{{ item }}"
+    proto: tcp
+  with_items:
+    - "10051"

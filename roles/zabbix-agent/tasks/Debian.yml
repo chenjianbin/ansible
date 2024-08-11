@@ -1,0 +1,18 @@
+---
+- name: Install Zabbix-agent2
+  apt: 
+    name: "{{ item }}"
+    state: latest
+    update_cache: yes
+  loop:
+    - "zabbix-agent2"
+    - "zabbix-agent2-plugin-*"
+
+- name: Allow zabbix-agent connections
+  ufw:
+    rule: allow
+    port: "{{ item }}"
+    proto: tcp
+  when: mode == "passive"
+  with_items:
+    - "10050"

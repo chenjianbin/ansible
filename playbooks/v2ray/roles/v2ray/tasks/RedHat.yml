@@ -1,0 +1,11 @@
+---
+ - name: Allow pr_port connections
+   firewalld:
+     zone: public
+     port: "{{ item }}"
+     immediate: yes
+     permanent: true
+     state: enabled
+   loop:
+     - "{{ pr_port }}/tcp"
+     - "{{ dr_port }}/tcp"

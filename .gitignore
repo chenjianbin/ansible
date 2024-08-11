@@ -1,3 +1,4 @@
+zabbix.ini
 tmp/
 **/hosts
 **/vars/main.yml

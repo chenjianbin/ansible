@@ -12,3 +12,15 @@
      - postfix
    when: ansible_distribution_major_version >= "7"
 
+
+# 禁用dnf makecache,防止低内存配置的服务器内存溢出
+ - name: Disable dnf-makecache.timer
+   systemd:
+     name: "{{ item }}"
+     state: stopped
+     enabled: no
+     daemon_reload: yes
+   ignore_errors: True
+   loop:
+     - dnf-makecache.timer
+   when: ansible_distribution_major_version >= "8"

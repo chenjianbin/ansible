@@ -1,0 +1,2 @@
+#COOKIES
+BasicRule wl:1015 "mz:$HEADERS_VAR:Cookie";

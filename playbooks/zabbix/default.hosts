@@ -1,0 +1,6 @@
+[zabbix_agent]
+[zabbix_server]
+[grafana]
+[all]
+[all:vars]
+#zabbix_server_hostname="zabbix.example.com"

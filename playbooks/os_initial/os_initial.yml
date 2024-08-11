@@ -20,9 +20,3 @@
      - role: update_kernel
      - role: set_rclocal
      - role: disable_service
-
- - hosts:
-     - firewall
-   roles:
-     - role: set_firewall
-

@@ -1,7 +1,0 @@
----
-redis:
-  id: 301
-  user: "redis"
-  group: "redis"
-  port: 6379
-  data_dir: "/data0/redis"

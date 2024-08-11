@@ -1,0 +1,9 @@
+---
+ - name: Allow pr_port and dr_port connection
+   ufw:
+     rule: allow
+     port: "{{ item }}"
+     proto: tcp
+   loop:
+     - "{{ pr_port }}"
+     - "{{ dr_port }}"

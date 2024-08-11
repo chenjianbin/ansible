@@ -1,0 +1,30 @@
+---
+ - name: Add nginx repo key
+   ansible.builtin.apt_key:
+     url: "https://nginx.org/keys/nginx_signing.key"
+     keyring: /usr/share/keyrings/nginx-archive-keyring.gpg
+     state: present
+
+ - name: Add nginx repo
+   ansible.builtin.apt_repository:
+     repo: "deb [signed-by=/usr/share/keyrings/nginx-archive-keyring.gpg] http://nginx.org/packages/ubuntu {{ ansible_distribution_release }} nginx"
+     filename: nginx
+     state: present
+
+ - name: Install nginx and certbot plugin
+   apt:
+     name: "{{ item }}"
+     state: latest
+     update_cache: true
+   loop:
+     - "nginx"
+     - "python3-certbot-nginx"
+
+ - name: Allow http and https connections
+   ufw:
+     rule: allow
+     port: "{{ item }}"
+     proto: tcp
+   with_items:
+     - "http"
+     - "https"

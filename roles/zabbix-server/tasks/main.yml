@@ -1,0 +1,94 @@
+---
+- name: Include os tasks
+  include_tasks: "{{ ansible_os_family }}.yml"
+
+- name: Set zabbix mysql password
+  set_fact:
+    zabbix_mysql_password: "{{ lookup('community.general.random_string', min_lower=1, min_upper=1, min_special=1,override_special='_', min_numeric=1, length=16) }}"
+
+      #- name: Create web directory
+      #  file:
+      #    path: "/data0/web"
+      #    owner: "www"
+      #    group: "www"
+      #    state: directory
+
+- name: Create web directory
+  file:
+    path: "{{ item }}"
+    owner: "www"
+    group: "www"
+    recurse: true
+    state: directory
+  loop:
+    - "/data0/web"
+    - "/etc/zabbix/web"
+
+- name: Copy zabbix web directory
+  copy:
+    src: "/usr/share/zabbix/"
+    dest: "/data0/web/{{ zabbix_server_hostname }}"
+    owner: "www"
+    group: "www"
+    remote_src: yes
+
+- name: Set mysql variables
+  community.mysql.mysql_variables:
+    variable: log_bin_trust_function_creators
+    value: 1
+    login_unix_socket: "{{ mysql_socket_path }}"
+
+- name: Import zabbix db
+  mysql_db:
+    name: "zabbix"
+    login_unix_socket: "{{ mysql_socket_path }}"  
+    state: import
+    encoding: utf8mb4
+    collation: utf8mb4_bin
+    target: "/usr/share/zabbix-sql-scripts/mysql/server.sql.gz"
+    force: true
+
+- name: Set mysql variables
+  community.mysql.mysql_variables:
+    variable: log_bin_trust_function_creators
+    value: 0
+    login_unix_socket: "{{ mysql_socket_path }}"
+
+- name: Create zabbix user
+  mysql_user:
+    name: "zabbix"
+    host: "127.0.0.1"
+    password: "{{ zabbix_mysql_password }}"
+    priv: "zabbix.*:ALL"
+    login_unix_socket: "{{ mysql_socket_path }}"
+    login_user: "root"
+    state: present
+      #  delegate_to: "{{ inventory_hostname }}"
+
+- name: Set db pasword in zabbix_server.conf
+  blockinfile:
+    path: "/etc/zabbix/zabbix_server.conf"
+    marker: "# {mark} ANSIBLE MANAGED BLOCK DBPASSWORD"
+    block: |
+      DBHost=127.0.0.1
+      DBPassword={{ zabbix_mysql_password }}
+
+- name: Copy nginx configuration file
+  template:
+    src: "nginx.zabbix.com.conf.j2"
+    dest: "/etc/nginx/vhosts/{{ zabbix_server_hostname }}.conf"
+
+- name: Copy phh configuration file
+  template:
+    src: "php.zabbix.com.conf.j2"
+    dest: "/etc/php-fpm.d/{{ zabbix_server_hostname }}.conf"
+
+- name: Restart services
+  systemd:
+    name: "{{ item }}"
+    state: restarted
+    enabled: yes
+  loop:
+    - "nginx"
+    - "php-fpm"
+    - "zabbix-server"

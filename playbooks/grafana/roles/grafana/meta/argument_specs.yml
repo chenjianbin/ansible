@@ -1,0 +1,11 @@
+---
+argument_specs:
+  # roles/grafana/tasks/main.yml entry point
+  main:
+    short_description: Main entry point for the grafana role
+    options:
+      grafana_server_hostname:
+        type: "str"
+        required: true
+        description: "Grafana server hostname."
+

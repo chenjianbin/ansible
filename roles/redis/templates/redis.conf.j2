@@ -1,0 +1,7 @@
+bind 0.0.0.0
+port {{ listen_port }}
+requirepass {{ password }}
+pidfile /var/run/redis_{{ listen_port }}.pid
+logfile "{{ data_path }}/{{ listen_port }}/logs/redis.log"
+dir {{ data_path }}/{{ listen_port }}/data
+maxmemory {{ ansible_memtotal_mb // 16 }}mb

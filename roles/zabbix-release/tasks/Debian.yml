@@ -1,0 +1,6 @@
+---
+- name: Install Zabbix Repo
+  apt: 
+    deb: "{{ zabbix_deb_repo }}"
+    state: latest
+

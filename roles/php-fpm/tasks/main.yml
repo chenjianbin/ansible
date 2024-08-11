@@ -1,0 +1,56 @@
+---
+ - name: Add PHP group
+   group:
+     name: "{{ group }}"
+     state: present
+     system: yes
+
+ - name: Add PHP user
+   user:
+     name: "{{ user }}"
+     group: "{{ group }}"
+     createhome: no
+     shell: /sbin/nologin
+     state: present
+     system: yes
+
+ - name: Include OS Tasks
+   include_tasks: "{{ ansible_os_family }}.yml"
+
+ - name: Make configuration directory
+   file: 
+     path: "/etc/php-fpm.d"
+     state: directory
+
+ - name: Copy default process pool configure
+   template:
+     src: "demo.php.com.conf.j2"
+     dest: "/etc/php-fpm.d/demo.php.com.conf"
+
+ - name: Delete www.conf file
+   file:
+     path: "/etc/php-fpm.d/www.conf"
+     state: absent
+
+ - name: Setup php.ini
+   blockinfile:
+     path: "/etc/php.ini"
+     marker: "# {mark} ANSIBLE MANAGED BLOCK PHP.INI"
+     block: "{{ lookup('file', 'php.ini') }}"
+
+ - name: Change owner of the log's directory
+   file:
+     path: "/var/log/php-fpm"
+     owner: "{{ user }}" 
+     group: "{{ group }}"   
+     recurse: yes            
+     state: directory 
+
+ - name: Enable PHP-Fpm
+   systemd:
+     name: php-fpm
+     state: restarted
+     enabled: yes
+     daemon_reload: yes
+
+...

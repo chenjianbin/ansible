@@ -1,0 +1,14 @@
+ - name: Install Percona Release Repo
+   apt:
+     deb: "https://repo.percona.com/apt/percona-release_latest.generic_all.deb"
+
+ - name: Install dependent software
+   apt:
+     name: "{{ item }}"
+     state: latest
+     update_cache: yes
+   loop:
+     - "gnupg2"
+     - "lsb-release"
+     - "python3-pymysql"
+

@@ -1,0 +1,8 @@
+---
+mysql_repl_user:
+  name: "repl"
+  passwd: "Faw1gt2wtikpuf597Hrw_"
+mysql_os_user:
+  name: "mysql"
+master_port: 3306
+mysql_data_path: "/data0/mysql"

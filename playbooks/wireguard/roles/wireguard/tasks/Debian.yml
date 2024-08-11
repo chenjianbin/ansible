@@ -1,0 +1,13 @@
+---
+ - name: Install wireguard
+   apt:
+     name: "{{ item }}"
+     state: latest
+   loop:
+     - "wireguard"
+
+ - name: Allow wireguard port
+   ufw:
+     rule: allow
+     port: "{{ wireguard.port }}"
+     proto: udp

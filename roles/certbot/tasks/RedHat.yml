@@ -1,0 +1,11 @@
+---
+ - name: Install certbot
+   yum: 
+     name: "certbot"
+     state: latest
+
+ - name: Enable certbot timer
+   systemd:
+     name: certbot-renew.timer
+     state: started
+     enabled: true

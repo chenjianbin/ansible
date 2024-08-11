@@ -1,0 +1,2 @@
+# https://caddyserver.com/docs/caddyfile/options
+import /etc/caddy/sites/*.conf

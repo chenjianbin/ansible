@@ -1,0 +1,23 @@
+---
+galaxy_info:
+  author: "tony chen"
+  company: Zeroio
+  license: license (BSD)
+  min_ansible_version: 2.7
+  platforms:
+    - name: Ubuntu
+      versions:
+        - bionic
+        - focal
+        - jammy
+        - noble
+    - name: EL
+      versions:
+        - 7
+        - 8
+        - 9
+  categories:
+    - software
+dependencies:
+    - role: nginx
+    - role: mysql

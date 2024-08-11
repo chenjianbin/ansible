@@ -1,0 +1,11 @@
+---
+argument_specs:
+  # roles/zabbix-server/tasks/main.yml entry point
+  main:
+    short_description: Main entry point for the zabbix-server role
+    options:
+      zabbix_server_hostname:
+        type: "str"
+        required: true
+        description: "Zabbix server hostname."
+

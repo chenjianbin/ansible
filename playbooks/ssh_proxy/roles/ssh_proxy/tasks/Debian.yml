@@ -1,0 +1,8 @@
+---
+ - name: Add Open Ports
+   ufw:
+     rule: allow
+     port: "{{ item }}"
+     proto: tcp
+   loop:
+     - "{{ local_port }}"

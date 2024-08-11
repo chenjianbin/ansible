@@ -1,0 +1,4 @@
+---
+ - hosts: ocserv
+   roles:
+     - ocserv

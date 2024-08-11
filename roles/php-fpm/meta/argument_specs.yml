@@ -1,0 +1,29 @@
+---
+argument_specs:
+  # roles/php-fpm/tasks/main.yml entry point
+  main:
+    short_description: Main entry point for the php-fpm role
+    options:
+      version:
+        type: "str"
+        required: false
+        default: "8.3"
+        choice:
+          - "7.4"
+          - "8.0"
+          - "8.1"
+          - "8.2"
+          - "8.3"
+        description: "PHP version"
+      
+      user: 
+        type: "str"
+        required: false
+        default: "www"
+        description: "PHP running username"
+
+      group: 
+        type: "str"
+        required: false
+        default: "www"
+        description: "PHP running usergoup"

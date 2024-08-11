@@ -1,23 +1,32 @@
 ---
 # - name: Include OS Tasks
 #   include_tasks: "{{ ansible_os_family }}.yml"
+ - name: Check if directory exists
+   stat:
+     path: /etc/ssh/sshd_config.d
+   register: dir_result
+
+ - name: Copy sshd configuration file
+   copy:
+     src: 1-ops.conf
+     dest: /etc/ssh/sshd_config.d/1-ops.conf
+   when: dir_result.stat.exists == true
 
  - name: Modify /etc/ssh/sshd_config
    blockinfile:
      marker: "# {mark} ANSIBLE MANAGED BLOCK FOR SSHD"
      path: "/etc/ssh/sshd_config"
-     block: |
-       UseDNS no
-       PasswordAuthentication no
+     block: "{{ lookup('file', '1-ops.conf') }}"
+   when: dir_result.stat.exists == false
 
- - name: Add Authorized_keys
+ - name: Add authorized_keys
    authorized_key:
      user: root
      key: "{{ item }}"
    with_file:
      - public_keys/ops
 
- - name: Set Ssh Timeout
+ - name: Set ssh timeout
    blockinfile:
      marker: "# {mark} ANSIBLE MANAGED BLOCK FOR SSH TIMEOUT"
      dest: "/etc/profile"

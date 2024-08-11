@@ -1,0 +1,16 @@
+---
+- name: Install caddy
+  yum:
+    name: caddy
+    state: latest
+
+- name: Allow http and https connections
+  firewalld:
+    zone: public
+    service: "{{ item }}"
+    immediate: yes
+    permanent: true
+    state: enabled
+  with_items:
+    - "http"
+    - "https"

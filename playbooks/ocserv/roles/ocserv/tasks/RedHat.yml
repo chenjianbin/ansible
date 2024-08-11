@@ -1,0 +1,23 @@
+---
+ - name: Install ocserv
+   yum:
+     name: "{{ item }}"
+     state: latest
+   loop:
+     - "ocserv"
+
+ - name: Allow ocserv port
+   firewalld:
+     zone: public
+     port: "{{ ocserv.port }}/tcp"
+     immediate: yes
+     permanent: true
+     state: enabled
+
+ - name: Add MASQUERADE rule
+   firewalld:
+     zone: public
+     masquerade: yes
+     immediate: yes
+     permanent: yes
+     state: enabled

@@ -1,0 +1,24 @@
+---
+- name: Include OS Tasks
+  include_tasks: "{{ ansible_os_family }}.yml"
+
+- name: Configure Zabbix_agent2.conf
+  blockinfile:
+    path: "/etc/zabbix/zabbix_agent2.conf"
+    marker: "# {mark} ANSIBLE MANAGED BLOCK zabbix-agent"
+    block: "{{ lookup('template', 'zabbix_agent2.conf.j2') }}"
+  when: set_config
+
+- name: Rsync Monitor Scripts
+  synchronize:
+    src: "zabbix_agent2.d"
+    dest: "/etc/zabbix/"
+    recursive: yes
+    archive: no
+
+- name: Restart Zabbix-agent2
+  systemd:
+    name: zabbix-agent2
+    state: restarted
+    enabled: yes
+...

@@ -1,5 +1,5 @@
 ---
  - hosts: redis
    roles:
-     - role: redis_server
+     - role: redis
 ...

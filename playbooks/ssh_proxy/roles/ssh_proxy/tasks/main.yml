@@ -1,0 +1,34 @@
+---
+ - name: Import Secret Vars
+   include_vars: "{{ item }}"
+   with_items:
+     - "main.yml"
+
+ - name: Include OS Tasks
+   include_tasks: "{{ ansible_os_family }}.yml"
+
+  - name: Setup proxy info
+    blockinfile:
+      marker: "# {mark} ANSIBLE MANAGED BLOCK FOR SSHD"
+      dest: "/etc/haproxy/haproxy.cfg"
+      block: |
+        listen sshd
+            bind 0.0.0.0:{{ local_port }}
+            mode tcp
+            maxconn 2000
+            balance roundrobin
+            server sshd {{ dest_ip }}:{{ dest_port }}
+
+       # - name: Copy rsyslog haproxy configure
+       #   copy:
+       #     src: "haproxy.conf"
+       #     dest: "/etc/rsyslog.d/haproxy.conf"
+
+ - name: Restart haproxy And rsyslog
+   service:
+     name: "{{ item }}"
+     state: reload
+     enabled: yes
+   with_items:
+     - "haproxy"
+...

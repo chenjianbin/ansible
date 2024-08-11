@@ -1,5 +1,0 @@
----
-Mode: "active"
-#Mode: "passive"
-Version: "6.2"
-Zabbix_Repo_Url: "https://repo.zabbix.com/zabbix/{{Version}}/rhel/{{ ansible_distribution_major_version }}/{{ ansible_architecture }}/zabbix-release-{{Version}}-1.el{{ ansible_distribution_major_version }}.noarch.rpm"

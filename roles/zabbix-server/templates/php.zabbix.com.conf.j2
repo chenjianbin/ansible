@@ -1,0 +1,21 @@
+[{{ zabbix_server_hostname }}]
+listen = /dev/shm/php-cgi-$pool.sock
+listen.mode = 0666
+user = www
+group = www
+
+pm = dynamic
+pm.max_children = 40
+pm.start_servers = 1
+pm.min_spare_servers = 1
+pm.max_spare_servers = 10
+pm.max_requests = 10240
+pm.status_path = /status
+
+slowlog = /var/log/php-fpm/$pool.slow.log
+request_slowlog_timeout = 3
+
+php_admin_value[open_basedir] = /data0/web/$pool:/tmp:/etc/zabbix/web
+php_admin_value[error_log] = /var/log/php-fpm/$pool.error.log
+php_admin_flag[log_errors] = on
+;php_admin_flag[display_errors] = on

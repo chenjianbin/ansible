@@ -1,0 +1,19 @@
+server {
+    set $Site {{ zabbix_server_hostname }};
+    listen 80;
+    server_name {{ zabbix_server_hostname }};
+    index index.php index.html index.htm;
+    root /data0/web/$Site;
+
+    location / {
+        if (!-e $request_filename) {
+            rewrite ^/(.*)$ /index.php/$1 last;
+        }
+    }
+
+    include conf.d/common/*.conf;
+    include conf.d/php/*.conf;
+
+    access_log /data0/logs/nginx/{{ zabbix_server_hostname }}.access.log  main_product;
+    error_log /data0/logs/nginx/{{ zabbix_server_hostname }}.error.log;
+}

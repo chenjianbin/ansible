@@ -1,28 +1,29 @@
 ---
- - name: Set network
-   block:
-   - name: Copy NetworkManager configuration file
-     copy: 
-       src: conf.d/
-       dest: /etc/NetworkManager/conf.d
-  
-   - name: Restart NetworkManager
-     systemd:
-       name: NetworkManager
-       state: restarted
-       enabled: yes
-  
-#   - name: Restart network
-#     systemd:
-#       name: network
-#       state: restarted
-#       enabled: yes
-#   when: ansible_distribution_major_version == '7' and ansible_hostname is not search('ALIYUN') and ansible_hostname is not search('AWS')
+- name: Set network
+  block:
+  - name: Copy NetworkManager configuration file
+    copy: 
+      src: conf.d/
+      dest: /etc/NetworkManager/conf.d
+ 
+  - name: Restart NetworkManager
+    systemd:
+      name: NetworkManager
+      state: restarted
+      enabled: yes
+    when: ansible_distribution_major_version > '7'
+ 
+  - name: Restart network
+    systemd:
+      name: network
+      state: restarted
+      enabled: yes
+  when: ansible_distribution_major_version == '7'
 
- - name: Replace resolv.conf
-   template: 
-     src: redhat.resolv.conf.j2 
-     dest: /etc/resolv.conf
-   when: ansible_hostname is not search('ALIYUN') and ansible_hostname is not search('AWS')
+- name: Replace resolv.conf
+  template: 
+    src: redhat.resolv.conf.j2 
+    dest: /etc/resolv.conf
+  when: ansible_hostname is not search('ALI') and ansible_hostname is not search('AWS')
 
 

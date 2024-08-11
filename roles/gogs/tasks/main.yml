@@ -1,0 +1,46 @@
+---
+- name: Add Git User Group
+  group:
+    name: "{{ git_user.name }}"
+    state: present
+    system: yes
+
+- name: Add Git User
+  user:
+    name: "{{ git_user.name }}"
+    group: "{{ git_user.name }}"
+    createhome: yes
+    comment: "{{ git_user.comment }}"
+    shell: /sbin/nologin
+    state: present
+    system: yes
+
+- name: Create Install Dir
+  file:
+    path: "{{ gogs_install_path }}"
+    state: directory
+
+- name: Installing Gogs
+  unarchive:
+    src: "{{ gogs_url }}"
+    dest: "{{ gogs_install_path }}"
+    remote_src: yes
+    owner: "{{ git_user.name }}"
+    group: "{{ git_user.name  }}"
+
+- name: Create Gogs Data And Logs Directory
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ git_user.name }}"
+    group: "{{ git_user.name  }}"
+  with_items:
+    - "{{ gogs_data_dir }}"
+    - "{{ gogs_logs_dir }}"
+
+- name: Set Systemd
+  template:
+    src: "{{ item }}.j2"
+    dest: /etc/systemd/system/{{ item }}
+  with_items:
+    - "gogs.service"

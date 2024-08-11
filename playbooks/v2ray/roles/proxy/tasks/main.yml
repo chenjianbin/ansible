@@ -1,0 +1,21 @@
+---
+ - name: Include OS Tasks
+   include_tasks:
+     file: "{{ ansible_os_family }}.yml"
+ 
+ - name: Setup proxy info
+   blockinfile:
+     marker: "# {mark} ANSIBLE MANAGED BLOCK FOR V2RAY"
+     dest: "/etc/haproxy/haproxy.cfg"
+     block: |
+       listen v2ray
+           bind 0.0.0.0:{{ pr_port }}
+           mode tcp
+           maxconn 2000
+           balance roundrobin
+           server v2ray-{{ pr_port }} {{ inventory_hostname }}:{{ pr_port }}
+
+ - name: Restart haproxy
+   systemd:
+     name: haproxy
+     state: reloaded

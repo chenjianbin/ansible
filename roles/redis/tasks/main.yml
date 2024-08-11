@@ -1,0 +1,52 @@
+---
+ - name: Add Redis User Group
+   group:
+     name: "{{ group }}"
+     state: present
+     system: yes
+
+ - name: Add Redis User
+   user:
+     name: "{{ user }}"
+     group: "{{ group }}"
+     createhome: no
+     comment: "Redis Server"
+     shell: /sbin/nologin
+     state: present
+     system: yes
+
+ - name: Include OS Tasks
+   include_tasks: "{{ ansible_os_family }}.yml"
+
+ - name: Modify /etc/sysctl.conf
+   sysctl:
+     name: "{{ item.name }}"
+     value: "{{ item.value }}"
+     state: present
+     reload: yes
+   with_items:
+     - { name: vm.overcommit_memory, value: 1 }
+
+ - name: Create Data Directory
+   file:
+     path: "{{ item }}"
+     group: "{{ group }}"
+     owner: "{{ user }}"
+     state: directory
+   with_items:
+         - "{{ data_path }}/{{ listen_port }}/data"
+         - "{{ data_path }}/{{ listen_port }}/logs"
+
+ - name: Setup Redis Configure
+   blockinfile:
+     path: "/etc/redis/redis.conf"
+     marker: "# {mark} ANSIBLE MANAGED BLOCK Redis.conf"
+     block: "{{ lookup('template', 'redis.conf.j2') }}"
+
+ - name: Set Redis Auto Start
+   systemd:
+     name: redis
+     state: restarted
+     enabled: yes
+     daemon_reload: yes
+...

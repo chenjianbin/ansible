@@ -1,0 +1,5 @@
+---
+user: "www"
+group: "www"
+log_path: "/data0/logs/nginx"
+config_path: "/etc/nginx"

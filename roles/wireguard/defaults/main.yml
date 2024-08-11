@@ -1,0 +1,5 @@
+---
+listen_port: "51820"
+config_path: "/etc/wireguard"
+server_private_key: "iFmH6MWBxIkDmeqa8GZYMDg5jkhdNrVVTV57V4twKFM="
+server_public_key: "6z8XvN6akXZ/PdiGWcJ8yxJK1Xs6e6oNqzd6+HeEfjk="

@@ -19,6 +19,7 @@
        - psmisc               #pstree
        - python3-pip
        - python3-selinux
+       - python3-setuptools
        - policycoreutils
        - smartmontools
        - zip
@@ -47,30 +48,4 @@
        - telnet
        - traceroute
 #       - rkhunter
-       
 
- - name: Install Python Software
-   pip:
-     name: "{{ packages }}"
-     state: latest
-     executable: pip3
-   vars:
-     packages:
-       - pip
-       - setuptools
-
- - name: Install Certbot
-   pip:
-     name: "{{ packages }}"
-     state: latest
-     executable: pip3
-   vars:
-     packages:
-       - certbot
-
-# - name: Add Certbot path
-#   file:
-#     src: /usr/local/bin/certbot
-#     dest: /usr/bin/certbot
-#     state: link
-...

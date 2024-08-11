@@ -1,0 +1,28 @@
+---
+- name: Install zabbix-server
+  yum: 
+    name: "{{ item }}"
+    state: latest
+    disable_gpg_check: yes
+  loop:
+    - "zabbix-server-mysql"
+    - "zabbix-sql-scripts"
+    - "zabbix-web-mysql"
+
+- name: Install chinese package
+  yum:
+    name: "{{ item }}"
+    state: latest
+  loop:
+    - "glibc-langpack-zh" 
+    - "langpacks-zh_CN"
+
+- name: Allow zabbix-server listen port connections
+  firewalld:
+    zone: public
+    port: "{{ item }}"
+    immediate: yes
+    permanent: true
+    state: enabled
+  with_items:
+    - "10051/tcp"

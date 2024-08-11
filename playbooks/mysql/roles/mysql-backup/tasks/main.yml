@@ -1,0 +1,103 @@
+---
+ - name: Find Instance
+   find:
+     paths: 
+       - "{{ mysql_data_path }}"
+     file_type: directory
+     patterns: "^[1-5]?[0-9][0-9]?[0-9]?[0-9]?$"
+     use_regex: True
+   register: instance_list
+
+ - name: Set replica_port
+   set_fact:
+     replica_port: "3307"
+   when: instance_list.matched == 0
+
+     # - name: Sort Instance List
+     #   set_fact:
+     #     instance_sort_list: "{{ instance_list.files|sort(attribute='path') }}"
+     #   when: instance_list.matched != 0
+     #
+     # - name: Set replica_port
+     #   set_fact:
+     #     replica_port: "{{ instance_sort_list[-1].path|basename|int + 1 }}"
+     #   when: instance_list.matched != 0
+
+ - name: Set replica_port
+   set_fact:
+     #replica_port: "{{ {{ instance_list.files|sort(attribute='path') }}[-1].path|basename|int + 1 }}"
+     replica_port: "{{ (instance_list.files | sort(attribute='path') | map(attribute='path') | last | basename | int) + 1 }}"
+   when: instance_list.matched != 0
+
+ - name: Copy mysqld.cnf
+   template:
+     src: "mysqld.cnf.j2"
+     dest: "/etc/my.cnf.d/mysqld@{{ replica_port }}.cnf"
+     owner: "{{ mysql_os_user.name }}"
+     group: "{{ mysql_os_user.name }}"
+     mode: "600"
+
+ - name: Initail Mysql Instance Directory
+   file:
+     path: "{{ mysql_data_path }}/{{ replica_port }}/{{ item }}"
+     owner: "{{ mysql_os_user.name }}"
+     group: "{{ mysql_os_user.name }}"
+     recurse: yes
+     state: directory
+   with_items:
+     - data
+     - logs/binlog
+     - logs/relaylog
+     - logs/errorlog
+     - logs/slowlog
+
+ - name: Determine whether the instance has been initialized
+   stat:
+     path: "{{ mysql_data_path }}/{{ replica_port }}/.initialized"
+   register: file_check
+
+ - name: Initialize instance
+   block:
+     - name: Set Initialize-insecure Args
+       lineinfile:
+         path: /etc/my.cnf.d/mysqld@{{ replica_port }}.cnf
+         line: 'initialize_insecure=1'
+    
+     - name: Initialize Instance
+       command: /usr/bin/mysqld_pre_systemd {{ replica_port }}
+    
+     - name: Delete Initialize-insecure Args
+       lineinfile:
+         path: /etc/my.cnf.d/mysqld@{{ replica_port }}.cnf
+         line: 'initialize_insecure=1'
+         state: absent
+   when: not file_check.stat.exists
+
+ - name: Create initialized markup file
+   file:
+     path: "{{ mysql_data_path }}/{{ replica_port }}/.initialized"
+     owner: "{{ mysql_os_user.name }}"
+     group: "{{ mysql_os_user.name }}"
+     state: touch
+
+ - name: Start Mysql
+   systemd:
+     name: "mysqld@{{ replica_port }}"
+     state: restarted
+     enabled: yes
+     daemon_reload: yes
+
+ - name: Include mysql replica role
+   include_role: 
+     name: mysql-replica
+
+ - name: Create Mysql Slave Info File
+   file:
+     path: "~/mysqlslave.txt"
+     state: touch
+
+ - name: Record Mysql Slave Info
+   blockinfile:
+     marker: "# {mark} ANSIBLE MANAGED BLOCK FOR Mysql Slave On Port {{ replica_port }}"
+     block: "{{ master_host }}      {{ replica_port }}"
+     path: "~/mysqlslave.txt" 

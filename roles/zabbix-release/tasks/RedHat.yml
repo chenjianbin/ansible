@@ -1,0 +1,14 @@
+---
+- name: Install Zabbix Repo
+  yum: 
+    name: "{{ zabbix_rpm_repo }}"
+    disable_gpg_check: yes
+    state: latest
+
+- name: Disable zabbix in epel repo
+  blockinfile:
+    path: "/etc/yum.repos.d/epel.repo"
+    insertafter: "^\\[epel\\]$"
+    marker: "# {mark} ANSIBLE MANAGED BLOCK ZABBIX"
+    block: |
+      excludepkgs=zabbix*

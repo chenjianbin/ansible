@@ -1,0 +1,33 @@
+---
+argument_specs:
+  # roles/mysql/tasks/main.yml entry point
+  main:
+    short_description: Main entry point for the mysql role
+    options:
+      version:
+        type: "str"
+        required: false
+        default: "8.3.0"
+        description: "Mysql version."
+
+      mode:
+        type: "str"
+        required: false
+        choice:
+          - "master"
+          - "replica"
+          - "backup"
+        default: "master"
+        description: "Mysql "
+
+      mysql_port:
+        type: "int"
+        required: false
+        default: 3306
+        description: "Mysql listen port."
+
+      mysql_data_path:
+        type: "path"
+        required: false
+        default: "/data0/mysql"
+        description: "Mysql data path."

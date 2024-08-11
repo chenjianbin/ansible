@@ -1,0 +1,18 @@
+---
+- name: Add grafana apt key
+  ansible.builtin.apt_key:
+    url: "https://apt.grafana.com/gpg.key"
+    keyring: /etc/apt/keyrings/grafana.gpg
+    state: present
+
+- name: Add grafana repo
+  ansible.builtin.apt_repository:
+    repo: "deb [signed-by=/etc/apt/keyrings/grafana.gpg] https://apt.grafana.com stable main"
+    filename: grafana
+    state: present
+
+- name: Install grafana
+  apt:
+    name: "grafana"
+    state: latest
+    update_cache: true

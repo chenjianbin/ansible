@@ -1,0 +1,3 @@
+[grafana]
+[all:vars]
+#grafana_server_hostname="grafana.example.com"

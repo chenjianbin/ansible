@@ -1,0 +1,9 @@
+---
+ - hosts:
+     - VADM
+     - DMP
+     - QPV
+     - OW
+   roles:
+     - role: set_firewall
+

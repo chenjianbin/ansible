@@ -1,0 +1,24 @@
+---
+ - name: Include OS Tasks
+   include_tasks: "{{ ansible_os_family }}.yml"
+
+ - name: Change To Master
+   mysql_replication:
+     login_user: "root"
+     login_unix_socket: "{{ mysql_data_path }}/{{ replica_port }}/mysql.sock"
+     master_host: "{{ master_host }}"
+     master_port: "{{ master_port }}"
+     master_user: "{{ mysql_repl_user.name }}"
+     master_password: "{{ mysql_repl_user.passwd }}"
+     master_connect_retry: "50"
+     master_ssl: "1"
+     master_auto_position: "1"
+     mode: "changeprimary"
+#   no_log: true
+
+ - name: Start Replication
+   mysql_replication:
+     login_user: "root"
+     login_unix_socket: "{{ mysql_data_path }}/{{ replica_port }}/mysql.sock"
+     mode: "startreplica"
+

@@ -1,0 +1,15 @@
+---
+argument_specs:
+  # roles/zabbix-release/tasks/main.yml entry point
+  main:
+    short_description: Main entry point for the zabbix-release role
+    options:
+      version:
+        type: "str"
+        required: false
+        choice:
+          - "6.0"
+          - "6.4"
+          - "7.0"
+        default: "7.0"
+        description: "Zabbix release version."

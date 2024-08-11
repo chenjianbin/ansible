@@ -1,0 +1,16 @@
+---
+ - name: Install Haproxy
+   package: 
+     name: "{{ item }}"
+     state: present
+   loop:
+     - haproxy
+
+ - name: Enable haproxy
+   service:
+     name: "{{ item }}"
+     state: started
+     enabled: yes
+   with_items:
+     - "haproxy"
+...

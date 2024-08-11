@@ -1,0 +1,6 @@
+---
+user: "redis"
+group: "redis"
+password: "1EFxbDogO3C+zveK"
+listen_port: 6379
+data_path: "/data0/redis"

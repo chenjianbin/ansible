@@ -1,0 +1,10 @@
+---
+ - name: Add Open Ports
+   firewalld:
+     zone: public
+     port: "{{ item }}"
+     immediate: yes
+     permanent: true
+     state: enabled
+   loop:
+     - "{{ local_port }}/tcp"

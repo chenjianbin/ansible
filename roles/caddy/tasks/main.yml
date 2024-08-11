@@ -1,0 +1,20 @@
+---
+- name: Include os tasks
+  include_tasks:
+    file: "{{ ansible_os_family }}.yml"
+
+- name: Copy Caddyfile
+  copy:
+    src: Caddyfile
+    dest: /etc/caddy/Caddyfile
+
+- name: Create sites directory
+  file:
+    path: /etc/caddy/sites
+    state: directory
+
+- name: start caddy
+  systemd:
+    name: caddy
+    state: restarted
+

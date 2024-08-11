@@ -1,0 +1,25 @@
+---
+argument_specs:
+  # roles/zabbix-agent/tasks/main.yml entry point
+  main:
+    short_description: Main entry point for the zabbix-agent role
+    options:
+      mode:
+        type: "str"
+        required: false
+        choice:
+          - "active"
+          - "passive"
+        default: "active"
+        description: "Zabbix agent mode."
+
+      zabbix_server_hostname:
+        type: "str"
+        required: true
+        description: "Zabbix server hostname."
+
+      set_config:
+        type: "bool"
+        default: true
+        required: false
+        description: "Whether to set the configuration file of zabbix-agent"

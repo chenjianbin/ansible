@@ -46,6 +46,7 @@
        - lsof
        - net-tools
        - nethogs
+       - nload
        - mtr
        - perf
        - strace
@@ -70,39 +71,23 @@
        - python36
        - python-simplejson
        - python-httplib2
+       - python-setuptools
 
- - name: Install Software When Rhel Major Version Greater Than Or Equal To 9
+ - name: Install Software When Rhel Major Version Greater Than Or Equal To 8
    yum: 
      name: "{{ packages }}"
      state: present
-   when: ansible_distribution_major_version >= '9'
+   when: ansible_distribution_major_version >= '8'
    vars:
      packages:
        - python3-pip
        - python3-libselinux
+       - python3-setuptools
 
- - name: Install Python Software
-   pip:
-     name: "{{ packages }}"
-     state: latest
-     executable: pip3
-   vars:
-     packages:
-       - pip
-       - setuptools
-
- - name: Install Certbot
-   pip:
-     name: "{{ packages }}"
-     state: latest
-     executable: pip3
-   vars:
-     packages:
-       - certbot
-
- - name: Add Certbot path
-   file:
-     src: /usr/local/bin/certbot
-     dest: /usr/bin/certbot
-     state: link
-...
+# 兼容centos 7 低版本certbot
+# - name: Downgrade pyOpenSSL version 
+#   pip:
+#     name: "pyOpenSSL<=22.1.0"
+#     state: present
+#     executable: pip3
+#   when: ansible_distribution_major_version == '7'

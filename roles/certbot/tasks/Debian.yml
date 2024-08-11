@@ -1,0 +1,12 @@
+---
+ - name: Install certbot
+   apt: 
+     name: "certbot"
+     state: latest
+     update_cache: true
+
+ - name: Enable certbot timer
+   systemd:
+     name: certbot.timer
+     state: started
+     enabled: true

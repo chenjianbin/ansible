@@ -1,0 +1,46 @@
+---
+argument_specs:
+  # roles/mysql-replica/tasks/main.yml entry point
+  main:
+    short_description: Main entry point for the mysql-replica role
+    options:
+      mysql_repl_user:
+        type: "dict"
+        required: false
+        default:
+          name: "repl"
+          passwd: "Faw1gt2wtikpuf597Hrw_"
+        description: "Mysql replication user info."
+        options:
+          name:
+            type: "str"
+            required: false
+            description: "Mysql replication username."
+
+          passwd:
+            type: "str"
+            required: false
+            description: "Mysql replication password."
+
+      master_host:
+        type: "str"
+        required: true
+        description: "Mysql master host."
+
+      master_port:
+        type: "int"
+        required: false
+        default: 3306
+        description: "Mysql master listen port."
+
+      replica_port:
+        type: "int"
+        required: false
+        default: 3306
+        description: "Mysql replica listen port."
+
+      mysql_data_path:
+        type: "path"
+        required: false
+        default: "/data0/mysql"
+        description: "Mysql data path."
