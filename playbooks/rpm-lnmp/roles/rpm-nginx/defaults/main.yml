@@ -8,4 +8,4 @@ nginx_cache_package_url: "{{ package_url_prefix }}/nginx/cache/nginx-{{ nginx_ve
 nginx_install_dir: "/usr/local/webserver/nginx"
 nginx_user: www
 nginx_logs_dir: "/data0/logs/nginx"
-nginx_conf_url: "https://github.com/chenjianbin/nginx_conf.git"
+nginx_conf_url: "https://gogs.aibanchuanmei.vip/Ops/nginx_conf.git"

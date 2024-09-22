@@ -1,6 +1,4 @@
 ---
 mode: "active"
 #mode: "passive"
-set_config: true
-proxy: false
-
+zabbix_data_path: "/var/lib/zabbix"

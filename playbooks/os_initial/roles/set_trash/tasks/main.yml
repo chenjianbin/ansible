@@ -16,3 +16,13 @@
      weekday: "3"
      job: "find /trash ! -path /trash -ctime +7 -delete"
      state: present
+
+ - name: Rename rm command
+   blockinfile:
+     marker: "# {mark} ANSIBLE MANAGED BLOCK FOR rm command"
+     block: "alias rm=trash
+             \ntrash()
+             \n{
+             \n\    mv $@ /trash/ -f --backup=t
+             \n}"
+     path: "~/.bashrc"

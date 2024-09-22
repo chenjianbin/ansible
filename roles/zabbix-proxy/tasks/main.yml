@@ -1,0 +1,23 @@
+---
+- name: Include OS Tasks
+  include_tasks: "{{ ansible_os_family }}.yml"
+
+- name: Create zabbix data path
+  file:
+    path: "{{ zabbix_data_path }}"
+    owner: "zabbix"
+    group: "zabbix"
+    state: directory
+
+- name: Configure zabbix_proxy.conf
+  blockinfile:
+    path: "/etc/zabbix/zabbix_proxy.conf"
+    marker: "# {mark} ANSIBLE MANAGED BLOCK zabbix-agent"
+    block: "{{ lookup('template', 'zabbix_proxy.conf.j2') }}"
+
+- name: Restart zabbix-proxy
+  systemd:
+    name: zabbix-proxy
+    state: restarted
+    enabled: yes
+...

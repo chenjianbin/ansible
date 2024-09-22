@@ -1,0 +1,6 @@
+{% if mode == "passive" %}
+Server=127.0.0.1,{{ zabbix_server_hostname }}
+{% elif mode == "active" %}
+Server={{ zabbix_server_hostname }}
+{% endif %}
+DBName={{ zabbix_data_path }}/zabbix_proxy.db

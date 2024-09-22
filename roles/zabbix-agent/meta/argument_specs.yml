@@ -15,7 +15,7 @@ argument_specs:
 
       zabbix_server_hostname:
         type: "str"
-        required: true
+        required: false
         description: "Zabbix server hostname."
 
       set_config:
@@ -23,3 +23,15 @@ argument_specs:
         default: true
         required: false
         description: "Whether to set the configuration file of zabbix-agent"
+
+      proxy:
+        type: "bool"
+        default: false
+        required: false
+        description: "Whether to proxy zabbix data"
+
+      zabbix_proxy_hostname:
+        type: "str"
+        required: false
+        description: "Zabbix proxy hostname."
+

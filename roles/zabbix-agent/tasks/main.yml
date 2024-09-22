@@ -1,4 +1,10 @@
 ---
+- name: Ensure correct Zabbix hostname is defined based on proxy setting
+  assert:
+    that:
+      - "(not proxy and zabbix_server_hostname is defined) or (proxy and zabbix_proxy_hostname is defined)"
+    fail_msg: "When proxy is false, zabbix_server_hostname must be defined. When proxy is true, zabbix_proxy_hostname must be defined."
+
 - name: Include OS Tasks
   include_tasks: "{{ ansible_os_family }}.yml"
 

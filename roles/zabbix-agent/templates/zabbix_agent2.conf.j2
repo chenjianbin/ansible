@@ -1,8 +1,16 @@
 {% if mode == "passive" %}
+{% if proxy %}
+Server=127.0.0.1,{{ zabbix_proxy_hostname }}
+{% else %}
 Server=127.0.0.1,{{ zabbix_server_hostname }}
-{% elif mode == "active" %}
-Server=
+{% endif %}
+{% else  %}
+{% if proxy %}
+ServerActive={{ zabbix_proxy_hostname }}
+{% else %}
 ServerActive={{ zabbix_server_hostname }}
+{% endif %}
+Server=
 Hostname=
 HostnameItem=system.hostname
 HostMetadata= Linux i1Zdocck6RQTC99M8ZF

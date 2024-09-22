@@ -1,0 +1,4 @@
+---
+- hosts: zabbix_proxy
+  roles:
+    - role: zabbix-proxy

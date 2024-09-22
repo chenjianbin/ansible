@@ -1,0 +1,20 @@
+---
+argument_specs:
+  # roles/zabbix-proxy/tasks/main.yml entry point
+  main:
+    short_description: Main entry point for the zabbix-proxy role
+    options:
+      mode:
+        type: "str"
+        required: false
+        choice:
+          - "active"
+          - "passive"
+        default: "active"
+        description: "Zabbix proxy mode."
+
+      zabbix_proxy_hostname:
+        type: "str"
+        required: true
+        description: "Zabbix proxy hostname."
+
