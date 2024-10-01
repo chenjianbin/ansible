@@ -13,14 +13,14 @@
 - name: Install PHP and its extensions
   apt:
     name:
-      - "php{{ version }}"
-      - "php{{ version }}-fpm"
-      - "php{{ version }}-gd"
-      - "php{{ version }}-bcmath"
-      - "php{{ version }}-cli"
-      - "php{{ version }}-zip"
-      - "php{{ version }}-mysql"
-      - "php{{ version }}-mcrypt"  # 注意：在 PHP 7.2 及以上版本中已被废弃
-      - "php{{ version }}-redis"  
-      - "php{{ version }}-igbinary" 
+      - "php{{ php_version }}"
+      - "php{{ php_version }}-fpm"
+      - "php{{ php_version }}-gd"
+      - "php{{ php_version }}-bcmath"
+      - "php{{ php_version }}-cli"
+      - "php{{ php_version }}-zip"
+      - "php{{ php_version }}-mysql"
+      - "php{{ php_version }}-mcrypt"  # 注意：在 PHP 7.2 及以上版本中已被废弃
+      - "php{{ php_version }}-redis"  
+      - "php{{ php_version }}-igbinary" 
     state: latest

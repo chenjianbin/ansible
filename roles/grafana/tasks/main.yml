@@ -11,7 +11,6 @@
     name: "grafana"
     state: present
     login_unix_socket: "{{ mysql_socket_path }}"
-      #  delegate_to: "{{ inventory_hostname }}"
 
 - name: Add mysql grafana user
   mysql_user:
@@ -22,11 +21,10 @@
     login_unix_socket: "{{ mysql_socket_path }}"
     login_user: "root"
     state: present
-      #  delegate_to: "{{ inventory_hostname }}"
 
 - name: Setup grafana mysql configuration
   blockinfile:
-    path: "/etc/grafana/grafana.ini"
+    path: "{{ grafana_condfig_file }}"
     insertafter: "^\\[database\\]$"
     marker: "# {mark} ANSIBLE MANAGED BLOCK MYSQL"
     block: |
@@ -46,7 +44,7 @@
 - name: Setup grafana nginx configure file
   template:
     src: "nginx.grafana.conf.j2"
-    dest: "/etc/nginx/vhosts/{{ grafana_server_hostname }}.conf"
+    dest: "{{ nginx_sites_enabled_confdir }}/{{ grafana_server_hostname }}.conf"
 
 - name: Reload nginx
   systemd:

@@ -6,31 +6,15 @@
   set_fact:
     zabbix_mysql_password: "{{ lookup('community.general.random_string', min_lower=1, min_upper=1, min_special=1,override_special='_', min_numeric=1, length=16) }}"
 
-      #- name: Create web directory
-      #  file:
-      #    path: "/data0/web"
-      #    owner: "www"
-      #    group: "www"
-      #    state: directory
-
-- name: Create web directory
+- name: Create web configration directory
   file:
     path: "{{ item }}"
-    owner: "www"
-    group: "www"
+    owner: "{{ php_user }}"
+    group: "{{  php_group}}"
     recurse: true
     state: directory
   loop:
-    - "/data0/web"
     - "/etc/zabbix/web"
-
-- name: Copy zabbix web directory
-  copy:
-    src: "/usr/share/zabbix/"
-    dest: "/data0/web/{{ zabbix_server_hostname }}"
-    owner: "www"
-    group: "www"
-    remote_src: yes
 
 - name: Set mysql variables
   community.mysql.mysql_variables:
@@ -63,7 +47,6 @@
     login_unix_socket: "{{ mysql_socket_path }}"
     login_user: "root"
     state: present
-      #  delegate_to: "{{ inventory_hostname }}"
 
 - name: Set db pasword in zabbix_server.conf
   blockinfile:
@@ -76,12 +59,12 @@
 - name: Copy nginx configuration file
   template:
     src: "nginx.zabbix.com.conf.j2"
-    dest: "/etc/nginx/vhosts/{{ zabbix_server_hostname }}.conf"
+    dest: "{{ nginx_sites_enabled_confdir }}/{{ zabbix_server_hostname }}.conf"
 
 - name: Copy phh configuration file
   template:
     src: "php.zabbix.com.conf.j2"
-    dest: "/etc/php-fpm.d/{{ zabbix_server_hostname }}.conf"
+    dest: "{{ php_fpm_confdir }}/{{ zabbix_server_hostname }}.conf"
 
 - name: Restart services
   systemd:
@@ -90,5 +73,5 @@
     enabled: yes
   loop:
     - "nginx"
-    - "php-fpm"
+    - "{{ php_fpm_systemd_service }}"
     - "zabbix-server"

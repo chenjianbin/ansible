@@ -1,3 +1,16 @@
-version: "8.3"
-user: "www"
-group: "www"
+php_version: "8.3"
+php_user: "www"
+php_group: "www"
+_php_config_file:
+  Debian: "/etc/php/{{ php_version }}/fpm/php.ini"
+  RedHat: "/etc/php.ini"
+php_config_file: "{{ _php_config_file[ansible_os_family] }}"
+_php_fpm_confdir:
+  Debian: "/etc/php/{{ php_version }}/fpm/pool.d"
+  RedHat: "/etc/php-fpm.d"
+php_fpm_confdir: "{{ _php_fpm_confdir[ansible_os_family] }}"
+php_fpm_logdir: "/var/log/php-fpm"
+_php_fpm_systemd_service:
+  Debian: "php{{ php_version }}-fpm"
+  RedHat: "php-fpm"
+php_fpm_systemd_service: "{{ _php_fpm_systemd_service[ansible_os_family] }}"

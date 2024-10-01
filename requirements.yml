@@ -1,0 +1,7 @@
+---
+roles:
+  # Install a role from Ansible Galaxy.
+
+collections:
+  # Install a collection from Ansible Galaxy.
+  - name: prometheus.prometheus

@@ -1,4 +1,6 @@
-zabbix.ini
+collections/ansible_collections
+galaxy_cache/
+galaxy_token
 tmp/
 **/hosts
 **/vars/main.yml
@@ -6,3 +8,5 @@ tmp/
 *.retry
 **/*.pub
 **/public_keys/*
+zabbix.ini
+.venv/

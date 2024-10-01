@@ -11,14 +11,14 @@
      command: dnf module reset php -y
   
    - name: Enable PHP Module
-     command: dnf module enable php:remi-{{ version }} -y
+     command: dnf module enable php:remi-{{ php_version }} -y
    when: ansible_distribution_major_version > '7'
 
  - name: Install PHP
    yum:
      name: "{{ packages }}"
      allow_downgrade: yes
-     enablerepo: "remi-php{{ version| replace('.', '')}}"
+     enablerepo: "remi-php{{ php_version| replace('.', '')}}"
      state: latest
    vars:
      packages:

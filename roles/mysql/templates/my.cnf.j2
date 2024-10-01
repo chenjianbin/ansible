@@ -1,8 +1,3 @@
-!includedir /etc/my.cnf.d
-[mysql]
-prompt=\R:\m:\\s \u@\d >
-no-auto-rehash
-safe_updates = 1
-[mysqldump]
-quick
-max_allowed_packet = 32M
+{{ ansible_managed | comment }}
+
+!includedir {{ mysql_config_include_dir }}

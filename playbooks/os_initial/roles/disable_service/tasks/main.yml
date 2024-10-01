@@ -1,8 +1,4 @@
 ---
- - name: Close Selinux
-   ansible.posix.selinux:
-     state: disabled
- 
  - name: Deny Maildrop
    cron:
      name: MAILTO

@@ -19,9 +19,9 @@ galaxy_info:
   categories:
     - software
 dependencies: 
-  - role: nginx
+  #  - role: nginx
   - role: php-fpm
-  - role: mysql
-  - role: zabbix-release
-  - role: zabbix-agent
-    set_config: false
+  #  - role: mysql
+  #  - role: zabbix-release
+  #  - role: zabbix-agent
+  #    set_config: false

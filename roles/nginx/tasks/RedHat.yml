@@ -1,35 +1,35 @@
 ---
- - name: Setup nginx repo
-   copy:
-     src: "nginx.repo"
-     dest: "/etc/yum.repos.d/nginx.repo"
+- name: Setup nginx repo
+  copy:
+    src: "nginx.repo"
+    dest: "/etc/yum.repos.d/nginx.repo"
 
- - name: Install nginx
-   yum:
-     name: "{{ item }}"
-     state: latest
-   loop:
-     - "nginx"
+- name: Install nginx
+  yum:
+    name: "{{ item }}"
+    state: latest
+  loop:
+    - "nginx"
 
- - name: Install certbot nginx plugin when major version equal to 7
-   yum:
-     name: "python2-certbot-nginx"
-     state: present
-   when: ansible_distribution_major_version == '7'
+- name: Install certbot nginx plugin when major version equal to 7
+  yum:
+    name: "python2-certbot-nginx"
+    state: present
+  when: ansible_distribution_major_version == '7'
 
- - name: Install certbot nginx plugin when major version greater than or equal to 8
-   yum:
-     name: "python3-certbot-nginx"
-     state: present
-   when: ansible_distribution_major_version >= '8'
+- name: Install certbot nginx plugin when major version greater than or equal to 8
+  yum:
+    name: "python3-certbot-nginx"
+    state: present
+  when: ansible_distribution_major_version >= '8'
 
- - name: Allow http and https connections
-   firewalld:
-     zone: public
-     service: "{{ item }}"
-     immediate: yes
-     permanent: true
-     state: enabled
-   with_items:
-     - "http"
-     - "https"
+- name: Allow http and https connections
+  firewalld:
+    zone: public
+    service: "{{ item }}"
+    immediate: yes
+    permanent: true
+    state: enabled
+  with_items:
+    - "http"
+    - "https"

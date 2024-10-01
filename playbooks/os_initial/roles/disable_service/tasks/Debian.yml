@@ -3,10 +3,10 @@
    systemd:
      name: "{{ item }}"
      state: stopped
-     enabled: no
-     daemon_reload: yes
-     masked: yes
-   ignore_errors: True
+     enabled: false
+     daemon_reload: true
+     masked: true
+   ignore_errors: true
    loop:
      - cups-browsed
      - cups

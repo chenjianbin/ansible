@@ -1,5 +1,7 @@
 ---
-user: "www"
-group: "www"
-log_path: "/data0/logs/nginx"
-config_path: "/etc/nginx"
+nginx_user: "www"
+nginx_group: "www"
+nginx_logdir: "/data0/logs/nginx"
+nginx_confdir: "/etc/nginx"
+nginx_sites_enabled_confdir: "{{ nginx_confdir }}/sites-enabled"
+nginx_sites_available_confdir: "{{ nginx_confdir }}/sites-available"

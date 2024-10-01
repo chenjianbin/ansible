@@ -7,10 +7,10 @@
   loop:
     - "zabbix-server-mysql"
     - "zabbix-sql-scripts"
-    - "zabbix-web-mysql"
+    - "zabbix-frontend-php"
 
 - name: Install chinese package
-  yum:
+  apt:
     name: "{{ item }}"
     state: latest
   loop:

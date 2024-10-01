@@ -1,0 +1,4 @@
+---
+- hosts: prometheus
+  roles:
+    - role: prometheus.prometheus.prometheus

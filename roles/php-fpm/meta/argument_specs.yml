@@ -4,7 +4,7 @@ argument_specs:
   main:
     short_description: Main entry point for the php-fpm role
     options:
-      version:
+      php_version:
         type: "str"
         required: false
         default: "8.3"
@@ -16,13 +16,13 @@ argument_specs:
           - "8.3"
         description: "PHP version"
       
-      user: 
+      php_user: 
         type: "str"
         required: false
         default: "www"
         description: "PHP running username"
 
-      group: 
+      php_group: 
         type: "str"
         required: false
         default: "www"

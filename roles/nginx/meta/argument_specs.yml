@@ -16,13 +16,13 @@ argument_specs:
         default: "www"
         description: "Nginx running usergroup."
 
-      log_path:
+      nginx_log_path:
         type: "path"
         required: false
         default: "/data0/logs/nginx"
         description: "Nginx log path."
 
-      config_path:
+      nginx_config_path:
         type: "path"
         required: false
         default: "/etc/nginx"

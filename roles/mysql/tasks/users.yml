@@ -1,0 +1,34 @@
+---
+- name: Install python mysql client
+  package:
+    name: "{{ python_mysql_client }}"
+    state: latest
+
+- name: Add mysql repl user
+  mysql_user:
+    name: "{{ mysql_repl_user.name }}"
+    host: "{{ mysql_repl_user.host }}"
+    password: "{{ mysql_repl_user.passwd }}"
+    priv: "*.*:REPLICATION SLAVE,REPLICATION CLIENT"
+    login_unix_socket: "{{ mysql_data_path }}/{{ mysql_port }}/mysql.sock"
+    login_user: "root"
+    state: present
+
+- name: Add zabbix monitor user
+  mysql_user:
+    name: "{{ zabbix_user.name }}"
+    host: "{{ zabbix_user.host }}"
+    password: "{{ zabbix_user.passwd }}"
+    priv: "*.*:REPLICATION CLIENT,PROCESS,SHOW DATABASES,SHOW VIEW"
+    login_unix_socket: "{{ mysql_data_path }}/{{ mysql_port }}/mysql.sock"
+    login_user: "root"
+    state: present
+
+- name: Add jumpserver user
+  mysql_user:
+    name: "{{ jumpserver_user.name }}"
+    host: "{{ jumpserver_user.host }}"
+    password: "{{ jumpserver_user.passwd }}"
+    login_unix_socket: "{{ mysql_data_path }}/{{ mysql_port }}/mysql.sock"
+    login_user: "root"
+    state: present

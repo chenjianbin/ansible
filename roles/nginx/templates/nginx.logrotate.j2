@@ -1,5 +1,5 @@
-{{ log_path }}/*.log {
-    create 0600 {{ user }} {{ group }}
+{{ nginx_logdir }}/*.log {
+    create 0600 {{ nginx_user }} {{ nginx_group }}
     daily
     rotate 10
     missingok
