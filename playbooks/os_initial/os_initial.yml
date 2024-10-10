@@ -19,4 +19,3 @@
      - role: set_limits
      - role: set_swap
      - role: update_kernel
-     - role: set_rclocal

@@ -3,7 +3,7 @@
   group:
     name: "{{ mysql_os_user.name }}"
     state: present
-    system: yes
+    system: true
 
 - name: Add mysql user
   user:
@@ -13,9 +13,9 @@
     comment: "{{ mysql_os_user.comment }}"
     shell: /sbin/nologin
     state: present
-    system: yes
+    system: true
 
-- name: Enable percona {{ _mysql_major_version }}x release
+- name: Enable percona {{ _mysql_major_version }}.{{ _mysql_minor_version }} release
   shell: "percona-release enable-only ps-{{ _mysql_major_version }}x-innovation release"
     #shell: "percona-release enable-only ps-{{ _mysql_major_version }}{{ _mysql_minor_version }}{{ ('' if _mysql_minor_version == '0' else '-lts') }} release"
 

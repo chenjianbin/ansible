@@ -2,13 +2,12 @@
 - name: Install percona release repo
   yum:
     name: "{{ percona_release_repo }}"
-    disable_gpg_check: yes
+    disable_gpg_check: true
     state: present
 
 - name: Install dependent softwares
   yum:
     name: "{{ item }}"
-    disable_gpg_check: yes
     state: present
   loop:
     - "python{{ _python_major_version }}-libselinux"

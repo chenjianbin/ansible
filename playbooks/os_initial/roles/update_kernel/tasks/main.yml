@@ -1,3 +1,6 @@
 ---
- - name: Include OS Tasks
-   include_tasks: "{{ ansible_os_family }}.yml"
+- name: Include OS Tasks
+  include_tasks: "{{ ansible_os_family }}.yml"
+
+- name: Reboot
+  reboot:

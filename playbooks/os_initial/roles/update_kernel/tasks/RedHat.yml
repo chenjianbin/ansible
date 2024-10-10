@@ -1,7 +1,5 @@
- - name: Update Kernel
-   yum:
-     name: "*"
-     state: latest 
-   notify:
-     - Reboot
+- name: Update Kernel
+  yum:
+    name: "*"
+    state: latest 
 
