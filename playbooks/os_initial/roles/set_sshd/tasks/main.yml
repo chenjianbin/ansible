@@ -1,6 +1,4 @@
 ---
-#- name: Include OS Tasks
-#  include_tasks: "{{ ansible_os_family }}.yml"
 - name: Check if directory exists
   stat:
     path: /etc/ssh/sshd_config.d
@@ -32,8 +30,5 @@
     dest: "/etc/profile"
     block: "export TMOUT=900"
 
-- name: Restart sshd
-  systemd:
-    name: "sshd"
-    state: restarted
-    enabled: true
+- name: Include OS Tasks
+  include_tasks: "{{ ansible_os_family }}.yml"
