@@ -1,4 +1,10 @@
 ---
+- name: Determine whether public_key_list is defined
+  assert:
+    that:
+      - "public_key_list is defined"
+    fail_msg: "Please copy roles/set_sshd/vars/default.main.yml to roles/set_sshd/vars/main.yml and set public_key_list"
+
 - name: Check if directory exists
   stat:
     path: /etc/ssh/sshd_config.d
