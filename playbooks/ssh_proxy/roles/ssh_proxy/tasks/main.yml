@@ -9,10 +9,10 @@
 
 - name: Setup proxy info
   blockinfile:
-    marker: "# {mark} ANSIBLE MANAGED BLOCK FOR SSHD"
+    marker: "# {mark} ANSIBLE MANAGED BLOCK FOR SSHD-{{ local_port }}"
     dest: "/etc/haproxy/haproxy.cfg"
     block: |
-      listen sshd
+      listen sshd-{{ local_port }}
           bind 0.0.0.0:{{ local_port }}
           mode tcp
           maxconn 2000

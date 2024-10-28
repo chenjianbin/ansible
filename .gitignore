@@ -6,7 +6,5 @@ tmp/
 **/vars/main.yml
 **/vars/main.yaml
 *.retry
-**/*.pub
-**/public_keys/*
 zabbix.ini
 .venv/

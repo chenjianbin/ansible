@@ -1,22 +1,20 @@
 ---
- - name: Install Firewalld
-   yum:
-     name: firewalld
-     state: present
+- name: Install firewalld
+  yum:
+    name: firewalld
+    state: present
 
- - name: Enable Firewalld
-   systemd:
-     name: firewalld
-     enabled: yes
-     state: started
-   when: ansible_distribution_major_version  >= "7"
+- name: Enable firewalld
+  systemd:
+    name: firewalld
+    enabled: yes
+    state: started
 
- - name: Set WhiteList
-   firewalld:
-     zone: trusted
-     source: "{{ item }}"
-     immediate: yes
-     permanent: true
-     state: enabled
-   when: ansible_distribution_major_version  >= "7"
-   loop: "{{ whitelist }}"
+- name: Set whiteList
+  firewalld:
+    zone: trusted
+    source: "{{ item }}"
+    immediate: yes
+    permanent: true
+    state: enabled
+  loop: "{{ internal_whitelist + external_whitelist }}"

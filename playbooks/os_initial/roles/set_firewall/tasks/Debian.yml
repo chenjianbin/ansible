@@ -1,27 +1,27 @@
 ---
- - name: Install UFW
-   apt:
-     name: ufw
-     state: present
+- name: Install ufw
+  apt:
+    name: ufw
+    state: present
 
- - name: Start UFW Service
-   systemd:
-     name: ufw
-     enabled: yes
-     state: started
+- name: Start ufw service
+  systemd:
+    name: ufw
+    enabled: yes
+    state: started
 
- - name: Enable UFW Service
-   ufw:
-     state: enabled
+- name: Enable ufw service
+  ufw:
+    state: enabled
 
- - name: Allow SSH Connection And Set limit
-   ufw:
-     rule: allow
-     port: ssh
-     proto: tcp
+- name: Allow ssh connection
+  ufw:
+    rule: allow
+    port: ssh
+    proto: tcp
 
- - name: Set IP WhiteList
-   ufw:
-     rule: allow
-     src: "{{ item }}"
-   loop: "{{ whitelist }}"
+- name: Set whiteList
+  ufw:
+    rule: allow
+    src: "{{ item }}"
+  loop: "{{ internal_whitelist + external_whitelist }}"

@@ -21,8 +21,7 @@
   authorized_key:
     user: root
     key: "{{ item }}"
-  with_file:
-    - public_keys/ops
+  loop: "{{ public_key_list }}"
 
 - name: Set ssh timeout
   blockinfile:
