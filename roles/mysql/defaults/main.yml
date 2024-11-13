@@ -1,9 +1,9 @@
 ---
 mode: "master"
-mysql_version: "8.3.0"
+mysql_version: "8.4"
 _mysql_major_version: "{{ mysql_version.split('.')[0] }}"
 _mysql_minor_version: "{{ mysql_version.split('.')[1] }}"
-#_mysql_patch_version: "{{ mysql_version.split('.')[2] }}"
+_mysql_version: "{{ _mysql_major_version }}{{ _mysql_minor_version }}"
 mysql_os_user:
   name: "mysql"
   comment: "Mysql Server"

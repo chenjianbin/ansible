@@ -15,9 +15,8 @@
     state: present
     system: true
 
-- name: Enable percona {{ _mysql_major_version }}.{{ _mysql_minor_version }} release
-  shell: "percona-release enable-only ps-{{ _mysql_major_version }}x-innovation release"
-    #shell: "percona-release enable-only ps-{{ _mysql_major_version }}{{ _mysql_minor_version }}{{ ('' if _mysql_minor_version == '0' else '-lts') }} release"
+- name: Enable percona {{ mysql_version }} release
+  shell: "percona-release enable-only ps-{{ _mysql_version }}-lts release"
 
 - name: Enable percona tool release
   shell: "percona-release enable tools release"
@@ -29,7 +28,7 @@
   loop:
     - "percona-server-server"
     - "percona-toolkit"
-    - "percona-xtrabackup-{{ _mysql_major_version }}{{ _mysql_minor_version }}"
+      #- "percona-xtrabackup-{{ _mysql_version }}"
   environment:
     PERCONA_TELEMETRY_DISABLE: "1"
 
