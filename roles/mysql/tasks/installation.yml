@@ -40,13 +40,10 @@
   when: _mysql_major_version == "8" and _mysql_minor_version == "4"
 
 - name: Setup my.cnf
-  template:
-    src: "my.cnf.j2"
-    dest: "{{ mysql_config_file }}"
-    owner: "{{ mysql_os_user.name }}"
-    group: "{{ mysql_os_user.name }}"
-    mode: "600"
-  when: ansible_os_family == "RedHat"
+  blockinfile:
+    path: "{{ mysql_config_file }}"
+    marker: "# {mark} ANSIBLE MANAGED BLOCK FOR MYSQL"
+    block: "!includedir {{ mysql_config_include_dir }}"
 
 - name: Setup regular clean mysql logs
   template: 
