@@ -18,8 +18,11 @@
 - name: Enable percona {{ mysql_version }} release
   shell: "percona-release enable-only ps-{{ _mysql_version }}-lts release"
 
-- name: Enable percona tool release
+- name: Enable percona tools release
   shell: "percona-release enable tools release"
+
+- name: Enable percona xtrabackup release
+  shell: "percona-release enable pxb-{{ _mysql_version }}-lts"
 
 - name: Install percona server and dependent tools
   package:
@@ -28,7 +31,7 @@
   loop:
     - "percona-server-server"
     - "percona-toolkit"
-      #- "percona-xtrabackup-{{ _mysql_version }}"
+    - "percona-xtrabackup-{{ _mysql_version }}"
   environment:
     PERCONA_TELEMETRY_DISABLE: "1"
 
