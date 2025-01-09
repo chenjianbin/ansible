@@ -1,7 +1,7 @@
 ---
- - name: Set Timezone
-   timezone:
-     name: Asia/Shanghai
+- name: Set timezone
+  timezone:
+    name: Asia/Shanghai
 
- - name: Include OS Tasks
-   include_tasks: "{{ ansible_os_family }}.yml"
+- name: Include os tasks
+  include_tasks: "{{ ansible_os_family }}.yml"

@@ -5,4 +5,4 @@
      port: "{{ item }}"
      proto: tcp
    loop:
-     - "{{ local_port }}"
+     - "{{ src_port }}"

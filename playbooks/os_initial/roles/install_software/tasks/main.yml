@@ -1,17 +1,17 @@
 ---
- - name: Get ip info
-   ipinfoio_facts:  
+- name: Get ip info
+  ipinfoio_facts:  
 
- - name: Set pip mirror
-   block: 
-   - file:
-       path: "~/.pip"
-       state: directory
-   - copy:
-       src: "pip.conf"
-       dest: "~/.pip/pip.conf"
-   when:  country == 'CN'
+- name: Set pip mirror
+  block: 
+  - file:
+      path: "~/.pip"
+      state: directory
+  - copy:
+      src: "pip.conf"
+      dest: "~/.pip/pip.conf"
+  when:  country == 'CN'
 
- - name: Include OS Tasks
-   include_tasks: "{{ ansible_os_family }}.yml"
+- name: Include os tasks
+  include_tasks: "{{ ansible_os_family }}.yml"
 

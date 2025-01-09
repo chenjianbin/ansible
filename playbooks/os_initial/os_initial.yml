@@ -7,6 +7,7 @@
     - role: set_repo
     - role: set_journald
     - role: install_software
+    - role: selinux-disable
     - role: disable_service
     - role: set_firewall
     - role: set_sysctl
@@ -17,5 +18,5 @@
     - role: set_trash
     - role: set_history_format
     - role: set_limits
-    - role: set_swap
+    - role: swap-disable
     - role: update_kernel

@@ -1,15 +1,19 @@
 ---
- - name: Include OS Tasks
-   include_tasks: "{{ ansible_os_family }}.yml"
+- name: Include os tasks
+  include_tasks: "{{ ansible_os_family }}.yml"
 
- - name: Modify Limits
-   pam_limits:
-     domain: "*"
-     limit_item: "{{ item.item }}"
-     limit_type: "{{ item.type }}"
-     value: "{{ item.value }}"
-   loop:
-#   with_items: 
-     - {item: nproc, type: -, value: 102400}
-     - {item: nofile, type: -, value: 102400}
-...
+- name: Modify sys limits
+  pam_limits:
+    domain: "*"
+    limit_item: "{{ item.item }}"
+    limit_type: "{{ item.type }}"
+    value: "{{ item.value }}"
+  loop:
+    - {item: nproc, type: -, value: 102400}
+    - {item: nofile, type: -, value: 102400}
+
+### 新版本的systemd硬限制值够用了,暂时注释掉
+#- name: Modify /etc/systemd/system.conf
+#  copy:
+#    src: system.conf
+#    dest: /etc/systemd/system.conf

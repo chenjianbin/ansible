@@ -1,8 +1,8 @@
 ---
- - name: Set Grub2 Password
-   copy:
-     src: "user.cfg"
-     dest: "/boot/grub2/user.cfg"
-     owner: root
-     group: root
-     mode: 0600
+- name: Set grub2 password
+  template:
+    src: "user.cfg.j2"
+    dest: "/boot/grub2/user.cfg"
+    owner: root
+    group: root
+    mode: 0600

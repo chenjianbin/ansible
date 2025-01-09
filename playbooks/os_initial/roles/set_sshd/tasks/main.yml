@@ -35,5 +35,5 @@
     dest: "/etc/profile"
     block: "export TMOUT=900"
 
-- name: Include OS Tasks
+- name: Include os tasks
   include_tasks: "{{ ansible_os_family }}.yml"

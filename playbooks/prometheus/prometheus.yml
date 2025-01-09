@@ -2,3 +2,7 @@
 - hosts: prometheus
   roles:
     - role: prometheus.prometheus.prometheus
+      vars:
+        prometheus_alertmanager_config:
+          - static_configs:
+              - targets: ["127.0.0.1:9093"]

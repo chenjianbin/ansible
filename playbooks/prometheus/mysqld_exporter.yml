@@ -1,0 +1,4 @@
+---
+- hosts: mysqld_exporter
+  roles:
+    - role: mysqld_exporter

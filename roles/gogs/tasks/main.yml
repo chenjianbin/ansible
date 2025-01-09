@@ -1,46 +1,55 @@
 ---
-- name: Add Git User Group
+- name: Add gogs os group
   group:
-    name: "{{ git_user.name }}"
+    name: "{{ gogs_os_group }}"
     state: present
     system: yes
 
-- name: Add Git User
+- name: Add gogs os user
   user:
-    name: "{{ git_user.name }}"
-    group: "{{ git_user.name }}"
+    name: "{{ gogs_os_user }}"
+    group: "{{ gogs_os_group }}"
     createhome: yes
-    comment: "{{ git_user.comment }}"
     shell: /sbin/nologin
     state: present
     system: yes
 
-- name: Create Install Dir
-  file:
-    path: "{{ gogs_install_path }}"
-    state: directory
+      #- name: Create installation directory
+      #  file:
+      #    path: "{{ item }}"
+      #    state: directory
+      #    owner: "{{ gogs_os_user }}"
+      #    group: "{{ gogs_os_group }}"
+      #  with_items:
+      #    - "{{ gogs_install_path }}"
 
-- name: Installing Gogs
+- name: Installing gogs
   unarchive:
-    src: "{{ gogs_url }}"
+    src: "{{ gogs_download_url }}"
     dest: "{{ gogs_install_path }}"
     remote_src: yes
-    owner: "{{ git_user.name }}"
-    group: "{{ git_user.name  }}"
+    owner: "{{ gogs_os_user }}"
+    group: "{{ gogs_os_group }}"
 
-- name: Create Gogs Data And Logs Directory
-  file:
-    path: "{{ item }}"
-    state: directory
-    owner: "{{ git_user.name }}"
-    group: "{{ git_user.name  }}"
-  with_items:
-    - "{{ gogs_data_dir }}"
-    - "{{ gogs_logs_dir }}"
 
-- name: Set Systemd
+- name: Set systemd gogs service
   template:
     src: "{{ item }}.j2"
     dest: /etc/systemd/system/{{ item }}
   with_items:
     - "gogs.service"
+
+- name: Ensure gogs service is started and enabled
+  become: true
+  ansible.builtin.systemd:
+    daemon_reload: true
+    name: gogs
+    state: restarted
+    enabled: true
+
+- name: Make sure gogs service is running
+  ansible.builtin.service_facts: {}
+  register: __service_status
+  until: "__service_status.ansible_facts.services['gogs.service'].state == 'running'"
+  retries: 5
+  delay: 5

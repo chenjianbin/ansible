@@ -1,0 +1,18 @@
+---
+- hosts: redis_exporter
+  tasks:
+    - name: Include redis role vars
+      include_role:
+        name: redis
+        public: true
+        tasks_from: "empty"
+
+    - name: Install redis exporter
+      include_role:
+        name: prometheus.prometheus.redis_exporter
+      vars:
+        redis_exporter_password: "{{ redis_password }}"
+
+    - name: echo
+      debug:
+        msg: "{{ redis_password }}"

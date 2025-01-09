@@ -1,0 +1,22 @@
+- name: Ensure __alertmanager_receivers and __alertmanager_route is defined
+  assert:
+    that:
+      - "(__alertmanager_receivers is defined) and (__alertmanager_route is defined)"
+    fail_msg: "Please copy vars/default.main.yml to vars/main.yml and set related parameters"
+
+- name: Define template files
+  set_fact:
+    __alertmanager_template_files: 
+      - "{{ role_path }}/files/templates/*.tmpl"
+
+- name: Use the alertmanager role with loaded variables
+  include_role:
+    name: prometheus.prometheus.alertmanager
+  vars:
+    alertmanager_receivers: "{{ __alertmanager_receivers | default([]) }}"
+    alertmanager_route: "{{ __alertmanager_route | default([]) }}"
+    alertmanager_inhibit_rules: "{{ __alertmanager_inhibit_rules | default([]) }}"
+    alertmanager_time_intervals: "{{ __alertmanager_time_intervals | default([]) }}"
+    alertmanager_template_files: "{{ __alertmanager_template_files | default([]) }}"
+
+

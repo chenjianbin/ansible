@@ -1,31 +1,31 @@
 ---
-- name: Include OS Tasks
+- name: Include os tasks
   include_tasks: "{{ ansible_os_family }}.yml"
 
 - name: Add nginx group
   group:
-    name: "{{ nginx_group }}"
+    name: "{{ nginx_os_group }}"
     state: present
     system: yes
 
 - name: Add nginx user
   user:
-    name: "{{ nginx_user }}"
-    group: "{{ nginx_group }}"
+    name: "{{ nginx_os_user }}"
+    group: "{{ nginx_os_group }}"
     createhome: no
     shell: /sbin/nologin
     state: present
     system: yes
 
-- name: Setup nginx.conf
-  template:
-    src: "nginx.conf.j2"
-    dest: "{{ nginx_confdir }}/nginx.conf"
+- name: Set regular clean nginx log
+  template: 
+    src: nginx.logrotate.j2
+    dest: /etc/logrotate.d/nginx
 
 - name: Sync nginx conf.d and ssl.d
   synchronize:
     src: "{{ item }}"
-    dest: "{{ nginx_confdir }}"
+    dest: "{{ nginx_config_dir }}"
   loop:
     - "conf.d"
     - "ssl.d"
@@ -35,25 +35,32 @@
     path: "{{ item }}"
     state: directory
   loop:
-    - "{{ nginx_sites_enabled_confdir }}"
-    - "{{ nginx_sites_available_confdir }}"
+    - "{{ nginx_sites_enabled_dir }}"
+    - "{{ nginx_sites_available_dir }}"
 
-- name: Create Logs Dir
+- name: Create log directory
   file:
-    path: "{{ nginx_logdir }}" 
-    owner: "{{ nginx_user }}"
-    group: "{{ nginx_group }}"
+    path: "{{ nginx_log_dir }}" 
+    owner: "{{ nginx_os_user }}"
+    group: "{{ nginx_os_group }}"
     state: directory
 
-- name: Set Regular Clean Nginx Logs
-  template: 
-    src: nginx.logrotate.j2
-    dest: /etc/logrotate.d/nginx
+- name: Setup nginx.conf
+  template:
+    src: "nginx.conf.j2"
+    dest: "{{ nginx_config_dir }}/nginx.conf"
 
-- name: Enable Nginx
-  systemd:
+- name: Ensure nginx service is started and enabled
+  become: true
+  ansible.builtin.systemd:
+    daemon_reload: true
     name: nginx
     state: restarted
-    enabled: yes
-    daemon_reload: yes
-...
+    enabled: true
+
+- name: Make sure nginx service is running
+  ansible.builtin.service_facts: {}
+  register: __service_status
+  until: "__service_status.ansible_facts.services['nginx.service'].state == 'running'"
+  retries: 5
+  delay: 5

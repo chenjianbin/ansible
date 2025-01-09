@@ -1,6 +1,5 @@
 ---
-user: "redis"
-group: "redis"
-password: "1EFxbDogO3C+zveK"
-listen_port: 6379
-data_path: "/data0/redis"
+#redis_os_user: "redis"
+#redis_os_group: "{{ redis_os_user }}"
+redis_listen_port: 6379
+redis_password: "1EFxbDogO3C+zveK"

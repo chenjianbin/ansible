@@ -4,25 +4,25 @@ argument_specs:
   main:
     short_description: Main entry point for the nginx role
     options:
-      user:
+      nginx_os_user:
         type: "str"
         required: false
         default: "www"
         description: "Nginx running username."
 
-      group:
+      nginx_os_group:
         type: "str"
         required: false
         default: "www"
         description: "Nginx running usergroup."
 
-      nginx_log_path:
+      nginx_log_dir:
         type: "path"
         required: false
         default: "/data0/logs/nginx"
         description: "Nginx log path."
 
-      nginx_config_path:
+      nginx_config_dir:
         type: "path"
         required: false
         default: "/etc/nginx"

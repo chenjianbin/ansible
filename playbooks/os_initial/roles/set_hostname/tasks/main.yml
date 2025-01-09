@@ -1,9 +1,9 @@
 ---
- - name: Set Hostname
-   hostname:
-     name: "{{ hostname }}"
-   when: hostname is defined
+- name: Set hostname
+  hostname:
+    name: "{{ hostname }}"
+  when: hostname is defined
 
- - name: Re-read Facts After Set Hostname
-   setup: 
-     filter: ansible_hostname
+- name: Re-read facts after set hostname
+  setup: 
+    filter: ansible_hostname

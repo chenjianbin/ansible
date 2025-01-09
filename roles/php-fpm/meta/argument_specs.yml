@@ -7,22 +7,23 @@ argument_specs:
       php_version:
         type: "str"
         required: false
-        default: "8.3"
+        default: "8.4"
         choice:
           - "7.4"
           - "8.0"
           - "8.1"
           - "8.2"
           - "8.3"
+          - "8.4"
         description: "PHP version"
       
-      php_user: 
+      php_os_user: 
         type: "str"
         required: false
         default: "www"
         description: "PHP running username"
 
-      php_group: 
+      php_os_group: 
         type: "str"
         required: false
         default: "www"

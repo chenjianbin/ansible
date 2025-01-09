@@ -1,28 +1,27 @@
 ---
 - name: Add mysql user group
   group:
-    name: "{{ mysql_os_user.name }}"
+    name: "{{ mysql_os_group }}"
     state: present
     system: true
 
 - name: Add mysql user
   user:
-    name: "{{ mysql_os_user.name }}"
-    group: "{{ mysql_os_user.name }}"
+    name: "{{ mysql_os_user }}"
+    group: "{{ mysql_os_group }}"
     createhome: no
-    comment: "{{ mysql_os_user.comment }}"
     shell: /sbin/nologin
     state: present
     system: true
 
 - name: Enable percona {{ mysql_version }} release
-  shell: "percona-release enable-only ps-{{ _mysql_version }}-lts release"
+  shell: "percona-release enable-only ps-{{ mysql_version_alias }}-lts release"
 
 - name: Enable percona tools release
   shell: "percona-release enable tools release"
 
 - name: Enable percona xtrabackup release
-  shell: "percona-release enable pxb-{{ _mysql_version }}-lts"
+  shell: "percona-release enable pxb-{{ mysql_version_alias }}-lts"
 
 - name: Install percona server and dependent tools
   package:
@@ -31,7 +30,7 @@
   loop:
     - "percona-server-server"
     - "percona-toolkit"
-    - "percona-xtrabackup-{{ _mysql_version }}"
+    - "percona-xtrabackup-{{ mysql_version_alias }}"
   environment:
     PERCONA_TELEMETRY_DISABLE: "1"
 
@@ -53,12 +52,12 @@
     src: mysql.logrotate.j2
     dest: /etc/logrotate.d/mysql
 
-- name: Copy mysqld.cnf
+- name: Copy mysql configuration files
   template:
     src: "{{ item }}.j2"
     dest: "{{ mysql_config_include_dir }}/{{ item }}"
-    owner: "{{ mysql_os_user.name }}"
-    group: "{{ mysql_os_user.name }}"
+    owner: "{{ mysql_os_user }}"
+    group: "{{ mysql_os_group }}"
     mode: "600"
   loop:
     - "mysqld.cnf"
@@ -67,8 +66,8 @@
 - name: Create mysql instance directory
   file:
     path: "{{ mysql_data_path }}/{{ mysql_port }}/{{ item }}"
-    owner: "{{ mysql_os_user.name }}"
-    group: "{{ mysql_os_user.name }}"
+    owner: "{{ mysql_os_user }}"
+    group: "{{ mysql_os_group }}"
     recurse: yes
     state: directory
   with_items:
@@ -81,17 +80,17 @@
 - name: Determine whether the instance has been initialized
   stat:
     path: "{{ _is_initialized_file }}"
-  register: file_check
+  register: __file_status
 
 - name: Initialize instance
-  command: "/usr/sbin/mysqld --initialize-insecure --user={{ mysql_os_user.name }}"
-  when: not file_check.stat.exists
+  command: "/usr/sbin/mysqld --initialize-insecure --user={{ mysql_os_user }}"
+  when: not __file_status.stat.exists
 
 - name: Create initialized markup file
   file:
     path: "{{ _is_initialized_file }}"
-    owner: "{{ mysql_os_user.name }}"
-    group: "{{ mysql_os_user.name }}"
+    owner: "{{ mysql_os_user }}"
+    group: "{{ mysql_os_group }}"
     state: touch
 
 - name: Enable mysql daemon
@@ -100,3 +99,10 @@
     state: restarted
     enabled: true
     daemon_reload: true
+
+- name: Make sure mysql service is running
+  ansible.builtin.service_facts: {}
+  register: __service_status
+  until: "__service_status.ansible_facts.services[systemd_mysql_service].state == 'running'"
+  retries: 10
+  delay: 5

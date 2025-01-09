@@ -1,7 +1,7 @@
 {{ ansible_managed | comment }}
 
 {{ mysql_data_path }}/{{ mysql_port }}/logs/errorlog/*.log {{ mysql_data_path }}/{{ mysql_port }}/logs/slowlog/*.log {
-    create 0600 {{ mysql_os_user.name }} {{ mysql_os_user.name }}
+    create 0600 {{ mysql_os_user }} {{ mysql_os_group }}
     daily
     rotate 15
     missingok

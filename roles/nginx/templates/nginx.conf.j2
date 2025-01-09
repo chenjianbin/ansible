@@ -1,4 +1,4 @@
-user {{ nginx_user }} {{ nginx_group }};
+user {{ nginx_os_user }} {{ nginx_os_group }};
 
 worker_processes auto;
 worker_cpu_affinity auto;
@@ -142,7 +142,7 @@ http {
 
     include conf.d/functions/*.conf;
     include conf.d/default_server.conf;
-    include {{ nginx_sites_enabled_confdir }}/*.conf;
+    include {{ nginx_sites_enabled_dir }}/*.conf;
 }
 
 

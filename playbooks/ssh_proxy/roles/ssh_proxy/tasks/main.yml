@@ -1,19 +1,20 @@
 ---
-- name: Import Secret Vars
-  include_vars: "{{ item }}"
-  with_items:
-    - "main.yml"
+- name: Ensure dest_ip is defined 
+  assert:
+    that:
+      - "dest_ip is defined"
+    fail_msg: "dest_ip must be defined."
 
 - name: Include OS Tasks
   include_tasks: "{{ ansible_os_family }}.yml"
 
 - name: Setup proxy info
   blockinfile:
-    marker: "# {mark} ANSIBLE MANAGED BLOCK FOR SSHD-{{ local_port }}"
+    marker: "# {mark} ANSIBLE MANAGED BLOCK FOR SSHD-{{ src_port }}"
     dest: "/etc/haproxy/haproxy.cfg"
     block: |
-      listen sshd-{{ local_port }}
-          bind 0.0.0.0:{{ local_port }}
+      listen sshd-{{ src_port }}
+          bind 0.0.0.0:{{ src_port }}
           mode tcp
           maxconn 2000
           balance roundrobin

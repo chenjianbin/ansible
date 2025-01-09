@@ -1,0 +1,21 @@
+---
+- hosts: alertmanager
+  roles:
+    - role: alertmanager
+    #    - role: prometheus.prometheus.alertmanager
+    #      vars:
+    #        alertmanager_receivers:
+    #          - name: telegram
+    #            telegram_configs:
+    #              send_resolved: True
+    #              bot_token: 7351480691:AAG36djBjow7yepGJAduNkKYtC2qEMQIJBY
+    #              chat_id: -4265055206
+    #              parse_mode: "HTML"
+    #              message: {% raw %} {{ template "telegram.default.message" . }} {% endraw %}
+    #        alertmanager_route:
+    #          group_by: ['alertname', 'cluster', 'service']
+    #          group_wait: 30s
+    #          group_interval: 5m
+    #          repeat_interval: 3h
+    #          receiver: telegram
+

@@ -1,1 +1,7 @@
 [ssh_proxy]
+
+[ssh_proxy:vars]
+#dest_ip value must be replaced
+dest_ip=1.1.1.1 
+#dest_port=22
+#src_port=2222

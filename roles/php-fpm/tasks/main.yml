@@ -1,46 +1,52 @@
 ---
- - name: Add PHP group
-   group:
-     name: "{{ php_group }}"
-     state: present
-     system: true
+- name: Add PHP group
+  group:
+    name: "{{ php_os_group }}"
+    state: present
+    system: true
 
- - name: Add PHP user
-   user:
-     name: "{{ php_user }}"
-     group: "{{ php_group }}"
-     createhome: false
-     shell: /sbin/nologin
-     state: present
-     system: true
+- name: Add PHP user
+  user:
+    name: "{{ php_os_user }}"
+    group: "{{ php_os_group }}"
+    createhome: false
+    shell: /sbin/nologin
+    state: present
+    system: true
 
- - name: Include OS Tasks
-   include_tasks: "{{ ansible_os_family }}.yml"
+- name: Include OS Tasks
+  include_tasks: "{{ ansible_os_family }}.yml"
 
- - name: Copy default process pool configure
-   template:
-     src: "demo.php.com.conf.j2"
-     dest: "{{ php_fpm_confdir }}/demo.php.com"
+- name: Copy default process pool configure
+  template:
+    src: "demo.php.com.conf.j2"
+    dest: "{{ php_fpm_confdir }}/demo.php.com"
 
- - name: Setup php.ini
-   blockinfile:
-     path: "{{ php_config_file }}"
-     marker: "# {mark} ANSIBLE MANAGED BLOCK PHP.INI"
-     block: "{{ lookup('file', 'php.ini') }}"
+- name: Setup php.ini
+  blockinfile:
+    path: "{{ php_config_file }}"
+    marker: "# {mark} ANSIBLE MANAGED BLOCK PHP.INI"
+    block: "{{ lookup('file', 'php.ini') }}"
 
- - name: Change owner of the log's directory
-   file:
-     path: "{{ php_fpm_logdir }}"
-     owner: "{{ php_user }}" 
-     group: "{{ php_group }}"   
-     recurse: true            
-     state: directory 
+- name: Change owner of the log's directory
+  file:
+    path: "{{ php_fpm_logdir }}"
+    owner: "{{ php_os_user }}" 
+    group: "{{ php_os_group }}"   
+    recurse: true            
+    state: directory 
 
- - name: Enable php-fpm service
-   systemd:
-     name: "{{ php_fpm_systemd_service }}"
-     state: restarted
-     enabled: true
-     daemon_reload: true
+- name: Enable php-fpm service
+  systemd:
+    name: "{{ php_fpm_systemd_service }}"
+    state: restarted
+    enabled: true
+    daemon_reload: true
 
+- name: Make sure php-fpm service is running
+  ansible.builtin.service_facts: {}
+  register: __service_status
+  until: "__service_status.ansible_facts.services[php_fpm_systemd_service].state == 'running'"
+  retries: 10
+  delay: 5
 ...

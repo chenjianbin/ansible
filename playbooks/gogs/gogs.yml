@@ -1,5 +1,0 @@
----
-- hosts:
-    - gogs
-  roles:
-    - role: gogs

@@ -1,0 +1,72 @@
+---
+ - name: Include OS Tasks
+   include_tasks: "{{ ansible_os_family }}.yml"
+
+ - name: Kube tools bash completion
+   shell: "{{ item }} completion bash >/etc/bash_completion.d/{{ item }}"
+   loop:
+     - kubeadm
+     - kubectl
+
+ - name: Initialize master node
+   block:
+   - name: Create temporary directory
+     file:
+       path: "{{ kube_dir }}"
+       state: directory  
+
+   - name: Copy master init configuration file 
+     template:
+       src: "kubeadm.yaml.j2"
+       dest: "{{ kube_dir }}/kubeadm.yaml"
+
+   - name: Determine whether the cluster is initialized
+     stat:
+       path: /etc/kubernetes/admin.conf
+     register: check_file_result
+
+   - name: Init cluster
+     shell: "kubeadm init --config={{ kube_dir }}/kubeadm.yaml"
+     when: not check_file_result.stat.exists
+
+   - name: Create configuration directory
+     file:
+       path: $HOME/.kube
+       state: directory
+ 
+   - name: Copy configuration file
+     copy:
+       dest: $HOME/.kube/config
+       src: /etc/kubernetes/admin.conf
+       remote_src: true
+
+   - name: Deploy network plugin
+     include_tasks: "net-weave.yml"
+
+   - name: Deploy view plugin dashboard
+     shell: "kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.7.0/aio/deploy/recommended.yaml"
+     register: result
+     until: result is succeeded
+     retries: 5
+     delay: 10
+   when: inventory_hostname in groups['master']
+
+ - name: Initialize worker node
+   block:
+   - name: Determine whether the node join cluster 
+     stat:
+       path: /etc/kubernetes/kubelet.conf
+     register: check_file_result
+
+   - name: Join cluster
+     block:
+     - name: Get cluster join command
+       shell: "kubeadm token create --print-join-command"
+       delegate_to: "{{ master_hostname }}"
+       register: JOIN_COMMAND
+  
+     - name: Worker node join cluster
+       shell: "{{ JOIN_COMMAND.stdout }}"
+     when: not check_file_result.stat.exists
+   when: inventory_hostname in groups['worker'] and master_hostname is defined
+

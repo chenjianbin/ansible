@@ -1,6 +1,6 @@
-php_version: "8.3"
-php_user: "www"
-php_group: "www"
+php_version: "8.4"
+php_os_user: "www"
+php_os_group: "{{ php_os_user }}"
 _php_config_file:
   Debian: "/etc/php/{{ php_version }}/fpm/php.ini"
   RedHat: "/etc/php.ini"

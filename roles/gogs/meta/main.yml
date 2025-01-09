@@ -18,6 +18,3 @@ galaxy_info:
         - 9
   categories:
     - software
-dependencies:
-    - role: nginx
-    - role: mysql

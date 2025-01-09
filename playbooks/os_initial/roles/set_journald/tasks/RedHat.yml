@@ -1,14 +1,14 @@
 ---
- - name: Set Journald
-   blockinfile:
-     marker: "# {mark} ANSIBLE MANAGED BLOCK FOR RESOlVE JOURNALD HIGH MEMORY PROBLEM"
-     dest: "/etc/systemd/journald.conf"
-     block: "Storage=persistent"
-   when: ansible_distribution_major_version  >= "7"
+- name: Setup journald
+  blockinfile:
+    marker: "# {mark} ANSIBLE MANAGED BLOCK FOR RESOlVE JOURNALD HIGH MEMORY PROBLEM"
+    dest: "/etc/systemd/journald.conf"
+    block: "Storage=persistent"
+  when: ansible_distribution_major_version  >= "7"
 
- - name: Restart Journald
-   systemd:
-     name: systemd-journald
-     state: restarted
-     enabled: yes
-   when: ansible_distribution_major_version  >= "7"
+- name: Restart journald
+  systemd:
+    name: systemd-journald
+    state: restarted
+    enabled: yes
+  when: ansible_distribution_major_version  >= "7"

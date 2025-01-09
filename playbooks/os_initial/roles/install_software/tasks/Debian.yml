@@ -1,51 +1,48 @@
 ---
- - name: Install Basic Software
-   apt: 
-     name: "{{ packages }}"
-     state: present
-     update_cache: true
-   vars:
-     packages:
-       - apt-file
-       - bash-completion
-       - cron
-       - git
-       - lrzsz
-       - rsync
-       - screen
-       - tree
-       - vim
-       - wget
-       - psmisc               #pstree
-       - python3-pip
-       - python3-setuptools
-         #       - python3-selinux
-         #       - policycoreutils
-       - smartmontools
-       - zip
+- name: Install basic software
+  apt: 
+    name: "{{ packages }}"
+    state: present
+    update_cache: true
+  vars:
+    packages:
+      - apt-file
+      - bash-completion
+      - cron
+      - git
+      - lrzsz
+      - rsync
+      - screen
+      - tree
+      - vim
+      - wget
+      - psmisc               #pstree
+      - python3-pip
+      - python3-setuptools
+      - smartmontools
+      - zip
 
- - name: Install Debug Software
-   apt: 
-     name: "{{ packages }}"
-     state: present
-   vars:
-     packages:
-       - bind9-dnsutils        #dig
-       - dstat
-       - lsof
-       - linux-tools-common    #perf
-       - iptraf
-       - iftop
-       - iotop
-       - inetutils-ping
-       - nload
-       - net-tools
-       - nethogs
-       - mtr
-       - strace
-       - sysstat
-       - tcpdump
-       - telnet
-       - traceroute
+- name: Install debug software
+  apt: 
+    name: "{{ packages }}"
+    state: present
+  vars:
+    packages:
+      - bind9-dnsutils        #dig
+      - lsof
+      - linux-tools-common    #perf
+      - iptraf
+      - iftop
+      - iotop
+      - inetutils-ping
+      - nload
+      - net-tools
+      - nethogs
+      - mtr
+      - strace
+      - sysstat
+      - tcpdump
+      - telnet
+      - traceroute
 #       - rkhunter
 

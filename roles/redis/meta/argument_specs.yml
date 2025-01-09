@@ -4,31 +4,25 @@ argument_specs:
   main:
     short_description: Main entry point for the redis role
     options:
-      user:
-        type: "str"
-        required: false
-        default: "redis"
-        description: "Redis running username."
+      #      redis_os_user:
+      #        type: "str"
+      #        required: false
+      #        default: "redis"
+      #        description: "Redis running username."
+      #
+      #      gredis_os_roup:
+      #        type: "str"
+      #        required: false
+      #        default: "redis"
+      #        description: "Redis running usergroup."
 
-      group:
-        type: "str"
-        required: false
-        default: "redis"
-        description: "Redis running usergroup."
-
-      listen_port:
+      redis_listen_port:
         type: "int"
         required: false
         default: 6379
         description: "Redis listen port."
 
-      data_path:
-        type: "path"
-        required: false
-        default: "/data0/logs/nginx"
-        description: "Redis data path."
-
-      password:
+      redis_password:
         type: "str"
         required: false
         default: "1EFxbDogO3C+zveK"

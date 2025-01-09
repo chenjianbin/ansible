@@ -1,14 +1,14 @@
 ---
- - name: Set Git User Store
-   git_config:
-     name: "credential.helper"
-     scope: global
-     value: "store"
+- name: Set git user store
+  git_config:
+    name: "credential.helper"
+    scope: global
+    value: "store"
 
- - name: Copy Git Credentials
-   copy:
-     src: 'git-credentials'
-     dest: '/root/.git-credentials'
-     owner: root
-     group: root
-     mode: 0600
+- name: Create git credentials
+  file:
+    path: '/root/.git-credentials'
+    owner: root
+    group: root
+    mode: 0600
+    state: touch

@@ -1,33 +1,18 @@
 ---
-mode: "master"
-mysql_version: "8.4"
-_mysql_major_version: "{{ mysql_version.split('.')[0] }}"
-_mysql_minor_version: "{{ mysql_version.split('.')[1] }}"
-_mysql_version: "{{ _mysql_major_version }}{{ _mysql_minor_version }}"
-mysql_os_user:
-  name: "mysql"
-  comment: "Mysql Server"
-
-_python_major_version: "{{ ansible_python_version.split('.')[0] }}"
-_python_mysql_client:
-  Debian: "python{{ _python_major_version }}-pymysql"
-  RedHat: "python{{ _python_major_version }}-PyMySQL"
-python_mysql_client: "{{ _python_mysql_client[ansible_os_family] }}"
-
 _percona_release_repo:
   Debian: "https://repo.percona.com/apt/percona-release_latest.generic_all.deb"
   RedHat: "https://repo.percona.com/yum/percona-release-latest.noarch.rpm"
 percona_release_repo: "{{ _percona_release_repo[ansible_os_family] }}"
 
-_systemd_mysql_service:
-  Debian: "mysql"
-  RedHat: "mysqld"
-systemd_mysql_service: "{{ _systemd_mysql_service[ansible_os_family] }}" 
-
-
+mode: "master"
+mysql_version: "8.4"
+_mysql_major_version: "{{ mysql_version.split('.')[0] }}"
+_mysql_minor_version: "{{ mysql_version.split('.')[1] }}"
+mysql_version_alias: "{{ _mysql_major_version }}{{ _mysql_minor_version }}"
 mysql_port: 3306
+mysql_os_user: "mysql"
+mysql_os_group: "{{ mysql_os_user }}"
 mysql_data_path: "/data0/mysql"
-_is_initialized_file: "{{ mysql_data_path }}/{{ mysql_port }}/.initialized"
 _mysql_config_file:
   Debian: "/etc/mysql/my.cnf"
   RedHat: "/etc/my.cnf"
@@ -36,6 +21,18 @@ _mysql_config_include_dir:
   Debian: "/etc/mysql/mysql.conf.d"
   RedHat: "/etc/my.cnf.d"
 mysql_config_include_dir: "{{ _mysql_config_include_dir[ansible_os_family] }}"
+_is_initialized_file: "{{ mysql_data_path }}/{{ mysql_port }}/.initialized"
+
+_python_major_version: "{{ ansible_python_version.split('.')[0] }}"
+_python_mysql_client:
+  Debian: "python{{ _python_major_version }}-pymysql"
+  RedHat: "python{{ _python_major_version }}-PyMySQL"
+python_mysql_client: "{{ _python_mysql_client[ansible_os_family] }}"
+
+_systemd_mysql_service:
+  Debian: "mysql"
+  RedHat: "mysqld"
+systemd_mysql_service: "{{ _systemd_mysql_service[ansible_os_family] }}" 
 
 mysql_repl_user:
   name: "repl"

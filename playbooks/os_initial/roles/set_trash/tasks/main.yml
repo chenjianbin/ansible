@@ -1,28 +1,28 @@
 ---
- - name: Include OS Tasks
-   include_tasks: "{{ ansible_os_family }}.yml"
+- name: Include os tasks
+  include_tasks: "{{ ansible_os_family }}.yml"
 
- - name: Create Trash Directory
-   file:
-     path: "/trash"
-     mode: "u+rwx,g+rwx,o+rwt"
-     state: directory
+- name: Create trash directory
+  file:
+    path: "/trash"
+    mode: "u+rwx,g+rwx,o+rwt"
+    state: directory
 
- - name: Cron for clear Trash
-   cron:
-     name: "Clear Trash"
-     minute: "00"
-     hour: "5"
-     weekday: "3"
-     job: "find /trash ! -path /trash -ctime +7 -delete"
-     state: present
+- name: Cron for clear trash
+  cron:
+    name: "Clear Trash"
+    minute: "00"
+    hour: "5"
+    weekday: "3"
+    job: "find /trash ! -path /trash -ctime +7 -delete"
+    state: present
 
- - name: Rename rm command
-   blockinfile:
-     marker: "# {mark} ANSIBLE MANAGED BLOCK FOR rm command"
-     block: "alias rm=trash
-             \ntrash()
-             \n{
-             \n\    mv $@ /trash/ -f --backup=t
-             \n}"
-     path: "~/.bashrc"
+- name: Rename rm command
+  blockinfile:
+    marker: "# {mark} ANSIBLE MANAGED BLOCK FOR rm command"
+    block: "alias rm=trash
+            \ntrash()
+            \n{
+            \n\    mv $@ /trash/ -f --backup=t
+            \n}"
+    path: "~/.bashrc"

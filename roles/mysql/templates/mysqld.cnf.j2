@@ -5,7 +5,7 @@
 bind_address        = 0.0.0.0
 port                = {{ mysql_port }}
 socket              = {{ mysql_data_path }}/{{ mysql_port }}/mysql.sock 
-user                = {{ mysql_os_user.name }}
+user                = {{ mysql_os_user }}
 mysqlx_bind_address = 127.0.0.1
 mysqlx_port         = {{ mysql_port }}0
 mysqlx_socket       = {{ mysql_data_path }}/{{ mysql_port }}/mysqlx.sock
@@ -87,7 +87,7 @@ myisam_sort_buffer_size               = 128M
 ###### Innodb ######
 transaction_isolation                 = READ-COMMITTED
 innodb_data_file_path                 = ibdata1:1024M:autoextend
-innodb_buffer_pool_size               = {{ ansible_memtotal_mb // 128 // 2 * 128 }}M
+innodb_buffer_pool_size               = {{ (ansible_memtotal_mb // 128 // 2 * 128) if ansible_memtotal_mb > 2048 else (ansible_memtotal_mb // 128 // 4 * 128) }}M
 innodb_redo_log_capacity              = 2G
 innodb_log_files_in_group             = 2
 innodb_log_buffer_size                = 8M

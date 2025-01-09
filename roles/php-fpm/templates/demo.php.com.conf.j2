@@ -1,8 +1,8 @@
 [demo.php.com]
 listen = /dev/shm/php-cgi-$pool.sock
 listen.mode = 0666
-user = {{ php_user }}
-group = {{ php_group }}
+user = {{ php_os_user }}
+group = {{ php_os_group }}
 
 pm = dynamic
 pm.max_children = 40

@@ -1,10 +1,10 @@
 ---
- - name: Deny Maildrop
-   cron:
-     name: MAILTO
-     env: yes
-     value: ""
+- name: Deny maildrop
+  cron:
+    name: MAILTO
+    env: yes
+    value: ""
 
- - name: Include OS Tasks
-   include_tasks: "{{ ansible_os_family }}.yml"
- 
+- name: Include os tasks
+  include_tasks: "{{ ansible_os_family }}.yml"
+

@@ -1,6 +1,6 @@
 ---
- - name: Set Command History Record Format
-   blockinfile:
-     marker: "# {mark} ANSIBLE MANAGED BLOCK FOR Command History Record Format"
-     dest: "/etc/profile"
-     block: "export HISTTIMEFORMAT='%F %T '"
+- name: Setup command history record format
+  blockinfile:
+    marker: "# {mark} ANSIBLE MANAGED BLOCK FOR Command History Record Format"
+    dest: "/etc/profile"
+    block: "export HISTTIMEFORMAT='%F %T '"
