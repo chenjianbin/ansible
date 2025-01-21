@@ -1,0 +1,75 @@
+---
+- name: Set v2ray_link 
+  set_fact:
+    v2ray_link: '{"v":2,"ps":"{{ inventory_hostname }}","add":"{{ inventory_hostname }}","port":"{{ v2ray_port }}","id":"{{ v2ray_uuid }}","aid":"0","net":"tcp","type":"none","path":""}'
+
+- name: Include OS Tasks
+  include_tasks: "{{ ansible_os_family }}.yml"
+
+- name: Install v2ray
+  shell: "wget -qO- -o- https://git.io/v2ray.sh|bash"
+  ignore_errors: true
+
+- name: Copy v2ray configuration file
+  template:
+    src: "V2ray-TCP.json.j2"
+    dest: "/etc/v2ray/conf/{{ v2ray_protocol }}-TCP-{{ v2ray_port }}.json"
+  notify: restart v2ray
+
+- name: Set v2ray cdn
+  block:
+  - name: Set v2ray_cdn_link 
+    set_fact:
+      v2ray_cdn_link: '{"v":2,"ps":"{{ cloudflare_zone_record }}.{{ cloudflare_zone }}","add":"{{ cloudflare_zone_record }}.{{ cloudflare_zone }}","port":"443","id":"{{ v2ray_uuid }}","aid":"0","net":"ws","host":"{{ cloudflare_zone_record }}.{{ cloudflare_zone }}","path":"{{ v2ray_ws_path }}","tls":"tls"}'
+
+  - name: Copy v2ray configuration file
+    template:
+      src: "V2ray-WS.json.j2"
+      dest: "/etc/v2ray/conf/{{ v2ray_protocol }}-WS-{{ cloudflare_zone_record }}.{{ cloudflare_zone }}.json"
+    notify: restart v2ray
+
+  - name: Create record
+    community.general.cloudflare_dns:
+      zone: "{{ cloudflare_zone }}"
+      record: "{{ cloudflare_zone_record }}"
+      type: A
+      solo: true
+      value: "{{ inventory_hostname }}"
+      api_token: "{{ cloudflare_token }}"
+  
+  - name: Include cdn role
+    include_role:
+      name: caddy
+  
+  - name: Copy site configration file
+    template:
+      src: "Caddy.v2ray.conf.j2"
+      dest: "/etc/caddy/sites/{{ cloudflare_zone_record }}.{{ cloudflare_zone }}.conf"
+    notify: reload caddy
+  
+  - name: Create cdn record
+    community.general.cloudflare_dns:
+      zone: "{{ cloudflare_zone }}"
+      record: "{{ cloudflare_zone_record }}"
+      type: A
+      proxied: true
+      solo: true
+      value: "{{ inventory_hostname }}"
+      api_token: "{{ cloudflare_token }}"
+
+  - name: Output v2ray cdn link
+    debug:
+      msg: |
+        {{ v2ray_protocol | lower }}://{{ v2ray_cdn_link | to_json | b64encode }}
+  when:
+    - cloudflare_zone is defined
+    - cloudflare_token is defined
+    - cloudflare_zone_record is defined
+
+- name: Output v2ray link
+  debug:
+    msg: |
+      {{ v2ray_protocol | lower }}://{{ v2ray_link | to_json | b64encode }}
+
+
+

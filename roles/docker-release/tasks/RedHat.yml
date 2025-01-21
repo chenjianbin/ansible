@@ -1,0 +1,7 @@
+---
+- name: Set up docker repository
+  ansible.builtin.get_url:
+    url: "{{ docker_release_redhat_repository }}"
+    dest: /etc/yum.repos.d/docker-ce.repo
+    mode: '0644'
+

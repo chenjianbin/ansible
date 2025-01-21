@@ -1,0 +1,20 @@
+---
+- name: Create keyrings directory
+  ansible.builtin.file:
+    path: /etc/apt/keyrings
+    state: directory
+    mode: '0755'
+
+- name: Download Docker GPG key
+  ansible.builtin.get_url:
+    url: "{{ docker_release_debian_repository }}/gpg"
+    dest: /etc/apt/keyrings/docker.asc
+    mode: '0644'
+
+- name: Set up docker repository
+  ansible.builtin.apt_repository:
+    repo: "deb [arch={{ _debian_ansible_arch }} signed-by=/etc/apt/keyrings/docker.asc] {{ docker_release_debian_repository }} {{ ansible_distribution_release }} stable"
+    state: present
+    filename: docker
+    update_cache: yes
+

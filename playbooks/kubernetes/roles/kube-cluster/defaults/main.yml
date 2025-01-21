@@ -1,0 +1,3 @@
+---
+kube_version: 1.28.0
+kube_dir: "$HOME/k8s"

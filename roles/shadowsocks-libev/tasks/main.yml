@@ -1,0 +1,12 @@
+---
+- name: Install shadowsocks-libev
+  package:
+    name: "shadowsocks-libev"
+    state: present
+
+- name: Enable shadowsocks-libev
+  service: 
+    name: "shadowsocks-libev"
+    state: restarted
+    enabled: true
+

@@ -1,0 +1,7 @@
+---
+ - name: Restart Sshd
+   listen: restart sshd
+   systemd: 
+     name: "{{ sshd_systemd_service }}"
+     state: restarted
+     enabled: true

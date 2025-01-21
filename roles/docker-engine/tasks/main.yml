@@ -1,0 +1,18 @@
+---
+# tasks file for docker-engine
+- name: Install docker engine
+  package:
+    name: "{{ item }}"
+    state: latest
+  loop:
+    - docker-ce
+    - docker-ce-cli
+    - containerd.io
+    - docker-buildx-plugin
+    - docker-compose-plugin
+
+- name: Enable docker now
+  systemd:
+    name: docker
+    enabled: true
+    state: started

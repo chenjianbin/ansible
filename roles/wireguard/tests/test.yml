@@ -1,0 +1,12 @@
+- hosts: localhost
+  become: yes
+  roles:
+    - role: wireguard
+      vars:
+        wireguard_port: 51820
+        wireguard_address: "10.0.0.1/24"
+        wireguard_dns: "8.8.8.8"
+        wireguard_peers:
+          - public_key: "CLIENT_PUBLIC_KEY_1"
+            allowed_ips: "10.0.0.2/32"
+

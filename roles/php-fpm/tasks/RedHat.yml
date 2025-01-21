@@ -29,6 +29,7 @@
       - "php-process"
       - "php-pecl-zip"
       - "php-pecl-mcrypt"
+      - "php-pecl-mbstring"
       - "php-pecl-redis"
       - "php-pecl-igbinary-devel"
       - "php-pecl-mysql"

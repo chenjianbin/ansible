@@ -1,0 +1,6 @@
+---
+- name: Allow proxy port
+  ufw:
+    rule: allow
+    port: "{{ proxy_port }}"
+    proto: tcp

@@ -1,0 +1,43 @@
+---
+# tasks file for containerd
+#- name: Get IP geolocation data
+#  ipinfoio_facts:
+
+- name: Install containerd and debug tool
+  package:
+    name: "{{ item }}"
+    state: latest
+  loop:
+    - containerd.io
+    - util-linux    # nsenter
+
+- name: Enable containerd now
+  systemd:
+    name: containerd
+    state: started
+    enabled: true
+
+#- name: Configuration container
+#  shell: containerd  config default > /etc/containerd/config.toml
+#
+#- name: Replace mirror source [ CN ]
+#  replace:
+#    path: /etc/containerd/config.toml
+#    regexp: 'registry.k8s.io'
+#    replace: 'registry.aliyuncs.com/google_containers'
+#  when:  country == 'CN'
+#
+#- name: Set systemdcgroup
+#  replace:
+#    path: /etc/containerd/config.toml
+#    regexp: 'SystemdCgroup = false'
+#    replace: 'SystemdCgroup = true'
+#  notify: restart containerd
+#
+#- name: Copy crictl config
+#  copy:
+#    src: crictl.yaml
+#    dest: /etc/crictl.yaml
+#
+#- name: Set crictl bash completion
+#  shell: "crictl completion bash >/etc/bash_completion.d/crictl"

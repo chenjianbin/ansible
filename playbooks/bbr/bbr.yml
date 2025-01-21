@@ -1,5 +1,0 @@
----
- - hosts:
-     - bbr
-   roles:
-     - bbr

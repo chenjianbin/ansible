@@ -1,5 +1,0 @@
----
-name: "consul"
-version: "1.4.0"
-download_addr: "https://releases.hashicorp.com/{{ name }}/{{ version }}/{{ name }}_{{ version }}_linux_amd64.zip"
-install_path: "/usr/bin"

@@ -1,6 +1,0 @@
----
- - name: Allow pr_port connection
-   ufw:
-     rule: allow
-     port: "{{ pr_port }}"
-     proto: tcp

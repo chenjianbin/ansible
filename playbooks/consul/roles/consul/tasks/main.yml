@@ -1,6 +1,0 @@
----
- - name: Installing Consul
-   unarchive:
-     src: "{{ download_addr }}"
-     dest: "{{ install_path }}"
-     remote_src: yes

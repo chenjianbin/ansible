@@ -1,0 +1,12 @@
+---
+- name: Restart caddy
+  listen: restart caddy
+  systemd:
+    name: caddy
+    state: restarted
+
+- name: Reload caddy
+  listen: reload caddy
+  systemd:
+    name: caddy
+    state: reloaded

@@ -1,23 +1,64 @@
 ---
- - name: Include OS Tasks
-   include_tasks: "{{ ansible_os_family }}.yml"
+- name: Install required packages
+  apt:
+    name:
+      - wireguard
+      - iptables
+      - resolvconf
+    state: latest
+    update_cache: true
 
- - name: Set wireguard config file
-   template:
-     src: "wg0.conf.j2"
-     dest: "{{ config_path }}/wg0.conf"
+- name: Ensure WireGuard configuration directory exists
+  file:
+    path: /etc/wireguard
+    state: directory
+    mode: '0700'
 
- - name: Enable wireguard
-   systemd:
-     name: wg-quick@wg0
-     state: restarted
-     enabled: yes
+- name: Generate server private key if not provided
+  command: wg genkey
+  register: private_key
+  when: wireguard_private_key == ""
+  changed_when: private_key.stdout != ""
 
- - name: Enable ip forwarding
-   sysctl:
-     name: net.ipv4.ip_forward
-     value: '1'
-     sysctl_set: yes
-     state: present
-     reload: yes
+- name: Save the private key
+  copy:
+    content: "{{ private_key.stdout if wireguard_private_key == '' else wireguard_private_key }}"
+    dest: /etc/wireguard/server_private.key
+    mode: '0600'
 
+- name: Generate server public key
+  command: echo "{{ private_key.stdout if wireguard_private_key == '' else wireguard_private_key }}" | wg pubkey
+  register: public_key
+  changed_when: public_key.stdout != ""
+
+- name: Save the public key
+  copy:
+    content: "{{ public_key.stdout }}"
+    dest: /etc/wireguard/server_public.key
+    mode: '0644'
+
+- name: Configure WireGuard
+  template:
+    src: wg0.conf.j2
+    dest: /etc/wireguard/{{ wireguard_interface }}.conf
+    mode: '0600'
+
+- name: Enable and start WireGuard
+  systemd:
+    name: wg-quick@{{ wireguard_interface }}
+    enabled: true
+    state: restarted
+
+- name: Ensure IP forwarding is enabled
+  sysctl:
+    name: net.ipv4.ip_forward
+    value: '1'
+    sysctl_set: true
+    state: present
+    reload: true
+
+- name: Allow wireguard port
+  ufw:
+    rule: allow
+    port: "{{ wireguard_port }}"
+    proto: udp

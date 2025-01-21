@@ -1,0 +1,18 @@
+---
+argument_specs:
+  # roles/ocserv/tasks/main.yml entry point
+  main:
+    short_description: Main entry point for the ocserv role
+    options:
+      ocserv_port:
+        type: "int"
+        required: false
+        default: "443"
+        description: "Ocserv listen port."
+
+      ocserv_users:
+        type: "list"
+        required: false
+        default: []
+        description: "Ocserv users."
+

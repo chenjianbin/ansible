@@ -1,0 +1,8 @@
+---
+- name: Allow proxy port
+  firewalld:
+    zone: public
+    port: "{{ proxy_port }}"
+    immediate: yes
+    permanent: true
+    state: enabled

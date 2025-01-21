@@ -1,0 +1,32 @@
+{
+  "inbounds": [
+    {
+      "tag": "{{ v2ray_protocol }}-TCP-{{ v2ray_port }}.json",
+      "port": {{ v2ray_port }},
+      "listen": "0.0.0.0",
+      "protocol": "vmess",
+      "settings": {
+        "clients": [
+          {
+            "id": "{{ v2ray_uuid }}"
+          }
+        ]
+      },
+      "streamSettings": {
+        "network": "tcp",
+        "tcpSettings": {
+          "header": {
+            "type": "none"
+          }
+        }
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ]
+      }
+    }
+  ]
+}

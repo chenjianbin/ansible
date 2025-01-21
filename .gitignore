@@ -3,8 +3,7 @@ galaxy_cache/
 galaxy_token
 tmp/
 **/hosts
-**/vars/main.yml
-**/vars/main.yaml
+**/group_vars/all.yml
 *.retry
-zabbix.ini
+inventory/zabbix.ini
 .venv/

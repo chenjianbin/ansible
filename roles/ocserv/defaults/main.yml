@@ -1,0 +1,5 @@
+---
+# defaults file for ocserv
+ocserv_port: "443"
+ocserv_confdir: "/etc/ocserv"
+ocserv_users: []

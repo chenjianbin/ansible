@@ -1,0 +1,10 @@
+- hosts: localhost
+  become: yes
+  roles:
+    - role: ocserv
+      vars:
+        ocserv_port: 443
+        ocserv_users:
+          - username: "admin"
+            password: "adminpassword"
+

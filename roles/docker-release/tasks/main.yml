@@ -1,0 +1,4 @@
+---
+# tasks file for docker-release
+- name: Include OS tasks
+  include_tasks: "{{ ansible_os_family }}.yml"

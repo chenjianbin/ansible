@@ -1,5 +1,9 @@
 ---
-listen_port: "51820"
-config_path: "/etc/wireguard"
-server_private_key: "iFmH6MWBxIkDmeqa8GZYMDg5jkhdNrVVTV57V4twKFM="
-server_public_key: "6z8XvN6akXZ/PdiGWcJ8yxJK1Xs6e6oNqzd6+HeEfjk="
+# WireGuard 默认配置
+wireguard_port: 51820
+wireguard_interface: "wg0"
+wireguard_address: "10.0.0.1/24"
+wireguard_dns: "8.8.8.8"
+wireguard_private_key: ""
+wireguard_public_key: ""
+wireguard_peers: []  # 用户可以在 playbook 中定义客户端配置

@@ -1,0 +1,6 @@
+---
+- name: Set git credential store
+  git_config:
+    name: "credential.helper"
+    scope: global
+    value: "store"

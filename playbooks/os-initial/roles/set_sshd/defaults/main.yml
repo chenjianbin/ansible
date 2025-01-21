@@ -1,0 +1,5 @@
+ssh_public_keys: []
+_sshd_systemd_service:
+  Debian: "ssh"
+  RedHat: "sshd"
+sshd_systemd_service: "{{ _sshd_systemd_service[ansible_os_family] }}"

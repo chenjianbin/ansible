@@ -1,0 +1,45 @@
+---
+- name: Determine whether ssh_public_keys is set
+  assert:
+    that:
+      - "ssh_public_keys | length > 0"
+    fail_msg: "Please copy group_vars/default.all.yml to group_vars/all.yml and set ssh_public_keys"
+
+- name: Validate ssh_public_keys format
+  assert:
+    that:
+      - "ssh_public_keys | map('regex_search', '^ssh-(rsa|dss|ed25519) ') | list | length == ssh_public_keys | length"
+    fail_msg: "Invalid ssh_public_keys format. Ensure all keys are valid SSH keys."
+
+- name: Check if directory exists
+  stat:
+    path: /etc/ssh/sshd_config.d
+  register: __directory_state
+
+- name: Copy sshd configuration file
+  copy:
+    src: 1-ops.conf
+    dest: /etc/ssh/sshd_config.d/1-ops.conf
+  when: __directory_state.stat.exists == true
+  notify: restart sshd
+
+- name: Modify /etc/ssh/sshd_config
+  blockinfile:
+    marker: "# {mark} ANSIBLE MANAGED BLOCK FOR SSHD"
+    path: "/etc/ssh/sshd_config"
+    block: "{{ lookup('file', '1-ops.conf') }}"
+  when: __directory_state.stat.exists == false
+  notify: restart sshd
+
+- name: Add authorized_keys
+  authorized_key:
+    user: root
+    key: "{{ item }}"
+  loop: "{{ ssh_public_keys }}"
+
+- name: Set ssh timeout
+  blockinfile:
+    marker: "# {mark} ANSIBLE MANAGED BLOCK FOR TERMINAL TIMEOUT"
+    dest: "/etc/profile"
+    block: "export TMOUT=900"
+

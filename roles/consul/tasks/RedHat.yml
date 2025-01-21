@@ -1,0 +1,9 @@
+---
+- name: Add HashiCorp repository
+  ansible.builtin.yum_repository:
+    name: "hashicorp"
+    description: "HashiCorp Stable - RHEL"
+    baseurl: "https://rpm.releases.hashicorp.com/RHEL/hashicorp.repo"
+    enabled: true
+    gpgcheck: true
+    gpgkey: "https://rpm.releases.hashicorp.com/gpg"

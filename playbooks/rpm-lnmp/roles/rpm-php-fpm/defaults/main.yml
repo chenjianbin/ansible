@@ -1,6 +1,0 @@
-large_version: 8.1
-small_version: 27-1
-php_package_url: "{{ package_url_prefix }}/php/php-{{ large_version }}.{{ small_version }}.el{{ ansible_distribution_major_version }}.{{ ansible_architecture }}.rpm"
-php_user: www
-php_install_dir: /usr/local/webserver/php
-php_logs_dir: /data0/logs/php-fpm

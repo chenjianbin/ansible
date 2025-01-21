@@ -1,4 +1,0 @@
----
- - hosts: proxysql
-   roles:
-     - proxysql

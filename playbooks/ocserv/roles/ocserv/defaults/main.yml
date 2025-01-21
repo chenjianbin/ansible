@@ -1,4 +1,0 @@
----
-ocserv:
-  port: "9444"
-  confdir: "/etc/ocserv"

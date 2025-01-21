@@ -2,5 +2,5 @@
  - hosts: all
    roles:
      - role: prerequisites
-     - role: container
+     - role: containerd
      - role: kube-cluster

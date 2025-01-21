@@ -1,0 +1,34 @@
+---
+# tasks file for ocserv
+- name: Include OS Tasks
+  include_tasks: "{{ ansible_os_family }}.yml"
+
+- name: Set ocserv config file
+  template:
+    src: "{{ ansible_os_family }}.ocserv.conf.j2"
+    dest: "{{ ocserv_confdir }}/ocserv.conf"
+
+- name: Add users for plain authentication
+  lineinfile:
+    path: "{{ ocserv_confdir }}/ocpasswd"
+    line: "{{ item.username }}:{{ item.password | password_hash('sha512') }}"
+    create: true
+  with_items: "{{ ocserv_users }}"
+
+- name: Enable ocserv
+  systemd:
+    name: ocserv
+    state: restarted
+    enabled: true
+
+- name: Enable ip forwarding
+  sysctl:
+    name: net.ipv4.ip_forward
+    value: '1'
+    sysctl_set: true
+    state: present
+    reload: true
+
+- name: Print ocserv link address
+  debug:
+    msg: "Link: https://{{ inventory_hostname }}:{{ ocserv_port }}"

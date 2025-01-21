@@ -1,0 +1,22 @@
+---
+- name: Ensure sshd_ip is defined 
+  assert:
+    that:
+      - "sshd_ip is defined"
+    fail_msg: "sshd_ip must be defined."
+
+- name: Include os tasks
+  include_tasks: "{{ ansible_os_family }}.yml"
+
+- name: Setup proxy info
+  blockinfile:
+    marker: "# {mark} ANSIBLE MANAGED BLOCK FOR SSHD-{{ proxy_port }}"
+    dest: "/etc/haproxy/haproxy.cfg"
+    block: |
+      listen sshd-{{ proxy_port }}
+          bind 0.0.0.0:{{ proxy_port }}
+          mode tcp
+          maxconn 2000
+          balance roundrobin
+          server sshd {{ sshd_ip }}:{{ sshd_port }}
+  notify: restart haproxy

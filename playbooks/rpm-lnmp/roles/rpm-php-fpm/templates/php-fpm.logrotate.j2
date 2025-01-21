@@ -1,8 +1,0 @@
-{{ php_logs_dir }}/*.log {{ php_install_dir }}/var/log/php-fpm.log{
-daily
-rotate 7
-missingok
-notifempty
-compress
-create 0600 {{ php_user }} {{ php_user }}
-}

@@ -1,0 +1,8 @@
+---
+- name: Allow v2ray port connection
+  ufw:
+    rule: allow
+    port: "{{ item }}"
+    proto: tcp
+  loop:
+    - "{{ v2ray_port }}"

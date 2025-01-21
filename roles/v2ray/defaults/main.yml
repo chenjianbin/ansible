@@ -1,0 +1,6 @@
+---
+v2ray_protocol: "VMess"
+v2ray_port: "{{ 65535 | random(seed=inventory_hostname) }}"
+v2ray_cdn_port: "{{ 65535 | random(seed=cloudflare_zone_record) }}"
+v2ray_uuid: "{{ 99999999 | random(seed=inventory_hostname) | to_uuid }}"
+v2ray_ws_path: "/wsv3"

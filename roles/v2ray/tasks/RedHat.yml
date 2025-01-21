@@ -1,0 +1,10 @@
+---
+- name: Allow v2ray port connection
+  firewalld:
+    zone: public
+    port: "{{ item }}"
+    immediate: true
+    permanent: true
+    state: enabled
+  loop:
+    - "{{ v2ray_port }}"

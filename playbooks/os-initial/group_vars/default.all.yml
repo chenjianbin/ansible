@@ -1,0 +1,4 @@
+ssh_public_keys:
+  #- ssh-rsa AAAAB3NzaC1yc2EAA.... admin@example.com
+external_whitelist:
+  #- 1.1.1.1/32

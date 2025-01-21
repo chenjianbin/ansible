@@ -1,0 +1,34 @@
+{
+  "inbounds": [
+    {
+      "tag": "{{ v2ray_protocol }}-WS-{{cloudflare_zone_record}}.{{ cloudflare_zone }}.json",
+      "port": {{ v2ray_cdn_port }},
+      "listen": "0.0.0.0",
+      "protocol": "vmess",
+      "settings": {
+        "clients": [
+          {
+            "id": "{{ v2ray_uuid }}"
+          }
+        ]
+      },
+      "streamSettings": {
+        "network": "ws",
+        "security": "none",
+        "wsSettings": {
+          "path": "{{ v2ray_ws_path }}",
+          "headers": {
+            "Host": "{{ cloudflare_zone_record }}.{{ cloudflare_zone }}"
+          }
+        }
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ]
+      }
+    }
+  ]
+}

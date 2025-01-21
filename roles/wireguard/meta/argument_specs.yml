@@ -4,21 +4,15 @@ argument_specs:
   main:
     short_description: Main entry point for the wireguard role
     options:
-      listen_port:
+      wireguard_port:
         type: "int"
         required: false
         default: "51820"
         description: "Wireguard listen port."
 
-      config_path:
-        type: "path"
+      wireguard_peers:
+        type: "list"
         required: false
-        default: "/etc/wireguard"
-        description: "Wireguard configuration path."
-
-      server_private_key:
-        type: "str"
-        required: false
-        default: "iFmH6MWBxIkDmeqa8GZYMDg5jkhdNrVVTV57V4twKFM"
-        description: "Wireguard server private key."
+        default: []
+        description: "Wireguard user peers."
 

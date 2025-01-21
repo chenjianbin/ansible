@@ -1,10 +1,14 @@
 [Interface]
-Address = 10.0.0.1/24
+Address = {{ wireguard_address }}
+ListenPort = {{ wireguard_port }}
 PostUp = iptables -A FORWARD -i %i -j ACCEPT; iptables -t nat -A POSTROUTING -o {{ ansible_default_ipv4.interface }} -j MASQUERADE
 PostDown = iptables -D FORWARD -i %i -j ACCEPT; iptables -t nat -D POSTROUTING -o {{ ansible_default_ipv4.interface }} -j MASQUERADE
-ListenPort = {{ listen_port }}
-PrivateKey = {{ server_private_key }}
+PrivateKey = {{ private_key.stdout if wireguard_private_key == '' else wireguard_private_key }}
+DNS = {{ wireguard_dns }}
 
+{% for peer in wireguard_peers %}
 [Peer]
-PublicKey = bmXVEc026VK6JDbZSC6kC7IxV2Hs8GXnIse1yf//4mw=
-AllowedIPs = 10.0.0.2/32
+PublicKey = {{ peer.public_key }}
+AllowedIPs = {{ peer.allowed_ips }}
+{% endfor %}
+

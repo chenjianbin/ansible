@@ -1,8 +1,0 @@
----
- - name: Allow pr_port connections
-   firewalld:
-     zone: public
-     port: "{{ pr_port }}/tcp"
-     immediate: yes
-     permanent: true
-     state: enabled

@@ -1,6 +1,0 @@
----
- - hosts: ssh_proxy
-   roles:
-     - role: ssh_proxy
-
-...

@@ -1,0 +1,8 @@
+---
+# handlers file for docker-engine
+- name: Restart docker
+  listen: restart docker
+  systemd:
+    name: docker
+    enabled: true
+    state: restarted

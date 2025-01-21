@@ -2,17 +2,17 @@ __alertmanager_receivers:
   - name: telegram
     telegram_configs:
       - send_resolved: True
-        bot_token: "7387288991:AAG36xjBjow7ccpGJAduxxKYtC2ddMQIJBY"
-        chat_id: -2265045266
+        bot_token: "00...:AAG36xjB......"
+        chat_id: 00...
         parse_mode: "HTML"
         message: '{% raw %}{{ template "telegram.default.message" . }}{% endraw %}'
-  - name: telegram-ops
-    telegram_configs:
-      - send_resolved: True
-        bot_token: "7387288991:AAG36xjBjow7ccpGJAduxxKYtC2ddMQIJBY"
-        chat_id: -2265045266
-        parse_mode: "HTML"
-        message: '{% raw %}{{ template "telegram.default.message" . }}{% endraw %}'
+    #  - name: telegram-ops
+    #    telegram_configs:
+    #      - send_resolved: True
+    #        bot_token: "00...:AAG36xjB......"
+    #        chat_id: 00...
+    #        parse_mode: "HTML"
+    #        message: '{% raw %}{{ template "telegram.default.message" . }}{% endraw %}'
 
 __alertmanager_route:
   group_by:
@@ -23,10 +23,10 @@ __alertmanager_route:
   group_interval: 5m
   repeat_interval: 24h
   receiver: telegram
-  routes:
-    - receiver: telegram-ops
-      matchers:
-        - alertname = Watchdog
+#  routes:
+#    - receiver: telegram-ops
+#      matchers:
+#        - alertname = Watchdog
 
 __alertmanager_inhibit_rules:
   - source_match:
