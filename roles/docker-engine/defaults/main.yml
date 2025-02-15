@@ -1,2 +1,10 @@
 ---
 # defaults file for docker-engine
+shell: "{{ ansible_user_shell | basename }}"
+_docker_completion_script: 
+  bash: "~/.local/share/bash-completion/completions/docker"
+  zsh: "~/.oh-my-zsh/completions/_docker"
+  fish: "~/.config/fish/completions/docker.fish"
+docker_completion_script: "{{ _docker_completion_script[shell] }}"
+docker_completion_directory: "{{ docker_completion_script | dirname}}"
+

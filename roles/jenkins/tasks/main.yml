@@ -1,0 +1,18 @@
+---
+# tasks file for jenkins
+- name: Include OS tasks
+  include_tasks: "{{ ansible_os_family }}.yml"
+
+- name: Install jenkins
+  package:
+    name: "{{ item }}"
+    state: latest
+  loop:
+    - jenkins 
+    - fontconfig
+
+- name: Enable jenkins now
+  systemd:
+    name: jenkins
+    state: started
+    enabled: true

@@ -1,0 +1,16 @@
+---
+- name: Set up jenkins repository
+  ansible.builtin.get_url:
+    url: "{{ jenkins_pkg_addr }}/jenkins.repo"
+    dest: /etc/yum.repos.d/jenkins.repo
+    mode: '0644'
+
+- name: Import Jenkins GPG key
+  ansible.builtin.rpm_key:
+    key: "{{ jenkins_gpg_key }}"
+    state: present
+
+- name: Install jave runtime environment
+  yum:
+    name: "java-17-openjdk"
+    state: latest

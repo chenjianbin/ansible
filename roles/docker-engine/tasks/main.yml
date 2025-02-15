@@ -10,9 +10,22 @@
     - containerd.io
     - docker-buildx-plugin
     - docker-compose-plugin
+    - bash-completion
 
 - name: Enable docker now
   systemd:
     name: docker
     enabled: true
     state: started
+
+- name: Ensure Docker completion directory exists
+  ansible.builtin.file:
+    path: "{{ docker_completion_directory }}"
+    state: directory
+    mode: '0755'
+
+- name: Enable Docker bash completion
+  ansible.builtin.shell: "docker completion {{ shell }} > {{ docker_completion_script }}"
+  args:
+    creates: "{{ docker_completion_script }}"
+

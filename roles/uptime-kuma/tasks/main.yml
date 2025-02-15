@@ -1,0 +1,13 @@
+---
+# tasks file for uptime-kuma
+- name: Run Uptime Kuma container
+  community.docker.docker_container:
+    name: uptime-kuma
+    image: louislam/uptime-kuma
+    restart_policy: always
+    ports:
+      #- "127.0.0.1:3001:3001"
+      - "3001:3001"
+    volumes:
+      - "uptime-kuma:/app/data"
+    state: started

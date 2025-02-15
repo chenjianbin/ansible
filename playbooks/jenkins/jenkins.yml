@@ -1,5 +1,5 @@
 ---
- - hosts:
-     - jenkins
-   roles:
-     - role: jenkins
+- hosts:
+    - jenkins
+  roles:
+    - role: jenkins

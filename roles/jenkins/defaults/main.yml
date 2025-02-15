@@ -1,0 +1,4 @@
+---
+# defaults file for jenkins
+jenkins_pkg_addr: "https://pkg.jenkins.io/{{ ansible_os_family | lower }}-stable"
+jenkins_gpg_key: "{{ jenkins_pkg_addr }}/jenkins.io-2023.key"
