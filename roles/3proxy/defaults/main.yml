@@ -1,0 +1,8 @@
+---
+# defaults file for 3proxy
+threeproxy_version: "0.9.5"
+threeproxy_package_url:
+  Debian: "https://github.com/3proxy/3proxy/releases/download/{{ threeproxy_version }}/3proxy-{{ threeproxy_version }}.{{ ansible_architecture }}.deb"
+  Redhat: "https://github.com/3proxy/3proxy/releases/download/{{ threeproxy_version }}/3proxy-{{ threeproxy_version }}.{{ ansible_architecture }}.rpm"
+threeproxy_userlist: []
+

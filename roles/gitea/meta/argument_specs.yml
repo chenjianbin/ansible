@@ -1,0 +1,29 @@
+---
+argument_specs:
+  # roles/gitea/tasks/main.yml entry point
+  main:
+    short_description: Main entry point for the gitea role
+    options:
+      gitea_version:
+        type: "int"
+        required: false
+        default: "1"
+        description: "Gitea version."
+
+      gitea_bind_address:
+        type: "str"
+        required: false
+        default: "127.0.0.1"
+        description: "Gitea bind address."
+
+      gitea_bind_port:
+        type: "str"
+        required: false
+        default: 3000
+        description: "Gitea bind port."
+
+      gitea_data_dir:
+        type: "path"
+        required: false
+        default: "/data0/gitea"
+        description: "Gitea data directory."

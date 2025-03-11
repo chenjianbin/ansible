@@ -1,0 +1,17 @@
+upstream gitea_backend{
+	server 127.0.0.1:3000;
+	keepalive 32;
+}
+
+server {
+    server_name {{ gitea_domain }};
+
+    location / {
+        proxy_pass http://gitea_backend;
+    }
+
+    include conf.d/proxy/proxy.conf;
+
+    access_log {{ nginx_log_dir }}/{{ gitea_domain }}.access.log  main_product;
+    error_log {{ nginx_log_dir }}/{{ gitea_domain }}.error.log;
+}

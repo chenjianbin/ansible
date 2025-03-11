@@ -1,0 +1,11 @@
+- name: Install 3proxy
+  apt:
+    deb: "{{ threeproxy_package_url[ansible_os_family] }}"
+
+- name: Allow 3proxy proxy ports
+  ufw:
+    rule: allow
+    port: "{{ item }}"
+    proto: tcp
+  loop:
+    - "1080"

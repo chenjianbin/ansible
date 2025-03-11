@@ -1,0 +1,18 @@
+- name: Install gitea service
+  include_role:
+    name: gitea
+
+- name: Install nginx service
+  include_role:
+    name: nginx
+    public: true
+
+- name: Copy gitea nginx configration
+  template:
+    src: "gitea-nginx.conf.j2"
+    dest: "{{ nginx_sites_enabled_dir }}/{{ gitea_domain }}.conf"
+  notify: reload nginx
+
+- name: Print gitea webui url
+  debug:
+    msg: "http://{{ gitea_domain }}"

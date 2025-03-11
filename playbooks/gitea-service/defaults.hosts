@@ -1,0 +1,3 @@
+[all]
+[all:vars]
+#gitea_domain="gitea.example.com"

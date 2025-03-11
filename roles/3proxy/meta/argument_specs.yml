@@ -1,0 +1,36 @@
+---
+argument_specs:
+  # roles/3proxy/tasks/main.yml entry point
+  main:
+    short_description: Main entry point for the 3proxy role
+    options:
+      threeproxy_version:
+        type: "str"
+        required: false
+        default: "0.9.5"
+        description: "3proxy version."
+
+      threeproxy_package_url:
+        type: "dict"
+        required: false
+        default:
+          Debian: "https://github.com/3proxy/3proxy/releases/download/{{ threeproxy_version }}/3proxy-{{ threeproxy_version }}.{{ ansible_architecture }}.deb"
+          Redhat: "https://github.com/3proxy/3proxy/releases/download/{{ threeproxy_version }}/3proxy-{{ threeproxy_version }}.{{ ansible_architecture }}.rpm"
+        description: "3proxy package url."
+
+      threeproxy_userlist:
+        type: "list"
+        elements: "dict"
+        required: false
+        default: []
+        description: "3proxy userlist."
+        options:
+          username:
+            type: "str"
+            required: false
+            description: "3proxy proxy username."
+          password:
+            type: "str"
+            required: false
+            description: "3proxy proxy password."
+

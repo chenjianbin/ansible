@@ -1,0 +1,21 @@
+networks:
+  gitea:
+    external: false
+
+services:
+  server:
+    image: docker.io/gitea/gitea:{{ gitea_version }}
+    container_name: gitea
+    environment:
+      - USER_UID=1000
+      - USER_GID=1000
+    restart: always
+    networks:
+      - gitea
+    volumes:
+      - {{ gitea_data_dir }}:/data
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    ports:
+      - "{{ gitea_bind_address }}:{{ gitea_bind_port }}:3000"
+      #- "222:22"

@@ -1,0 +1,14 @@
+- name: Install 3proxy
+  yum:
+    name: "{{ threeproxy_package_url[ansible_os_family] }}"
+    state: latest
+
+- name: Allow 3proxy proxy ports
+  firewalld:
+    zone: public
+    port: "{{ item }}"
+    immediate: yes
+    permanent: true
+    state: enabled
+  loop:
+    - "1080/tcp"

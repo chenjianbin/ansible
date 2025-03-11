@@ -7,5 +7,12 @@
       set superusers="root"
       password_pbkdf2 root {{ grub_password }}
 
+- name: Insert CLASS modification after first occurrence of CLASS=
+  ansible.builtin.lineinfile:
+    path: "/etc/grub.d/10_linux"
+    insertafter: '^CLASS='  # 匹配第一个 CLASS=
+    line: 'CLASS="${CLASS} --unrestricted"'
+    firstmatch: yes  # 只插入第一个匹配处
+
 - name: Update GRUB configuration
   command: update-grub

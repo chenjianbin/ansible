@@ -1,0 +1,20 @@
+---
+# tasks file for gitea
+- name: Ensure Gitea data directory exists
+  file:
+    path: /data0/gitea
+    state: directory
+    mode: '0755'
+
+- name: Copy Docker Compose file for Gitea
+  template:
+    src: "{{ item }}"
+    dest: "{{ gitea_data_dir }}/{{ item }}"
+  loop:
+    - "docker-compose.yml"
+
+- name: Start Gitea with Docker Compose
+  community.docker.docker_compose_v2:
+    project_src: "{{ gitea_data_dir }}"
+    state: present
+

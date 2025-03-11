@@ -1,0 +1,6 @@
+---
+# defaults file for gitea
+gitea_version: 1
+gitea_data_dir: "/data0/gitea"
+gitea_bind_address: "127.0.0.1"
+gitea_bind_port: 3000
