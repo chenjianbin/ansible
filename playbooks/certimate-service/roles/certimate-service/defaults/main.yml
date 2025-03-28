@@ -1,0 +1,1 @@
+certimate_domain: "{{ ansible_default_ipv4.address }}"

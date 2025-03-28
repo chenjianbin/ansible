@@ -1,0 +1,19 @@
+---
+# tasks file for certimate
+- name: Ensure Certimate data directory exists
+  file:
+    path: "{{ certimate_data_dir }}"
+    state: directory
+    mode: '0755'
+
+- name: Copy Docker Compose file for Certimate
+  template:
+    src: "{{ item }}"
+    dest: "{{ certimate_data_dir }}/{{ item }}"
+  loop:
+    - "docker-compose.yml"
+
+- name: Start Certimate with Docker Compose
+  community.docker.docker_compose_v2:
+    project_src: "{{ certimate_data_dir }}"
+    state: present

@@ -1,0 +1,4 @@
+---
+# tasks file for hashicorp-release
+- name: Include os family tasks
+  include_tasks: "{{ ansible_os_family }}.yml"

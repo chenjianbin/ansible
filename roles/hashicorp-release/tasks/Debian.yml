@@ -1,0 +1,17 @@
+---
+- name: Add HashiCorp GPG key
+  ansible.builtin.get_url:
+    url: https://apt.releases.hashicorp.com/gpg
+    dest: /usr/share/keyrings/hashicorp-archive-keyring.asc
+    mode: '0644'
+
+- name: Add HashiCorp APT repository
+  ansible.builtin.apt_repository:
+    #repo: "deb [arch={{ ansible_architecture }} signed-by=/usr/share/keyrings/hashicorp-archive-keyring.asc] https://apt.releases.hashicorp.com {{ ansible_lsb.codename }} main"
+    repo: "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.asc] https://apt.releases.hashicorp.com {{ ansible_lsb.codename }} main"
+    filename: "hashicorp"
+    state: present
+
+- name: Update APT cache
+  ansible.builtin.apt:
+    update_cache: true

@@ -1,0 +1,11 @@
+---
+# tasks file for terraform
+- name: Install Terraform
+  ansible.builtin.package:
+    name: terraform
+    state: latest
+
+- name: Enable tab completion
+  ansible.builtin.shell: "terraform -install-autocomplete"
+
+

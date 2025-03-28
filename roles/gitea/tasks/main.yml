@@ -2,7 +2,7 @@
 # tasks file for gitea
 - name: Ensure Gitea data directory exists
   file:
-    path: /data0/gitea
+    path: "{{ gitea_data_dir }}"
     state: directory
     mode: '0755'
 

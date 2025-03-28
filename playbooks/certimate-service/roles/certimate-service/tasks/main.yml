@@ -1,0 +1,19 @@
+- name: Install certimate service
+  include_role:
+    name: certimate
+    public: true
+
+- name: Install nginx service
+  include_role:
+    name: nginx
+    public: true
+
+- name: Copy certimate nginx configration
+  template:
+    src: "certimate-nginx.conf.j2"
+    dest: "{{ nginx_sites_enabled_dir }}/{{ certimate_domain }}.conf"
+  notify: reload nginx
+
+- name: Print certimate webui url
+  debug:
+    msg: "http://{{ certimate_domain }}"

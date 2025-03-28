@@ -1,0 +1,13 @@
+version: "3.0"
+services:
+  certimate:
+    image: usual2970/certimate:latest
+    container_name: certimate_server
+    ports:
+      - "{{ certimate_bind_address }}:{{ certimate_bind_port }}:8090"
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+      - {{ certimate_data_dir }}:/app/pb_data
+    restart: unless-stopped
+

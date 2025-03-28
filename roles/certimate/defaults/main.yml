@@ -1,0 +1,5 @@
+---
+# defaults file for certimate
+certimate_data_dir: "/data0/certimate"
+certimate_bind_address: "127.0.0.1"
+certimate_bind_port: 8090

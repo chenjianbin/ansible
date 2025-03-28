@@ -1,8 +1,5 @@
 ---
 # tasks file for consul
-- name: Include os tasks
-  include_tasks: "{{ ansible_os_family }}.yml"
-
 - name: Install Consul
   ansible.builtin.package:
     name: consul
@@ -12,7 +9,7 @@
   ansible.builtin.systemd:
     daemon_reload: true
     name: consul
-    state: restarted
+    state: started
     enabled: true
 
 - name: Make sure consul service is running

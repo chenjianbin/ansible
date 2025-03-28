@@ -1,6 +1,7 @@
 - name: Install gitea service
   include_role:
     name: gitea
+    public: true
 
 - name: Install nginx service
   include_role:

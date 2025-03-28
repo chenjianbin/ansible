@@ -1,0 +1,23 @@
+---
+argument_specs:
+  # roles/certimate/tasks/main.yml entry point
+  main:
+    short_description: Main entry point for the certimate role
+    options:
+      certimate_bind_address:
+        type: "str"
+        required: false
+        default: "127.0.0.1"
+        description: "Certimate bind address."
+
+      certimate_bind_port:
+        type: "str"
+        required: false
+        default: 8090
+        description: "Certimate bind port."
+
+      certimate_data_dir:
+        type: "path"
+        required: false
+        default: "/data0/certimate"
+        description: "Certimate data directory."

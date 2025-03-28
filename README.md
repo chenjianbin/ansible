@@ -1,3 +1,3 @@
 ### 使用简介
 
-- 这些ansible playbooks只适用于RHEL >=7以及Ubuntu >=18
+echo "export ANSIBLE_CONFIG=~/.ansible/ansible.cfg" >> /etc/profile  #可选,可把~/.ansible/ansible.cfg替换为你的ansible.cfg配置文件路径
