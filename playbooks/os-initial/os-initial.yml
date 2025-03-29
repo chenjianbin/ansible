@@ -13,7 +13,7 @@
     - role: set_sysctl
     - role: set_time
     - role: set_sshd
-    - role: set_passwd
+    - role: set_password
     - role: set_trash
     - role: set_history_format
     - role: set_limits

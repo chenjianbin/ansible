@@ -1,0 +1,33 @@
+---
+- name: Set superuser root password
+  user:
+    name: "root"
+    password: "{{ root_password | password_hash('sha512') }}"
+    update_password: always
+  when: root_password
+
+- name: Set grub password
+  block:
+  - name: Install pexpect for Python3
+    package:
+      name: python3-pexpect
+      state: present
+
+  - name: Generate grub password hash
+    expect:
+      command: "{{ _grub_mkpasswd_command[ansible_os_family] }}"
+      responses:
+        "Enter password:": "{{ grub_plain_password }}"
+        "Reenter password:": "{{ grub_plain_password }}"
+    register: _grub_password_output
+    no_log: true
+
+  - name: Set the password variable
+    set_fact:
+      _grub_password: "{{ (_grub_password_output.stdout | regex_search('grub.pbkdf2.[^\n]+', '\\0'))[0] }}"
+    no_log: true 
+  
+  - name: Set grub superuser password [{{ ansible_os_family }}]
+    include_tasks: "grub_password_{{ ansible_os_family }}.yml"
+  when: grub_plain_password
+

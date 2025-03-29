@@ -1,0 +1,3 @@
+_grub_mkpasswd_command:
+  Debian: "grub-mkpasswd-pbkdf2"
+  RedHat: "grub2-mkpasswd-pbkdf2"

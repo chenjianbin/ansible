@@ -1,4 +1,6 @@
-ssh_public_keys:
-  #- ssh-rsa AAAAB3NzaC1yc2EAA.... admin@example.com
+root_password: ""
+grub_plain_password: ""
 external_whitelist:
   #- 1.1.1.1/32
+ssh_public_keys:
+  #- ssh-rsa AAAAB3NzaC1yc2EAA.... admin@example.com
