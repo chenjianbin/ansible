@@ -1,13 +1,13 @@
-# Superuser root password [type: str] (option)
+# Superuser root password [type: str] (Optional)
 root_password: ""
 
-# Grub superuser root password [type: str] (option)
+# Grub superuser root password [type: str] (Optional)
 grub_plain_password: ""
 
-# Firewall IP whitelist [type: list] (option)
+# Firewall IP whitelist [type: list] (Optional)
 external_whitelist:
   #- 1.1.1.1/32
 
-# ssh public key list [type: list] (required)
+# ssh public key list [type: list] (Required)
 ssh_public_keys:
   #- ssh-rsa AAAAB3NzaC1yc2EAA.... admin@example.com
