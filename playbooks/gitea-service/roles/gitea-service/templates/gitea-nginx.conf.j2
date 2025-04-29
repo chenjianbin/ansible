@@ -1,4 +1,4 @@
-upstream gitea_backend{
+upstream gitea_backend {
 	server 127.0.0.1:{{ gitea_bind_port }};
 	keepalive 32;
 }
@@ -9,8 +9,6 @@ server {
     location / {
         proxy_pass http://gitea_backend;
     }
-
-    include conf.d/proxy/proxy.conf;
 
     access_log {{ nginx_log_dir }}/{{ gitea_domain }}.access.log  main_product;
     error_log {{ nginx_log_dir }}/{{ gitea_domain }}.error.log;
