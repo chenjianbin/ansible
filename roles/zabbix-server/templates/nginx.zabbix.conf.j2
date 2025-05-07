@@ -1,9 +1,8 @@
 server {
-    set $Site {{ zabbix_server_hostname }};
     listen 80;
     server_name {{ zabbix_server_hostname }};
-    index index.php index.html index.htm;
-    root /data0/web/$Site;
+    index index.php;
+    root /usr/share/zabbix;
 
     location / {
         if (!-e $request_filename) {
@@ -11,8 +10,15 @@ server {
         }
     }
 
+    location ~ .+\.php($|/) {
+        fastcgi_pass unix:/dev/shm/php-cgi-{{ zabbix_server_hostname }}.sock;
+        include fastcgi_params;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        fastcgi_split_path_info ^(.+\.php)(.*)$;
+        fastcgi_param PATH_INFO $fastcgi_path_info;
+    }
+
     include conf.d/common/*.conf;
-    include conf.d/php/*.conf;
 
     access_log /data0/logs/nginx/{{ zabbix_server_hostname }}.access.log  main_product;
     error_log /data0/logs/nginx/{{ zabbix_server_hostname }}.error.log;

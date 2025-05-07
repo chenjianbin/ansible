@@ -1,2 +1,1 @@
-mysql_socket_path: "/data0/mysql/3306/mysql.sock"
 grafana_condfig_file: "/etc/grafana/grafana.ini"

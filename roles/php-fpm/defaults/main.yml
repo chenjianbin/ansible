@@ -10,7 +10,7 @@ _php_fpm_confdir:
   RedHat: "/etc/php-fpm.d"
 php_fpm_confdir: "{{ _php_fpm_confdir[ansible_os_family] }}"
 php_fpm_logdir: "/var/log/php-fpm"
-_php_fpm_systemd_service:
-  Debian: "php{{ php_version }}-fpm"
-  RedHat: "php-fpm"
-php_fpm_systemd_service: "{{ _php_fpm_systemd_service[ansible_os_family] }}"
+_systemd_php_fpm_service:
+  Debian: "php{{ php_version }}-fpm.service"
+  RedHat: "php-fpm.service"
+systemd_php_fpm_service: "{{ _systemd_php_fpm_service[ansible_os_family] }}"

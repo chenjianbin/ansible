@@ -1,2 +1,6 @@
 ---
-mysql_socket_path: "/data0/mysql/3306/mysql.sock"
+zabbix_db_info:
+  user: "zabbix"
+  db: "zabbix"
+  host: "127.0.0.1"
+  password: ""

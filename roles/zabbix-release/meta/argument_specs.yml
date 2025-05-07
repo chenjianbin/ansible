@@ -8,8 +8,6 @@ argument_specs:
         type: "str"
         required: false
         choice:
-          - "6.0"
-          - "6.4"
           - "7.0"
         default: "7.0"
         description: "Zabbix release version."

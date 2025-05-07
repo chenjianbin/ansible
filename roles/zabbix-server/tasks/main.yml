@@ -4,13 +4,14 @@
 
 - name: Set zabbix mysql password
   set_fact:
-    zabbix_mysql_password: "{{ lookup('community.general.random_string', min_lower=1, min_upper=1, min_special=1,override_special='_', min_numeric=1, length=16) }}"
+    zabbix_db_info: "{{ zabbix_db_info | combine({'password': lookup('community.general.random_string', min_lower=1, min_upper=1, min_special=1, override_special='_', min_numeric=1, length=16) }) }}"
+  when: zabbix_db_info.password is not defined or zabbix_db_info.password | length == 0
 
 - name: Create web configration directory
   file:
     path: "{{ item }}"
-    owner: "{{ php_user }}"
-    group: "{{  php_group}}"
+    owner: "{{ php_os_user }}"
+    group: "{{  php_os_group}}"
     recurse: true
     state: directory
   loop:
@@ -24,7 +25,7 @@
 
 - name: Import zabbix db
   mysql_db:
-    name: "zabbix"
+    name: "{{ zabbix_db_info.db }}"
     login_unix_socket: "{{ mysql_socket_path }}"  
     state: import
     encoding: utf8mb4
@@ -40,10 +41,10 @@
 
 - name: Create zabbix user
   mysql_user:
-    name: "zabbix"
-    host: "127.0.0.1"
-    password: "{{ zabbix_mysql_password }}"
-    priv: "zabbix.*:ALL"
+    name: "{{ zabbix_db_info.user }}"
+    host: "{{ zabbix_db_info.host }}"
+    password: "{{ zabbix_db_info.password }}"
+    priv: "{{ zabbix_db_info.db }}.*:ALL"
     login_unix_socket: "{{ mysql_socket_path }}"
     login_user: "root"
     state: present
@@ -54,17 +55,19 @@
     marker: "# {mark} ANSIBLE MANAGED BLOCK DBPASSWORD"
     block: |
       DBHost=127.0.0.1
-      DBPassword={{ zabbix_mysql_password }}
+      DBPassword={{ zabbix_db_info.password }}
 
 - name: Copy nginx configuration file
   template:
-    src: "nginx.zabbix.com.conf.j2"
-    dest: "{{ nginx_sites_enabled_confdir }}/{{ zabbix_server_hostname }}.conf"
+    src: "nginx.zabbix.conf.j2"
+    dest: "{{ nginx_sites_enabled_dir }}/{{ zabbix_server_hostname }}.conf"
+  notify: reload nginx
 
 - name: Copy phh configuration file
   template:
-    src: "php.zabbix.com.conf.j2"
+    src: "php.zabbix.conf.j2"
     dest: "{{ php_fpm_confdir }}/{{ zabbix_server_hostname }}.conf"
+  notify: reload php-fpm
 
 - name: Restart services
   systemd:
@@ -72,6 +75,8 @@
     state: restarted
     enabled: yes
   loop:
-    - "nginx"
-    - "{{ php_fpm_systemd_service }}"
     - "zabbix-server"
+
+- name: Print zabbix database information
+  debug:
+    var: zabbix_db_info

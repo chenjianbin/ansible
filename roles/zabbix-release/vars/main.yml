@@ -1,0 +1,6 @@
+_ansible_distribution: "{{ {
+                            'AlmaLinux': 'alma',
+                            'RockyLinux': 'rocky'}.get(ansible_distribution, ansible_distribution) }}"
+
+zabbix_rpm_repo: "https://repo.zabbix.com/zabbix/{{ zabbix_version }}/{{ _ansible_distribution | lower }}/{{ ansible_distribution_major_version }}/{{ ansible_architecture }}/zabbix-release-latest-{{ zabbix_version }}.el{{ ansible_distribution_major_version }}.noarch.rpm"
+zabbix_deb_repo: "https://repo.zabbix.com/zabbix/{{ zabbix_version }}/{{ _ansible_distribution | lower }}/pool/main/z/zabbix-release/zabbix-release_latest_{{ zabbix_version }}+{{ ansible_distribution | lower }}{{ ansible_distribution_version }}_all.deb"

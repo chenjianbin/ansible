@@ -137,8 +137,7 @@ http {
         application/xml application/json application/xml+rss;
 
 
-    include conf.d/functions/*.conf;
-    include conf.d/default_server.conf;
+    include conf.d/default.conf;
     include {{ nginx_sites_enabled_dir }}/*.conf;
 }
 

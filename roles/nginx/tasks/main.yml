@@ -30,7 +30,7 @@
     - "conf.d"
     - "ssl.d"
 
-- name: Create nginx sites directory
+- name: Create nginx sites configuration directory
   file:
     path: "{{ item }}"
     state: directory
@@ -57,10 +57,5 @@
     name: nginx
     state: restarted
     enabled: true
+  notify: nginx service is running
 
-- name: Make sure nginx service is running
-  ansible.builtin.service_facts: {}
-  register: __service_status
-  until: "__service_status.ansible_facts.services['nginx.service'].state == 'running'"
-  retries: 5
-  delay: 5

@@ -10,7 +10,7 @@
     host: "{{ mysql_repl_user.host }}"
     password: "{{ mysql_repl_user.passwd }}"
     priv: "*.*:REPLICATION SLAVE,REPLICATION CLIENT"
-    login_unix_socket: "{{ mysql_data_path }}/{{ mysql_port }}/mysql.sock"
+    login_unix_socket: "{{ mysql_socket_path }}"
     login_user: "root"
     state: present
 
@@ -20,7 +20,7 @@
     host: "{{ zabbix_user.host }}"
     password: "{{ zabbix_user.passwd }}"
     priv: "*.*:REPLICATION CLIENT,PROCESS,SHOW DATABASES,SHOW VIEW"
-    login_unix_socket: "{{ mysql_data_path }}/{{ mysql_port }}/mysql.sock"
+    login_unix_socket: "{{ mysql_socket_path }}"
     login_user: "root"
     state: present
 
@@ -29,6 +29,6 @@
     name: "{{ jumpserver_user.name }}"
     host: "{{ jumpserver_user.host }}"
     password: "{{ jumpserver_user.passwd }}"
-    login_unix_socket: "{{ mysql_data_path }}/{{ mysql_port }}/mysql.sock"
+    login_unix_socket: "{{ mysql_socket_path }}"
     login_user: "root"
     state: present

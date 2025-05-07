@@ -44,9 +44,5 @@
 - name: Setup grafana nginx configure file
   template:
     src: "nginx.grafana.conf.j2"
-    dest: "{{ nginx_sites_enabled_confdir }}/{{ grafana_server_hostname }}.conf"
-
-- name: Reload nginx
-  systemd:
-    name: "nginx"
-    state: reloaded
+    dest: "{{ nginx_sites_enabled_dir }}/{{ grafana_server_hostname }}.conf"
+  notify: reload nginx

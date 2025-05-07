@@ -13,6 +13,7 @@ mysql_port: 3306
 mysql_os_user: "mysql"
 mysql_os_group: "{{ mysql_os_user }}"
 mysql_data_path: "/data0/mysql"
+mysql_socket_path: "{{ mysql_data_path }}/{{ mysql_port }}/mysql.sock"
 _mysql_config_file:
   Debian: "/etc/mysql/my.cnf"
   RedHat: "/etc/my.cnf"
@@ -30,8 +31,8 @@ _python_mysql_client:
 python_mysql_client: "{{ _python_mysql_client[ansible_os_family] }}"
 
 _systemd_mysql_service:
-  Debian: "mysql"
-  RedHat: "mysqld"
+  Debian: "mysql.service"
+  RedHat: "mysqld.service"
 systemd_mysql_service: "{{ _systemd_mysql_service[ansible_os_family] }}" 
 
 mysql_repl_user:

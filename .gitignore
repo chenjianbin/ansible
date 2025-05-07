@@ -1,4 +1,5 @@
 collections/ansible_collections
+cp/
 galaxy_cache/
 galaxy_token
 tmp/

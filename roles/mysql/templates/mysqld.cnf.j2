@@ -49,7 +49,7 @@ interactive_timeout          = 31536000
 wait_timeout                 = 31536000
 
 ### Binlog ###
-server_id                    = "{{ 10000000 | random | int }}"
+server_id                    = {{ 10000000 | random(seed=inventory_hostname) | int }}
 sync_binlog                  = 1
 gtid_mode                    = ON
 enforce_gtid_consistency     = ON
