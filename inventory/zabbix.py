@@ -68,6 +68,8 @@ class ZabbixInventory(object):
             self.zabbix_username = config.get('zabbix', 'username')
         if config.has_option('zabbix', 'password'):
             self.zabbix_password = config.get('zabbix', 'password')
+        if config.has_option('zabbix', 'api_token'):
+            self.zabbix_api_token = config.get('zabbix', 'api_token')
         # ssl certs
         if config.has_option('zabbix', 'validate_certs'):
             if config.get('zabbix', 'validate_certs') in ['false', 'False', False]:
@@ -166,6 +168,7 @@ class ZabbixInventory(object):
 
         self.defaultgroup = 'group_all'
         self.zabbix_server = None
+        self.zabbix_api_token= None
         self.zabbix_username = None
         self.zabbix_password = None
         self.validate_certs = True
@@ -177,10 +180,10 @@ class ZabbixInventory(object):
         self.read_settings()
         self.read_cli()
 
-        if self.zabbix_server and self.zabbix_username:
+        if self.zabbix_server:
             try:
                 api = ZabbixAPI(server=self.zabbix_server, validate_certs=self.validate_certs)
-                api.login(user=self.zabbix_username, password=self.zabbix_password)
+                api.login(user=self.zabbix_username, password=self.zabbix_password, api_token=self.zabbix_api_token)
             # zabbix_api tries to exit if it cannot parse what the zabbix server returned
             # so we have to use SystemExit here
             except (Exception, SystemExit) as e:
