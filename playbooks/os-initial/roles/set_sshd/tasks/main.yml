@@ -35,7 +35,7 @@
   authorized_key:
     user: root
     key: "{{ item }}"
-  loop: "{{ ssh_public_keys }}"
+  loop: "{{ ssh_public_keys | unique }}"
 
 - name: Set ssh timeout
   blockinfile:
