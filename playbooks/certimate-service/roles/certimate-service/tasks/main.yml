@@ -8,10 +8,17 @@
     name: nginx
     public: true
 
-- name: Copy certimate nginx configration
+- name: Rander certimate nginx configration
   template:
     src: "certimate-nginx.conf.j2"
+    dest: "{{ nginx_sites_available_dir }}/{{ certimate_domain }}.conf"
+  notify: reload nginx
+
+- name: Link certimate nginx configration
+  file:
+    src: "{{ nginx_sites_available_dir }}/{{ certimate_domain }}.conf"
     dest: "{{ nginx_sites_enabled_dir }}/{{ certimate_domain }}.conf"
+    state: link
   notify: reload nginx
 
 - name: Print certimate webui url

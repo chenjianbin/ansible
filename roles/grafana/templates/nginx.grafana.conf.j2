@@ -4,12 +4,13 @@ upstream grafana_backend {
 }
 
 server {
+    listen 80;
     server_name {{ grafana_server_hostname }};
 
     location / {
         proxy_pass http://grafana_backend;
     }
 
-    access_log /data0/logs/nginx/{{ grafana_server_hostname }}.access.log  main_product;
-    error_log /data0/logs/nginx/{{ grafana_server_hostname }}.error.log;
+    access_log {{ nginx_log_dir }}/{{ grafana_server_hostname }}.access.log  main_product;
+    error_log {{ nginx_log_dir }}/{{ grafana_server_hostname }}.error.log;
 }

@@ -1,0 +1,17 @@
+- name: Restart gogs
+  listen: "restart gogs"
+  become: true
+  ansible.builtin.systemd:
+    name: gogs
+    enabled: true
+    daemon_reload: true
+    state: restarted
+  notify: gogs service is running
+
+- name: Make sure gogs service is running
+  listen: "gogs service is running"
+  ansible.builtin.service_facts: {}
+  register: __service_status
+  until: "__service_status.ansible_facts.services['gogs.service'].state == 'running'"
+  retries: 5
+  delay: 5

@@ -1,0 +1,17 @@
+- name: Restart redis
+  listen: "restart redis"
+  become: true
+  ansible.builtin.systemd:
+    name: "{{ systemd_redis_service }}"
+    enabled: true
+    daemon_reload: true
+    state: restarted
+  notify: redis service is running
+
+- name: Make sure redis service is running
+  listen: "redis service is running"
+  ansible.builtin.service_facts: {}
+  register: __service_status
+  until: "__service_status.ansible_facts.services[systemd_redis_service].state == 'running'"
+  retries: 5
+  delay: 5

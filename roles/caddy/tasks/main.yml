@@ -3,18 +3,19 @@
   include_tasks:
     file: "{{ ansible_os_family }}.yml"
 
+- name: Install caddy
+  package:
+    name: caddy
+    state: latest
+  notify: restart caddy
+
 - name: Copy Caddyfile
   copy:
     src: Caddyfile
     dest: /etc/caddy/Caddyfile
+  notify: reload caddy
 
 - name: Create sites directory
   file:
     path: /etc/caddy/sites
     state: directory
-
-- name: start caddy
-  systemd:
-    name: caddy
-    state: restarted
-

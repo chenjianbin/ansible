@@ -1,12 +1,13 @@
 ---
- - name: Install certbot
-   apt: 
-     name: "certbot"
-     state: latest
-     update_cache: true
+- name: Install certbot nginx plugin
+  apt:
+    name: "python3-certbot-nginx"
+    state: latest
+  when: 
+    - certbot_nginx_plugin
 
- - name: Enable certbot timer
-   systemd:
-     name: certbot.timer
-     state: started
-     enabled: true
+- name: Enable certbot timer
+  systemd:
+    name: certbot.timer
+    state: started
+    enabled: true

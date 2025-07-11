@@ -1,0 +1,17 @@
+- name: Restart shadowsocks-libev
+  listen: "restart shadowsocks-libev"
+  become: true
+  ansible.builtin.systemd:
+    name: shadowsocks-libev
+    enabled: true
+    daemon_reload: true
+    state: restarted
+  notify: shadowsocks-libev service is running
+
+- name: Make sure shadowsocks-libev service is running
+  listen: "shadowsocks-libev service is running"
+  ansible.builtin.service_facts: {}
+  register: __service_status
+  until: "__service_status.ansible_facts.services['shadowsocks-libev.service'].state == 'running'"
+  retries: 5
+  delay: 5

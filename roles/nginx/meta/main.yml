@@ -18,5 +18,4 @@ galaxy_info:
         - 9
   categories:
     - software
-dependencies:
-  - role: certbot
+dependencies: []

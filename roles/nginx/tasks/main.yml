@@ -1,21 +1,18 @@
 ---
+- name: Include certbot role
+  include_role: 
+    name: "certbot"
+  vars:
+    certbot_nginx_plugin: true
+
 - name: Include os tasks
   include_tasks: "{{ ansible_os_family }}.yml"
 
-- name: Add nginx group
-  group:
-    name: "{{ nginx_os_group }}"
-    state: present
-    system: yes
-
-- name: Add nginx user
-  user:
-    name: "{{ nginx_os_user }}"
-    group: "{{ nginx_os_group }}"
-    createhome: no
-    shell: /sbin/nologin
-    state: present
-    system: yes
+- name: Install nginx
+  package:
+    name: "nginx"
+    state: latest
+  notify: restart nginx
 
 - name: Set regular clean nginx log
   template: 
@@ -29,6 +26,7 @@
   loop:
     - "conf.d"
     - "ssl.d"
+  notify: reload nginx
 
 - name: Create nginx sites configuration directory
   file:
@@ -49,13 +47,5 @@
   template:
     src: "nginx.conf.j2"
     dest: "{{ nginx_config_dir }}/nginx.conf"
-
-- name: Ensure nginx service is started and enabled
-  become: true
-  ansible.builtin.systemd:
-    daemon_reload: true
-    name: nginx
-    state: restarted
-    enabled: true
-  notify: nginx service is running
+  notify: reload nginx
 

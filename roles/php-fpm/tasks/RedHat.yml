@@ -20,6 +20,7 @@
     allow_downgrade: yes
     enablerepo: "remi-php{{ php_version| replace('.', '')}}"
     state: latest
+  notify: restart php-fpm
   vars:
     packages:
       - "php"

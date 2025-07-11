@@ -3,6 +3,4 @@
 [zabbix_proxy]
 [all]
 [all:vars]
-#proxy=false
 #zabbix_server_hostname="zabbix.example.com"
-#zabbix_proxy_hostname="zabbix-proxy.example.com"

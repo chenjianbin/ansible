@@ -10,10 +10,8 @@
     url: https://dl.cloudsmith.io/public/caddy/stable/debian.deb.txt
     dest: /etc/apt/sources.list.d/caddy-stable.list
 
-- name: Install caddy
+- name: Update apt cache
   apt:
-    name: caddy
-    state: latest
     update_cache: yes
 
 - name: Allow http and https connections

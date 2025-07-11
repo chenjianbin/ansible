@@ -20,6 +20,6 @@ server {
 
     include conf.d/common/*.conf;
 
-    access_log /data0/logs/nginx/{{ zabbix_server_hostname }}.access.log  main_product;
-    error_log /data0/logs/nginx/{{ zabbix_server_hostname }}.error.log;
+    access_log {{ nginx_log_dir }}/{{ zabbix_server_hostname }}.access.log  main_product;
+    error_log {{ nginx_log_dir }}/{{ zabbix_server_hostname }}.error.log;
 }

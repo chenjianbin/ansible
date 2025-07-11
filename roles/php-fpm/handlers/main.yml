@@ -1,12 +1,16 @@
 - name: Restart php-fpm
   listen: "restart php-fpm"
+  become: true
   ansible.builtin.systemd:
     name: "{{ systemd_php_fpm_service }}"
+    enabled: true
+    daemon_reload: true
     state: restarted
   notify: php-fpm service is running
 
 - name: Reload php-fpm
   listen: "reload php-fpm"
+  become: true
   ansible.builtin.systemd:
     name: "{{ systemd_php_fpm_service }}"
     state: reloaded

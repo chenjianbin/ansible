@@ -4,17 +4,5 @@
   ansible.builtin.package:
     name: consul
     state: latest
+  notify: restart consul
 
-- name: Ensure consul service is started and enabled
-  ansible.builtin.systemd:
-    daemon_reload: true
-    name: consul
-    state: started
-    enabled: true
-
-- name: Make sure consul service is running
-  ansible.builtin.service_facts: {}
-  register: __service_status
-  until: "__service_status.ansible_facts.services['consul.service'].state == 'running'"
-  retries: 5
-  delay: 5

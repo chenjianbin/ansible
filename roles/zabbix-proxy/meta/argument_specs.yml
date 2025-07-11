@@ -12,9 +12,3 @@ argument_specs:
           - "passive"
         default: "active"
         description: "Zabbix proxy mode."
-
-      zabbix_proxy_hostname:
-        type: "str"
-        required: true
-        description: "Zabbix proxy hostname."
-

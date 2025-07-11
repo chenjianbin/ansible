@@ -1,0 +1,17 @@
+- name: Restart zabbix-proxy
+  listen: "restart zabbix-proxy"
+  become: true
+  ansible.builtin.systemd:
+    name: zabbix-proxy
+    enabled: true
+    daemon_reload: true
+    state: restarted
+  notify: zabbix-proxy service is running
+
+- name: Make sure zabbix-proxy service is running
+  listen: "zabbix-proxy service is running"
+  ansible.builtin.service_facts: {}
+  register: __service_status
+  until: "__service_status.ansible_facts.services['zabbix-proxy.service'].state == 'running'"
+  retries: 5
+  delay: 5

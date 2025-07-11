@@ -56,11 +56,19 @@
     block: |
       DBHost=127.0.0.1
       DBPassword={{ zabbix_db_info.password }}
+  notify: restart zabbix-server
 
 - name: Copy nginx configuration file
   template:
     src: "nginx.zabbix.conf.j2"
+    dest: "{{ nginx_sites_available_dir }}/{{ zabbix_server_hostname }}.conf"
+  notify: reload nginx
+
+- name: Enable zabbix's nginx configuration file
+  file:
+    src: "{{ nginx_sites_available_dir }}/{{ zabbix_server_hostname }}.conf"
     dest: "{{ nginx_sites_enabled_dir }}/{{ zabbix_server_hostname }}.conf"
+    state: link
   notify: reload nginx
 
 - name: Copy phh configuration file
@@ -68,14 +76,6 @@
     src: "php.zabbix.conf.j2"
     dest: "{{ php_fpm_confdir }}/{{ zabbix_server_hostname }}.conf"
   notify: reload php-fpm
-
-- name: Restart services
-  systemd:
-    name: "{{ item }}"
-    state: restarted
-    enabled: yes
-  loop:
-    - "zabbix-server"
 
 - name: Print zabbix database information
   debug:

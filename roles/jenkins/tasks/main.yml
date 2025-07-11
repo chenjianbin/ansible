@@ -7,12 +7,7 @@
   package:
     name: "{{ item }}"
     state: latest
+  notify: restart jenkins
   loop:
     - jenkins 
     - fontconfig
-
-- name: Enable jenkins now
-  systemd:
-    name: jenkins
-    state: started
-    enabled: true

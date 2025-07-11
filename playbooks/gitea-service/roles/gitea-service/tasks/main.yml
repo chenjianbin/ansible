@@ -8,10 +8,17 @@
     name: nginx
     public: true
 
-- name: Copy gitea nginx configration
+- name: Render gitea nginx configration
   template:
     src: "gitea-nginx.conf.j2"
+    dest: "{{ nginx_sites_available_dir }}/{{ gitea_domain }}.conf"
+  notify: reload nginx
+
+- name: Link gitea nginx configration
+  file:
+    src: "{{ nginx_sites_available_dir }}/{{ gitea_domain }}.conf"
     dest: "{{ nginx_sites_enabled_dir }}/{{ gitea_domain }}.conf"
+    state: link
   notify: reload nginx
 
 - name: Print gitea webui url

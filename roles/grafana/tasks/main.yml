@@ -33,16 +33,17 @@
       name = grafana
       user = grafana
       password ={{ grafana_mysql_password }}
+  notify: restart grafana-server
 
-- name: Start grafana
-  systemd:
-    name: "grafana-server"
-    state: restarted
-    enabled: yes
-    daemon_reload: yes
-
-- name: Setup grafana nginx configure file
+- name: Render grafana nginx configure file
   template:
     src: "nginx.grafana.conf.j2"
+    dest: "{{ nginx_sites_available_dir }}/{{ grafana_server_hostname }}.conf"
+  notify: reload nginx
+
+- name: Enable grafana's nginx configuration file
+  file:
+    src: "{{ nginx_sites_available_dir }}/{{ grafana_server_hostname }}.conf"
     dest: "{{ nginx_sites_enabled_dir }}/{{ grafana_server_hostname }}.conf"
+    state: link
   notify: reload nginx

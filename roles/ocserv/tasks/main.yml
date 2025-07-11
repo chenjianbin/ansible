@@ -3,23 +3,27 @@
 - name: Include OS Tasks
   include_tasks: "{{ ansible_os_family }}.yml"
 
+- name: Install ocserv
+  package:
+    name: "{{ item }}"
+    state: latest
+  notify: restart ocserv
+  loop:
+    - "ocserv"
+
 - name: Set ocserv config file
   template:
     src: "{{ ansible_os_family }}.ocserv.conf.j2"
     dest: "{{ ocserv_confdir }}/ocserv.conf"
+  notify: reload ocserv
 
 - name: Add users for plain authentication
   lineinfile:
     path: "{{ ocserv_confdir }}/ocpasswd"
     line: "{{ item.username }}:{{ item.password | password_hash('sha512') }}"
     create: true
+  notify: reload ocserv
   with_items: "{{ ocserv_users }}"
-
-- name: Enable ocserv
-  systemd:
-    name: ocserv
-    state: restarted
-    enabled: true
 
 - name: Enable ip forwarding
   sysctl:

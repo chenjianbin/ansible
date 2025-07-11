@@ -4,7 +4,7 @@
     name: software-properties-common
     state: latest
 
-- name: Add Ondřej Surý's PPA for PHP
+- name: Add Ondřej Surý's PHP PPA repository
   apt_repository:
     repo: ppa:ondrej/php
     state: present
@@ -12,7 +12,11 @@
 
 - name: Install PHP and its extensions
   apt:
-    name:
+    name: "{{ packages }}"
+    state: latest
+  notify: restart php-fpm
+  vars:
+    packages:
       - "php{{ php_version }}"
       - "php{{ php_version }}-fpm"
       - "php{{ php_version }}-gd"
@@ -24,4 +28,3 @@
       - "php{{ php_version }}-mysql"
       - "php{{ php_version }}-redis"  
       - "php{{ php_version }}-igbinary" 
-    state: latest

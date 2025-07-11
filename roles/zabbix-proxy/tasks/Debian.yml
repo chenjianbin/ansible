@@ -1,12 +1,4 @@
 ---
-- name: Install zabbix-proxy
-  apt: 
-    name: "{{ item }}"
-    state: latest
-    update_cache: yes
-  loop:
-    - "zabbix-proxy-sqlite3"
-
 - name: Allow zabbix-proxy connections
   ufw:
     rule: allow

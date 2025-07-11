@@ -1,6 +1,25 @@
----
 - name: Restart haproxy
-  listen: restart haproxy
-  systemd:
-    name: "haproxy"
+  listen: "restart haproxy"
+  become: true
+  ansible.builtin.systemd:
+    name: haproxy
+    enabled: true
+    daemon_reload: true
     state: restarted
+  notify: haproxy service is running
+
+- name: Reload haproxy
+  listen: "reload haproxy"
+  become: true
+  ansible.builtin.systemd:
+    name: haproxy
+    state: reloaded
+  notify: haproxy service is running
+
+- name: Make sure haproxy service is running
+  listen: "haproxy service is running"
+  ansible.builtin.service_facts: {}
+  register: __service_status
+  until: "__service_status.ansible_facts.services['haproxy.service'].state == 'running'"
+  retries: 5
+  delay: 5

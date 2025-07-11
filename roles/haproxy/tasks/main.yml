@@ -2,21 +2,8 @@
 - name: Install haproxy
   package: 
     name: "{{ item }}"
-    state: present
+    state: latest
+  notify: restart haproxy
   loop:
     - haproxy
 
-- name: Ensure haproxy service is started and enabled
-  become: true
-  ansible.builtin.systemd:
-    daemon_reload: true
-    name: haproxy
-    state: restarted
-    enabled: true
-
-- name: Make sure haproxy service is running
-  ansible.builtin.service_facts: {}
-  register: __service_status
-  until: "__service_status.ansible_facts.services['haproxy.service'].state == 'running'"
-  retries: 5
-  delay: 5

@@ -1,8 +1,19 @@
 ---
 # handlers file for jenkins
 - name: Restart jenkins
-  listen: restart jenkins
-  systemd:
+  listen: "restart jenkins"
+  become: true
+  ansible.builtin.systemd:
     name: jenkins
-    state: restarted
     enabled: true
+    daemon_reload: true
+    state: restarted
+  notify: jenkins service is running
+
+- name: Make sure jenkins service is running
+  listen: "jenkins service is running"
+  ansible.builtin.service_facts: {}
+  register: __service_status
+  until: "__service_status.ansible_facts.services['jenkins.service'].state == 'running'"
+  retries: 5
+  delay: 5

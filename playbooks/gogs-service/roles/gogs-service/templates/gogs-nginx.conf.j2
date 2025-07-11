@@ -4,6 +4,7 @@ upstream gogs_backend {
 }
 
 server {
+    listen 80;
     server_name {{ gogs_domain }};
 
     location / {

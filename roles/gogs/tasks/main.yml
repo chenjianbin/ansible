@@ -14,15 +14,6 @@
     state: present
     system: yes
 
-      #- name: Create installation directory
-      #  file:
-      #    path: "{{ item }}"
-      #    state: directory
-      #    owner: "{{ gogs_os_user }}"
-      #    group: "{{ gogs_os_group }}"
-      #  with_items:
-      #    - "{{ gogs_install_path }}"
-
 - name: Installing gogs
   unarchive:
     src: "{{ gogs_download_url }}"
@@ -30,26 +21,14 @@
     remote_src: yes
     owner: "{{ gogs_os_user }}"
     group: "{{ gogs_os_group }}"
+  notify: restart gogs
 
 
 - name: Set systemd gogs service
   template:
     src: "{{ item }}.j2"
     dest: /etc/systemd/system/{{ item }}
-  with_items:
+  notify: restart gogs
+  loop:
     - "gogs.service"
 
-- name: Ensure gogs service is started and enabled
-  become: true
-  ansible.builtin.systemd:
-    daemon_reload: true
-    name: gogs
-    state: restarted
-    enabled: true
-
-- name: Make sure gogs service is running
-  ansible.builtin.service_facts: {}
-  register: __service_status
-  until: "__service_status.ansible_facts.services['gogs.service'].state == 'running'"
-  retries: 5
-  delay: 5

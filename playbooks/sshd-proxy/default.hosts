@@ -1,7 +1,7 @@
 [all]
 
 [all:vars]
-#sshd_ip value must be replaced
-sshd_ip=1.1.1.1 
+#sshd_hostname value must be replaced
+sshd_hostname=1.1.1.1 
 #sshd_port=22
 #proxy_port=2222

@@ -1,4 +1,4 @@
-gogs_version: '0.13.2'
+gogs_version: '0.13.3'
 gogs_download_url: "https://dl.gogs.io/{{ gogs_version }}/gogs_{{ gogs_version }}_linux_amd64.tar.gz"
 gogs_os_user: "git"
 gogs_os_group: "{{ gogs_os_user }}"

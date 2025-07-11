@@ -1,8 +1,19 @@
 ---
 # handlers file for containerd
 - name: Restart containerd
-  listen: restart containerd
-  systemd:
+  listen: "restart containerd"
+  become: true
+  ansible.builtin.systemd:
     name: containerd
-    state: restarted
     enabled: true
+    daemon_reload: true
+    state: restarted
+  notify: containerd service is running
+
+- name: Make sure containerd service is running
+  listen: "containerd service is running"
+  ansible.builtin.service_facts: {}
+  register: __service_status
+  until: "__service_status.ansible_facts.services['containerd.service'].state == 'running'"
+  retries: 5
+  delay: 5

@@ -1,0 +1,22 @@
+---
+argument_specs:
+  # roles/sshd-proxy/tasks/main.yml entry point
+  main:
+    short_description: Main entry point for the sshd-proxy role
+    options:
+      sshd_hostname:
+        type: "str"
+        required: true
+        description: "sshd server's hostname"
+
+      sshd_portp:
+        type: "int"
+        required: false
+        default: 22
+        description: "sshd server's listen port"
+
+      proxy_port:
+        type: "int"
+        required: false
+        default: 2222
+        description: "proxy server's proxy port"

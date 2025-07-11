@@ -1,2 +1,27 @@
 ---
 # handlers file for ocserv
+- name: Restart ocserv
+  listen: "restart ocserv"
+  become: true
+  ansible.builtin.systemd:
+    name: ocserv
+    enabled: true
+    daemon_reload: true
+    state: restarted
+  notify: ocserv service is running
+
+- name: Reload ocserv
+  listen: "reload ocserv"
+  become: true
+  ansible.builtin.systemd:
+    name: ocserv
+    state: reloaded
+  notify: ocserv service is running
+
+- name: Make sure ocserv service is running
+  listen: "ocserv service is running"
+  ansible.builtin.service_facts: {}
+  register: __service_status
+  until: "__service_status.ansible_facts.services['ocserv.service'].state == 'running'"
+  retries: 5
+  delay: 5

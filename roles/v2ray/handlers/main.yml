@@ -1,6 +1,26 @@
 ---
 - name: Restart v2ray
-  listen: restart v2ray
-  systemd:
+  listen: "restart v2ray"
+  become: true
+  ansible.builtin.systemd:
     name: v2ray
+    enabled: true
+    daemon_reload: true
     state: restarted
+  notify: v2ray service is running
+
+- name: Reload v2ray
+  listen: "reload v2ray"
+  become: true
+  ansible.builtin.systemd:
+    name: v2ray
+    state: reloaded
+  notify: v2ray service is running
+
+- name: Make sure v2ray service is running
+  listen: "v2ray service is running"
+  ansible.builtin.service_facts: {}
+  register: __service_status
+  until: "__service_status.ansible_facts.services['v2ray.service'].state == 'running'"
+  retries: 5
+  delay: 5

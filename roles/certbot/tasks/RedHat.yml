@@ -1,11 +1,22 @@
 ---
- - name: Install certbot
-   yum: 
-     name: "certbot"
-     state: latest
+- name: Install certbot nginx plugin [ RHEL == "7" ]
+  yum:
+    name: "python2-certbot-nginx"
+    state: latest
+  when:
+    - certbot_nginx_plugin
+    - (ansible_distribution_major_version | int) == 7
 
- - name: Enable certbot timer
-   systemd:
-     name: certbot-renew.timer
-     state: started
-     enabled: true
+- name: Install certbot nginx plugin [ RHEL >= "8" ]
+  yum:
+    name: "python3-certbot-nginx"
+    state: latest
+  when:
+    - certbot_nginx_plugin
+    - (ansible_distribution_major_version | int) >= 8
+
+- name: Enable certbot timer
+  systemd:
+    name: certbot-renew.timer
+    state: started
+    enabled: true

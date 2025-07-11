@@ -1,12 +1,4 @@
 ---
-- name: Install zabbix-proxy
-  yum: 
-    name: "{{ item }}"
-    enablerepo: zabbix
-    state: latest
-  loop:
-    - "zabbix-proxy-sqlite3"
-
 - name: Allow zabbix-proxy connections
   firewalld:
     zone: public

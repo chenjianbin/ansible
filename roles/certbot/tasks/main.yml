@@ -1,3 +1,8 @@
 ---
- - name: Include OS Tasks
-   include_tasks: "{{ ansible_os_family }}.yml"
+- name: Install certbot
+  package:
+    name: "certbot"
+    state: latest
+
+- name: Include os tasks
+  include_tasks: "{{ ansible_os_family }}.yml"

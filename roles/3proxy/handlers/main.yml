@@ -1,2 +1,19 @@
 ---
 # handlers file for 3proxy
+- name: Ensure 3proxy service is started and enabled
+  listen: "restart 3proxy"
+  become: true
+  ansible.builtin.systemd:
+    name: 3proxy
+    state: restarted
+    enabled: true
+    daemon_reload: true
+  notify: 3proxy service is running
+
+- name: Make sure 3proxy service is running
+  listen: "3proxy service is running"
+  ansible.builtin.service_facts: {}
+  register: __service_status
+  until: "__service_status.ansible_facts.services['3proxy.service'].state == 'running'"
+  retries: 5
+  delay: 5

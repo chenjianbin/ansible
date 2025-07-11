@@ -1,0 +1,17 @@
+- name: Restart grafana-server
+  listen: "restart grafana-server"
+  become: true
+  ansible.builtin.systemd:
+    name: grafana-server
+    state: restarted
+    enabled: true
+    daemon_reload: true
+  notify: grafana-server service is running
+
+- name: Make sure grafana-server service is running
+  listen: "grafana-server service is running"
+  ansible.builtin.service_facts: {}
+  register: __service_status
+  until: "__service_status.ansible_facts.services['grafana-server.service'].state == 'running'"
+  retries: 5
+  delay: 5

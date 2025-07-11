@@ -1,12 +1,26 @@
 ---
 - name: Restart caddy
-  listen: restart caddy
-  systemd:
+  listen: "restart caddy"
+  become: true
+  ansible.builtin.systemd:
     name: caddy
+    enabled: true
+    daemon_reload: true
     state: restarted
+  notify: caddy service is running
 
 - name: Reload caddy
-  listen: reload caddy
-  systemd:
+  listen: "reload caddy"
+  become: true
+  ansible.builtin.systemd:
     name: caddy
     state: reloaded
+  notify: caddy service is running
+
+- name: Make sure caddy service is running
+  listen: "caddy service is running"
+  ansible.builtin.service_facts: {}
+  register: __service_status
+  until: "__service_status.ansible_facts.services['caddy.service'].state == 'running'"
+  retries: 5
+  delay: 5

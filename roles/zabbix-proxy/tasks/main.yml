@@ -2,6 +2,14 @@
 - name: Include OS Tasks
   include_tasks: "{{ ansible_os_family }}.yml"
 
+- name: Install zabbix-proxy
+  package:
+    name: "{{ item }}"
+    state: latest
+  notify: restart zabbix-proxy
+  loop:
+    - "zabbix-proxy-sqlite3"
+
 - name: Create zabbix data path
   file:
     path: "{{ zabbix_data_path }}"
@@ -14,10 +22,5 @@
     path: "/etc/zabbix/zabbix_proxy.conf"
     marker: "# {mark} ANSIBLE MANAGED BLOCK zabbix-agent"
     block: "{{ lookup('template', 'zabbix_proxy.conf.j2') }}"
+  notify: restart zabbix-proxy
 
-- name: Restart zabbix-proxy
-  systemd:
-    name: zabbix-proxy
-    state: restarted
-    enabled: yes
-...

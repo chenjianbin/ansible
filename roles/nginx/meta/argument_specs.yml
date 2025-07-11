@@ -19,7 +19,7 @@ argument_specs:
       nginx_log_dir:
         type: "path"
         required: false
-        default: "/data0/logs/nginx"
+        default: "/var/log/nginx"
         description: "Nginx log path."
 
       nginx_config_dir:

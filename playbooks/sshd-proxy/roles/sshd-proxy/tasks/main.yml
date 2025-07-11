@@ -1,10 +1,4 @@
 ---
-- name: Ensure sshd_ip is defined 
-  assert:
-    that:
-      - "sshd_ip is defined"
-    fail_msg: "sshd_ip must be defined."
-
 - name: Include os tasks
   include_tasks: "{{ ansible_os_family }}.yml"
 
@@ -18,5 +12,5 @@
           mode tcp
           maxconn 2000
           balance roundrobin
-          server sshd {{ sshd_ip }}:{{ sshd_port }}
-  notify: restart haproxy
+          server sshd {{ sshd_hostname }}:{{ sshd_port }}
+  notify: reload haproxy

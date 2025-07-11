@@ -7,15 +7,10 @@
   package:
     name: "{{ item }}"
     state: latest
+  notify: restart containerd
   loop:
     - containerd.io
     - util-linux    # nsenter
-
-- name: Enable containerd now
-  systemd:
-    name: containerd
-    state: started
-    enabled: true
 
 #- name: Configuration container
 #  shell: containerd  config default > /etc/containerd/config.toml
@@ -41,3 +36,5 @@
 #
 #- name: Set crictl bash completion
 #  shell: "crictl completion bash >/etc/bash_completion.d/crictl"
+#  args:
+#    creates: /etc/bash_completion.d/crictl

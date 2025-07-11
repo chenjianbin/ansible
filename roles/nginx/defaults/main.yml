@@ -1,7 +1,7 @@
 ---
-nginx_os_user: "www"
+nginx_os_user: "nginx"
 nginx_os_group: "{{ nginx_os_user }}"
-nginx_log_dir: "/data0/logs/nginx"
+nginx_log_dir: "/var/log/nginx"
 nginx_config_dir: "/etc/nginx"
 nginx_sites_enabled_dir: "{{ nginx_config_dir }}/sites-enabled"
 nginx_sites_available_dir: "{{ nginx_config_dir }}/sites-available"
