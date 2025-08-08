@@ -21,12 +21,12 @@
   community.mysql.mysql_variables:
     variable: log_bin_trust_function_creators
     value: 1
-    login_unix_socket: "{{ mysql_socket_path }}"
+    login_unix_socket: "{{ mysql_unix_socket }}"
 
 - name: Import zabbix db
   mysql_db:
     name: "{{ zabbix_db_info.db }}"
-    login_unix_socket: "{{ mysql_socket_path }}"  
+    login_unix_socket: "{{ mysql_unix_socket }}"  
     state: import
     encoding: utf8mb4
     collation: utf8mb4_bin
@@ -37,7 +37,7 @@
   community.mysql.mysql_variables:
     variable: log_bin_trust_function_creators
     value: 0
-    login_unix_socket: "{{ mysql_socket_path }}"
+    login_unix_socket: "{{ mysql_unix_socket }}"
 
 - name: Create zabbix user
   mysql_user:
@@ -45,7 +45,7 @@
     host: "{{ zabbix_db_info.host }}"
     password: "{{ zabbix_db_info.password }}"
     priv: "{{ zabbix_db_info.db }}.*:ALL"
-    login_unix_socket: "{{ mysql_socket_path }}"
+    login_unix_socket: "{{ mysql_unix_socket }}"
     login_user: "root"
     state: present
 

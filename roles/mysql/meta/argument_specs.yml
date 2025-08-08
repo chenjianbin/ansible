@@ -16,7 +16,6 @@ argument_specs:
         choice:
           - "master"
           - "replica"
-          - "backup"
         default: "master"
         description: "Mysql "
 
@@ -31,3 +30,27 @@ argument_specs:
         required: false
         default: "/data0/mysql"
         description: "Mysql data path."
+
+      mysql_userlist:
+        type: list
+        elements: dict
+        default: []
+        description: List of MySQL users to create.
+        required: false
+        options:
+          name:
+            type: str
+            required: true
+            description: Username
+          host:
+            type: str
+            required: true
+            description: Host from which the user can connect
+          password:
+            type: str
+            required: true
+            description: User's password
+          priv:
+            type: str
+            required: true
+            description: User's privilege

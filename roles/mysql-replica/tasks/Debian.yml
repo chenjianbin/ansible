@@ -1,7 +1,0 @@
----
- - name: Allow the replica IP on the master node
-   ufw:
-     rule: allow
-     src: "{{ hostvars[inventory_hostname].ansible_default_ipv4.address }}"
-     proto: any
-   delegate_to: "{{ master_host }}"

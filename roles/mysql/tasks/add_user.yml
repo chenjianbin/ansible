@@ -1,0 +1,14 @@
+---
+- name: Add custom MySQL users
+  mysql_user:
+    name: "{{ item.name }}"
+    host: "{{ item.host }}"
+    #password: "{{ item.password }}"   #MySQL 8.4 deprecates mysql_native_password. Using the password field will cause the mysql_user module to use mysql_native_password when creating users, resulting in an error.
+    priv: "{{ item.priv }}"
+    plugin: "caching_sha2_password"
+    plugin_auth_string: "{{ item.password }}"
+    login_unix_socket: "{{ mysql_unix_socket }}"
+    login_user: "root"
+    state: present
+  loop: "{{ mysql_userlist }}"
+

@@ -1,0 +1,18 @@
+---
+- name: Restart MySQL
+  listen: restart mysql service [ replica ]
+  become: true
+  systemd:
+    name: "{{ systemd_mysql_instance_service }}"
+    state: restarted
+    enabled: yes
+    daemon_reload: yes
+  notify: mysql service [ replica ] is running
+
+- name: Make sure MySQL service is running
+  listen: "mysql service [ replica ] is running"
+  ansible.builtin.service_facts: {}
+  register: __service_status
+  until: "__service_status.ansible_facts.services[systemd_mysql_instance_service].state == 'running'"
+  retries: 5
+  delay: 5

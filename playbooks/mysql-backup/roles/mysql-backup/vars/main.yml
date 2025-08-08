@@ -1,0 +1,7 @@
+_random_seed: "{{ primary_host + ( primary_port | default(3306) | string ) }}"
+_replica_port: "{{ (1000 | random(seed=_random_seed)) + 3306 }}"
+_replica_instance_dir: "{{ replica_instances_root_dir }}/{{ _replica_port }}"
+_systemd_mysql_instance_service_dict:
+  Debian: "mysql@{{ _replica_port }}.service"
+  RedHat: "mysqld@{{ _replica_port }}.service"
+systemd_mysql_instance_service: "{{ _systemd_mysql_instance_service_dict[ansible_os_family] }}"

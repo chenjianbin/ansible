@@ -10,7 +10,7 @@
   community.mysql.mysql_db:
     name: "grafana"
     state: present
-    login_unix_socket: "{{ mysql_socket_path }}"
+    login_unix_socket: "{{ mysql_unix_socket }}"
 
 - name: Add mysql grafana user
   mysql_user:
@@ -18,7 +18,7 @@
     host: "127.0.0.1"
     password: "{{ grafana_mysql_password }}"
     priv: "grafana.*:ALL"
-    login_unix_socket: "{{ mysql_socket_path }}"
+    login_unix_socket: "{{ mysql_unix_socket }}"
     login_user: "root"
     state: present
 

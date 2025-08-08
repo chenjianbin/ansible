@@ -4,43 +4,39 @@ argument_specs:
   main:
     short_description: Main entry point for the mysql-replica role
     options:
-      mysql_repl_user:
-        type: "dict"
+      primary_user:
+        type: "str"
         required: false
-        default:
-          name: "repl"
-          passwd: "Faw1gt2wtikpuf597Hrw_"
-        description: "Mysql replication user info."
-        options:
-          name:
-            type: "str"
-            required: false
-            description: "Mysql replication username."
+        default: "replica"
+        description: "MySQL replication user."
 
-          passwd:
-            type: "str"
-            required: false
-            description: "Mysql replication password."
+      primary_password:
+        type: "str"
+        required: false
+        description: "MySQL replication password."
 
-      master_host:
+      primary_host:
         type: "str"
         required: true
-        description: "Mysql master host."
+        description: "MySQL primary server address."
 
-      master_port:
+      primary_port:
         type: "int"
         required: false
         default: 3306
-        description: "Mysql master listen port."
+        description: "MySQL primary server listening port."
 
-      replica_port:
-        type: "int"
-        required: false
-        default: 3306
-        description: "Mysql replica listen port."
+      mysql_unix_socket:
+        type: "path"
+        required: true
+        description: "MySQL default unix socket path."
 
-      mysql_data_path:
+      primary_unix_socket:
         type: "path"
         required: false
-        default: "/data0/mysql"
-        description: "Mysql data path."
+        description: "MySQL primary server unix socket path."
+
+      replica_unix_socket:
+        type: "path"
+        required: false
+        description: "MySQL replication server unix socket path."

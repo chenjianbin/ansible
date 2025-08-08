@@ -1,0 +1,9 @@
+---
+- name: Allow the replica IP on the master node
+  firewalld:
+    zone: trusted
+    source: "{{ ansible_default_ipv4.address }}"
+    immediate: yes
+    permanent: true
+    state: enabled
+  delegate_to: "{{ primary_host }}"

@@ -1,8 +1,1 @@
 [mysql]
-[mysql_backup]
-[mysql:vars]
-# Default mode master, choice master,replica,backup
-mode = "master"
-[mysql_backup:vars]
-master_host = "x.x.x.x"
-

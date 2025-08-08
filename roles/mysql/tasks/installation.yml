@@ -1,4 +1,7 @@
 ---
+- name: Include MySQL installation role [ {{ ansible_os_family }} ]
+  include_tasks: "installation-{{ ansible_os_family }}.yml"
+
 - name: Add mysql user group
   group:
     name: "{{ mysql_os_group }}"
@@ -38,6 +41,11 @@
   loop:
     - "percona-toolkit"
     - "percona-xtrabackup-{{ mysql_version_alias }}"
+
+- name: Install python mysql client
+  package:
+    name: "{{ python_mysql_client }}"
+    state: latest
 
 - name: Disable percona telemetry agent
   systemd: 
@@ -96,9 +104,8 @@
 - name: Create initialized markup file
   file:
     path: "{{ _is_initialized_file }}"
-    owner: "{{ mysql_os_user }}"
-    group: "{{ mysql_os_group }}"
     state: touch
+  when: not __file_status.stat.exists
 
 - name: Force all notified handlers to run at this point, not waiting for normal sync points
   ansible.builtin.meta: flush_handlers

@@ -13,37 +13,26 @@ mysql_port: 3306
 mysql_os_user: "mysql"
 mysql_os_group: "{{ mysql_os_user }}"
 mysql_data_path: "/data0/mysql"
-mysql_socket_path: "{{ mysql_data_path }}/{{ mysql_port }}/mysql.sock"
-_mysql_config_file:
+mysql_unix_socket: "{{ mysql_data_path }}/{{ mysql_port }}/mysql.sock"
+_mysql_config_file_dict:
   Debian: "/etc/mysql/my.cnf"
   RedHat: "/etc/my.cnf"
-mysql_config_file: "{{ _mysql_config_file[ansible_os_family] }}"
-_mysql_config_include_dir:
+mysql_config_file: "{{ _mysql_config_file_dict[ansible_os_family] }}"
+_mysql_config_include_dir_dict:
   Debian: "/etc/mysql/mysql.conf.d"
   RedHat: "/etc/my.cnf.d"
-mysql_config_include_dir: "{{ _mysql_config_include_dir[ansible_os_family] }}"
+mysql_config_include_dir: "{{ _mysql_config_include_dir_dict[ansible_os_family] }}"
 _is_initialized_file: "{{ mysql_data_path }}/{{ mysql_port }}/.initialized"
 
 _python_major_version: "{{ ansible_python_version.split('.')[0] }}"
-_python_mysql_client:
+_python_mysql_client_dict:
   Debian: "python{{ _python_major_version }}-pymysql"
   RedHat: "python{{ _python_major_version }}-PyMySQL"
-python_mysql_client: "{{ _python_mysql_client[ansible_os_family] }}"
+python_mysql_client: "{{ _python_mysql_client_dict[ansible_os_family] }}"
 
-_systemd_mysql_service:
+_systemd_mysql_service_dict:
   Debian: "mysql.service"
   RedHat: "mysqld.service"
-systemd_mysql_service: "{{ _systemd_mysql_service[ansible_os_family] }}" 
+systemd_mysql_service: "{{ _systemd_mysql_service_dict[ansible_os_family] }}" 
 
-mysql_repl_user:
-  name: "repl"
-  host: "%"
-  passwd: "Faw1gt2wtikpuf597Hrw_"
-jumpserver_user:
-  name: "jumpserver"
-  host: "%"
-  passwd: "T7Amfi6a7e+ddknV"
-zabbix_user:
-  name: "zbx_monitor"
-  host: "127.0.0.1"
-  passwd: "kdlbVhVkr-37fV3Z6"
+mysql_userlist: []

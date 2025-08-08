@@ -1,19 +1,19 @@
-[mysqld@{{ replica_port }}]
+[mysqld@{{ _replica_port }}]
 ###### Mysql Global ######
 bind_address        = 0.0.0.0
-port                = {{ replica_port }}
-socket              = {{ mysql_data_path }}/{{ replica_port }}/mysql.sock 
-user                = {{ mysql_os_user.name }}
+port                = {{ _replica_port }}
+socket              = {{ mysql_data_path }}/{{ _replica_port }}/mysql.sock 
+user                = {{ mysql_os_user }}
 mysqlx_bind_address = 127.0.0.1
-mysqlx_port         = {{ replica_port }}0
-mysqlx_socket       = {{ mysql_data_path }}/{{ replica_port }}/mysqlx.sock
+mysqlx_port         = {{ _replica_port }}0
+mysqlx_socket       = {{ mysql_data_path }}/{{ _replica_port }}/mysqlx.sock
 #启用admin_port，连接数爆满等紧急情况下给管理员留个后门
 admin_address       = 127.0.0.1
-admin_port          = {{ replica_port }}2
-datadir             = {{ mysql_data_path }}/{{ replica_port }}/data
-pid_file            = {{ mysql_data_path }}/{{ replica_port }}/mysql.pid
-log_error           = {{ mysql_data_path }}/{{ replica_port }}/logs/errorlog/mysql-error.log
-slow_query_log_file = {{ mysql_data_path }}/{{ replica_port }}/logs/slowlog/mysql-slow.log
+admin_port          = {{ _replica_port }}2
+datadir             = {{ mysql_data_path }}/{{ _replica_port }}/data
+pid_file            = {{ mysql_data_path }}/{{ _replica_port }}/mysql.pid
+log_error           = {{ mysql_data_path }}/{{ _replica_port }}/logs/errorlog/mysql-error.log
+slow_query_log_file = {{ mysql_data_path }}/{{ _replica_port }}/logs/slowlog/mysql-slow.log
 slow_query_log      = 1
 long_query_time     = 0.1
 #log_queries_not_using_indexes    = 1
@@ -47,7 +47,7 @@ interactive_timeout          = 31536000
 wait_timeout                 = 31536000
 
 ### Binlog ###
-server_id                    = "{{ 10000000 | random }}"
+server_id                    = {{ 10000000 | random(seed=ansible_default_ipv4.address) | int }}
 sync_binlog                  = 1
 gtid_mode                    = ON
 enforce_gtid_consistency     = ON
@@ -55,8 +55,8 @@ binlog_expire_logs_seconds   = 604800
 binlog_cache_size            = 8M
 max_binlog_cache_size        = 10G
 max_binlog_size              = 1G
-log_bin                      = {{ mysql_data_path }}/{{ replica_port }}/logs/binlog/mysql-bin
-log_bin_index                = {{ mysql_data_path }}/{{ replica_port }}/logs/binlog/mysql-bin.index
+log_bin                      = {{ mysql_data_path }}/{{ _replica_port }}/logs/binlog/mysql-bin
+log_bin_index                = {{ mysql_data_path }}/{{ _replica_port }}/logs/binlog/mysql-bin.index
 
 ###  Slave  ###
 read_only                    = 1
@@ -67,8 +67,8 @@ log_replica_updates          = 1
 replica_net_timeout          = 60
 sync_source_info             = 100000
 sync_relay_log               = 100000
-relay_log                    = {{ mysql_data_path }}/{{ replica_port }}/logs/relaylog/mysql-relay-bin
-relay_log_index              = {{ mysql_data_path }}/{{ replica_port }}/logs/relaylog/mysql-relay-bin.index
+relay_log                    = {{ mysql_data_path }}/{{ _replica_port }}/logs/relaylog/mysql-relay-bin
+relay_log_index              = {{ mysql_data_path }}/{{ _replica_port }}/logs/relaylog/mysql-relay-bin.index
 replica_parallel_workers = 4
 relay_log_recovery     = 1
 

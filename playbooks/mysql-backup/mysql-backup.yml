@@ -1,5 +1,5 @@
 ---
- - hosts: mysql_backup
+ - hosts: all
    serial: 1
    roles:
      - role: mysql-backup

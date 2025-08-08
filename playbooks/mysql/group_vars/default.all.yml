@@ -1,0 +1,5 @@
+#mysql_userlist:
+#  - name: "zbx_monitor"
+#    host: "127.0.0.1"
+#    password: "xxxxxxxx"
+#    priv: "*.*:REPLICATION CLIENT,PROCESS,SHOW DATABASES,SHOW VIEW"

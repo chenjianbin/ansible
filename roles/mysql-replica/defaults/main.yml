@@ -1,7 +1,3 @@
 ---
-mysql_repl_user:
-  name: "repl"
-  passwd: "Faw1gt2wtikpuf597Hrw_"
-master_port: 3306
-replica_port: 3306
-mysql_data_path: "/data0/mysql"
+primary_port: 3306
+primary_user: "replica"

@@ -1,8 +1,10 @@
 ---
 # Install mysql
-- include_tasks: "installation-{{ ansible_os_family }}.yml"
-- include_tasks: "installation.yml"
+#- include_tasks: "installation-{{ ansible_os_family }}.yml"
+#- include_tasks: "installation.yml"
+- name: Include MySQL installation role
+  include_tasks: "installation.yml"
 
-- name: Add mysql default users
-  include_tasks: "users.yml"
+- name: Add mysql users
+  include_tasks: "add_user.yml"
   when: mode == "master"      
