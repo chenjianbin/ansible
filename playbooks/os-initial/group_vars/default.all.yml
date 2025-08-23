@@ -9,5 +9,5 @@ grub_plain_password: ""
   #- 1.1.1.1/32
 
 # ssh public key list [type: list] (Required)
-ssh_public_keys:
+#ssh_public_keys:
   #- ssh-rsa AAAAB3NzaC1yc2EAA.... admin@example.com

@@ -1,0 +1,4 @@
+---
+- name: Reboot system
+  listen: "reboot system"
+  reboot:

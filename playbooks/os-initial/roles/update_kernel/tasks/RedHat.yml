@@ -2,4 +2,5 @@
   yum:
     name: "*"
     state: latest 
+  notify: reboot system
 

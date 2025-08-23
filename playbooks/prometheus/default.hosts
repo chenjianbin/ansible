@@ -1,2 +1,5 @@
 [prometheus]
+[alertmanager]
 [node_exporter]
+[redis_exporter]
+[mysqld_exporter]

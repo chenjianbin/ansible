@@ -1,0 +1,10 @@
+---
+argument_specs:
+  # roles/set_sshd/tasks/main.yml entry point
+  main:
+    short_description: Main entry point for the set_sshd role
+    options:
+      ssh_public_keys:
+        type: list
+        description: SSH public key list.
+        required: true
