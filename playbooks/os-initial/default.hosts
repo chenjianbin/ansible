@@ -1,6 +1,7 @@
 [os]
-# hostip hostname='hostname'  ansible_ssh_password='HHt8PGeJY9j' ansible_ssh_port=22
-# example: 1.1.1.1 hostname='node1-k8s' ansible_ssh_password='HHt8PGeJY9j' ansible_ssh_port=22
+# hostip [ hostname='hostname' ] [ ansible_ssh_password='HHt8PGeJY9j' ] [ ansible_ssh_port=22 ]
+# example:
+# 1.1.1.1 hostname='node1-k8s' ansible_ssh_password='HHt8PGeJY9j' ansible_ssh_port=22
 
 
 [firewall]
