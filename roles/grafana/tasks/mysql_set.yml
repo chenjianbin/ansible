@@ -1,0 +1,38 @@
+---
+- name: Install MySQL
+  include_role:
+    name: mysql
+    public: true
+
+- name: Set grafana DB password
+  set_fact:
+    _grafana_db_password: "{{ lookup('community.general.random_string', min_lower=1, min_upper=1, min_special=1,override_special='_', min_numeric=1, length=16) }}"
+
+- name: Create grafana DB
+  community.mysql.mysql_db:
+    name: "grafana"
+    state: present
+    login_unix_socket: "{{ mysql_unix_socket }}"
+
+- name: Add MySQL grafana user
+  mysql_user:
+    name: "grafana"
+    host: "127.0.0.1"
+    password: "{{ _grafana_db_password }}"
+    priv: "grafana.*:ALL"
+    login_unix_socket: "{{ mysql_unix_socket }}"
+    login_user: "root"
+    state: present
+
+- name: Setup grafana MySQL configuration
+  blockinfile:
+    path: "{{ grafana_config_file }}"
+    insertafter: "^\\[database\\]$"
+    marker: "# {mark} ANSIBLE MANAGED BLOCK MYSQL"
+    block: |
+      type = mysql
+      host = 127.0.0.1:3306
+      name = grafana
+      user = grafana
+      password ={{ _grafana_db_password }}
+  notify: restart grafana-server

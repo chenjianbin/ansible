@@ -1,0 +1,22 @@
+- name: Install grafana-server
+  include_role:
+    name: grafana
+
+- name: Install nginx service
+  include_role:
+    name: nginx
+    public: true
+
+- name: Render grafana nginx configuration file
+  template:
+    src: "nginx.grafana.conf.j2"
+    dest: "{{ nginx_sites_available_dir }}/grafana.conf"
+  notify: reload nginx
+
+- name: Enable grafana's nginx configuration file
+  file:
+    src: "{{ nginx_sites_available_dir }}/grafana.conf"
+    dest: "{{ nginx_sites_enabled_dir }}/grafana.conf"
+    state: link
+  notify: reload nginx
+

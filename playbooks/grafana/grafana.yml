@@ -1,4 +1,4 @@
 ---
 - hosts: grafana
   roles:
-    - role: grafana
+    - role: grafana-service

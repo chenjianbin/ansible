@@ -4,8 +4,13 @@ argument_specs:
   main:
     short_description: Main entry point for the grafana role
     options:
-      grafana_server_hostname:
+      grafana_db_type:
         type: "str"
-        required: true
-        description: "Grafana server hostname."
+        required: false
+        default: "sqlite3"
+        choice:
+          - "sqlite3"
+          - "mysql"
+            #  - "postgres"
+        description: "Database type used by Grafana."
 

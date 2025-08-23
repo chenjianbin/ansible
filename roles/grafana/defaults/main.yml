@@ -1,1 +1,2 @@
-grafana_condfig_file: "/etc/grafana/grafana.ini"
+grafana_config_file: "/etc/grafana/grafana.ini"
+grafana_db_type: "sqlite3"

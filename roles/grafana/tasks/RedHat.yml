@@ -8,4 +8,5 @@
   yum:
     name: "grafana"
     state: latest
+  notify: restart grafana-server
 

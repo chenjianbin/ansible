@@ -16,3 +16,4 @@
     name: "grafana"
     state: latest
     update_cache: true
+  notify: restart grafana-server

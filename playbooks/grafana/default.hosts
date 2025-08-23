@@ -1,3 +1,6 @@
 [grafana]
 [all:vars]
 #grafana_server_hostname="grafana.example.com"
+
+# The default value of grafana_db_type is "sqlite3", you can set it to "sqlite3" or "mysql"
+#grafana_db_type="mysql"
