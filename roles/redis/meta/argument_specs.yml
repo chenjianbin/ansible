@@ -4,17 +4,11 @@ argument_specs:
   main:
     short_description: Main entry point for the redis role
     options:
-      #      redis_os_user:
-      #        type: "str"
-      #        required: false
-      #        default: "redis"
-      #        description: "Redis running username."
-      #
-      #      gredis_os_roup:
-      #        type: "str"
-      #        required: false
-      #        default: "redis"
-      #        description: "Redis running usergroup."
+      redis_listen_addr:
+        type: "str"
+        required: false
+        default: "127.0.0.1 -::1"
+        description: "Redis listen address."
 
       redis_listen_port:
         type: "int"

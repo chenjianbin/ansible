@@ -16,3 +16,13 @@
   retries: 5
   delay: 5
 
+- name: Delete clone user on the primary host
+  listen: "delete clone user"
+  become: true
+  mysql_user:
+    name: "{{ _clone_user }}"
+    host: "{{ _replica_ip }}"
+    login_unix_socket: "{{ _primary_unix_socket }}"
+    login_user: "root"
+    state: absent
+  delegate_to: "{{ _primary_host }}"

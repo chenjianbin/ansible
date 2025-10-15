@@ -1,0 +1,7 @@
+---
+- name: Allow the replica IP on the primary node
+  ufw:
+    rule: allow
+    src: "{{ _replica_ip }}"
+    proto: any
+  delegate_to: "{{ _primary_host }}"   

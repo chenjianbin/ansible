@@ -1,0 +1,51 @@
+---
+# tasks file for proxysql
+- name: Include OS tasks
+  include_tasks: "{{ ansible_os_family }}.yml"
+
+- name: Install MySQL client
+  package:
+    name: "{{ item }}"
+    state: latest
+  loop:
+    - "{{ python_mysql_client }}"
+
+- name: Install proxysql
+  package:
+    name: "proxysql"
+    state: latest
+  notify: restart proxysql
+
+- name: Force all notified handlers to run at this point, not waiting for normal sync points
+  ansible.builtin.meta: flush_handlers
+
+- name: Set proxysql admin interfaces of MySQL
+  community.proxysql.proxysql_global_variables:
+    login_user: "{{ proxysql_admin_username }}"
+    login_password: "{{ proxysql_admin_password }}"
+    variable: "admin-mysql_ifaces"
+    value: "{{ proxysql_admin_mysql_ifaces }}"
+
+- name: Set proxysql admin interfaces of PostgreSQL
+  community.proxysql.proxysql_global_variables:
+    login_user: "{{ proxysql_admin_username }}"
+    login_password: "{{ proxysql_admin_password }}"
+    variable: "admin-pgsql_ifaces"
+    value: "{{ proxysql_admin_pgsql_ifaces }}"
+
+- name: Set the value of monitor's username
+  community.proxysql.proxysql_global_variables:
+    login_user: "{{ proxysql_admin_username }}"
+    login_password: "{{ proxysql_admin_password }}"
+    variable: "mysql-monitor_username"
+    value: "{{ mysql_monitor_username }}"
+
+- name: Set the value of monitor's password
+  community.proxysql.proxysql_global_variables:
+    login_user: "{{ proxysql_admin_username }}"
+    login_password: "{{ proxysql_admin_password }}"
+    variable: "mysql-monitor_password"
+    value: "{{ mysql_monitor_password }}"
+
+- name: Setup MySQL backend severs
+  include_tasks: setup-mysql-backend-servers.yml

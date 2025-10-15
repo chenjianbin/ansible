@@ -1,6 +1,6 @@
 {{ ansible_managed | comment }}
 
-{{ mysql_data_path }}/{{ mysql_port }}/logs/errorlog/*.log {{ mysql_data_path }}/{{ mysql_port }}/logs/slowlog/*.log {
+{{ mysql_instance_dir }}/logs/errorlog/*.log {{ mysql_instance_dir }}/logs/slowlog/*.log {
     create 0600 {{ mysql_os_user }} {{ mysql_os_group }}
     daily
     rotate 15
@@ -10,6 +10,6 @@
     
     sharedscripts
     postrotate
-        mysqladmin flush-logs -S {{ mysql_data_path }}/{{ mysql_port }}/mysql.sock
+        mysqladmin flush-logs -S {{ mysql_instance_dir }}/mysql.sock
     endscript
 }

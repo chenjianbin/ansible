@@ -1,0 +1,43 @@
+- name: Configure replication hostgroups for automatic read/write split
+  community.proxysql.proxysql_replication_hostgroups:
+    login_user: "{{ proxysql_admin_username }}"
+    login_password: "{{ proxysql_admin_password }}"
+    writer_hostgroup: "{{ writer_hostgroup_id }}"
+    reader_hostgroup: "{{ reader_hostgroup_id }}"
+    comment: "{{ hostgroup_comment }}"
+    state: present
+
+- name: Add MySQL backend servers to reader HG (auto classify)
+  community.proxysql.proxysql_backend_servers:
+    login_user: "{{ proxysql_admin_username }}"
+    login_password: "{{ proxysql_admin_password }}"
+    hostgroup_id: "{{ reader_hostgroup_id }}"
+    hostname: "{{ item.hostname }}"
+    port: "{{ item.port |default(3306) }}"
+    state: present
+  loop: "{{ mysql_backend_servers }}"
+
+- name: Add MySQL backend users
+  community.proxysql.proxysql_mysql_users:
+    login_user: "{{ proxysql_admin_username }}"
+    login_password: "{{ proxysql_admin_password }}"
+    username: "{{ item.username }}"
+    password: "{{ item.password }}"
+    default_hostgroup: "{{ writer_hostgroup_id }}"
+    state: present
+  no_log: true
+  loop: "{{ mysql_backend_users }}"
+
+- name: Add multiple query rules
+  community.proxysql.proxysql_query_rules:
+    login_user: "{{ proxysql_admin_username }}"
+    login_password: "{{ proxysql_admin_password }}"
+    rule_id: "{{ item.rule_id }}"
+    active: "{{ item.active }}"
+    match_digest: "{{ item.match_digest }}"
+    destination_hostgroup: "{{ item.destination_hostgroup }}"
+    apply: "{{ item.apply }}"
+  loop:
+    - { rule_id: 1, active: true, match_digest: '^SELECT.*FOR UPDATE', destination_hostgroup: "{{ writer_hostgroup_id }}", apply: true }
+    - { rule_id: 2, active: true, match_digest: '^SELECT', destination_hostgroup: "{{ reader_hostgroup_id }}", apply: true }
+

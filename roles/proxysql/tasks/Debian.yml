@@ -1,0 +1,12 @@
+---
+- name: Add ProxySQL repository key
+  apt_key:
+    url: https://repo.proxysql.com/ProxySQL/proxysql-{{ proxysql_version  }}/repo_pub_key
+    state: present
+
+- name: Add ProxySQL repository
+  apt_repository:
+    repo: "deb https://repo.proxysql.com/ProxySQL/proxysql-{{ proxysql_version  }}/{{ ansible_lsb.codename }}/ ./"
+    state: present
+    filename: proxysql
+    update_cache: yes

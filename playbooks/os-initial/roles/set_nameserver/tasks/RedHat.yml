@@ -1,5 +1,5 @@
 ---
-- name: Set network
+- name: Set NetworkManager
   block:
   - name: Copy NetworkManager configuration file
     copy: 
@@ -17,6 +17,3 @@
   template: 
     src: redhat.resolv.conf.j2 
     dest: /etc/resolv.conf
-      #  when: ansible_hostname is not search('ALI') and ansible_hostname is not search('AWS')
-
-

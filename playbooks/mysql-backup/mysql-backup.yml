@@ -1,5 +1,32 @@
 ---
- - hosts: all
-   serial: 1
-   roles:
-     - role: mysql-backup
+- hosts: all
+  tasks:
+    - name: Generate seed
+      set_fact:
+        _seed: "{{ primary_host + ( primary_port | default(3306) | string ) }}"
+    
+    - name: Generate replica port
+      set_fact:
+        _replica_port: "{{ (1000 | random(seed=_seed)) + 3306 }}"
+    
+    - name: Include MySQL role
+      include_role:
+        name: mysql
+      vars:
+        mode: "replica"
+        mysql_multi: true
+        mysql_port: "{{ _replica_port }}"
+    
+    - name: Create MySQL replication info file
+      file:
+        path: "~/mysqlslave.txt"
+        state: touch
+    
+    - name: Record MySQL replication info
+      blockinfile:
+        marker: "# {mark} ANSIBLE MANAGED BLOCK FOR Mysql Slave On Port {{ _replica_port }}"
+        block: "{{ primary_host }}      {{ _replica_port }}"
+        path: "~/mysqlslave.txt"
+    
+
+

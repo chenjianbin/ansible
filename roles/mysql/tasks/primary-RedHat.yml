@@ -1,0 +1,9 @@
+---
+- name: Allow the replica IP on the primary node
+  firewalld:
+    zone: trusted
+    source: "{{ _replica_ip }}"
+    immediate: yes
+    permanent: true
+    state: enabled
+  delegate_to: "{{ _primary_host }}"

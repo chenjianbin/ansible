@@ -1,0 +1,8 @@
+---
+# vars file for proxysql
+_ansible_distribution:  >-
+  {{
+    {
+      'AlmaLinux': 'almalinux',
+    }.get(ansible_distribution, 'centos')
+  }}

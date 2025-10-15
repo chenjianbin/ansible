@@ -1,10 +1,18 @@
 ---
-# Install mysql
-#- include_tasks: "installation-{{ ansible_os_family }}.yml"
-#- include_tasks: "installation.yml"
-- name: Include MySQL installation role
+- name: Check that primary_host is defined when mode == 'replica'
+  assert:
+    that:
+      - mode != "replica" or (primary_host is defined and primary_host | length > 0)
+    fail_msg: "When mode is 'replica', you must define primary_host."
+
+- name: MySQL installation
   include_tasks: "installation.yml"
 
-- name: Add mysql users
+- name: Add MySQL users
   include_tasks: "add_user.yml"
   when: mode == "master"      
+
+- name: Setup MySQL replication
+  include_tasks: "replication.yml"
+  when: mode == "replica"
+

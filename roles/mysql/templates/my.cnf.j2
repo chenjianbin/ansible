@@ -1,0 +1,12 @@
+{{ ansible_managed | comment }}
+!includedir {{ mysql_config_include_dir }}
+
+[mysql]
+prompt  ="\R:\m:\\s \u@\d >"
+no-auto-rehash
+safe_updates = 1
+
+[mysqldump]
+quick
+single-transaction
+order-by-primary

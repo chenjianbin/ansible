@@ -1,5 +1,5 @@
 ---
-- name: Get ip info
+- name: Get IP info
   ipinfoio_facts:  
 
 - name: Set pip mirror
@@ -12,6 +12,39 @@
       dest: "~/.pip/pip.conf"
   when:  country == 'CN'
 
-- name: Include os tasks
+- name: Include OS tasks
   include_tasks: "{{ ansible_os_family }}.yml"
+
+- name: Install system software 
+  package:
+    name: "{{ packages }}"
+    state: latest
+  vars:
+    packages:
+      - bash-completion
+      - bzip2
+      - git
+      - iftop
+      - iotop
+      - iptraf
+      - lrzsz
+      - lsof
+      - net-tools
+      - nload
+      - mtr
+      - psmisc        #pstree
+#       - rkhunter
+      - rsync
+      - screen
+      - smartmontools
+      - strace
+      - sysstat
+      - tar
+      - tcpdump
+      - telnet
+      - traceroute
+      - tree
+      - unzip
+      - wget
+      - zip
 

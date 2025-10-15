@@ -1,4 +1,5 @@
 ---
+redis_listen_addr: "127.0.0.1 -::1"
 redis_listen_port: 6379
 redis_password: "1EFxbDogO3C+zveK"
 

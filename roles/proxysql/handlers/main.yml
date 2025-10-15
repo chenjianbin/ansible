@@ -1,0 +1,19 @@
+---
+# handlers file for proxysql
+- name: Restart proxysql
+  listen: "restart proxysql"
+  become: true
+  ansible.builtin.systemd:
+    name: proxysql
+    enabled: true
+    daemon_reload: true
+    state: restarted
+  notify: proxysql service is running
+
+- name: Make sure proxysql service is running
+  listen: "proxysql service is running"
+  ansible.builtin.service_facts: {}
+  register: __service_status
+  until: "__service_status.ansible_facts.services['proxysql.service'].state == 'running'"
+  retries: 5
+  delay: 5

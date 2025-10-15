@@ -1,48 +1,18 @@
 ---
-- name: Install basic software
+- name: Install system software [ {{ ansible_os_family }} ]
   apt: 
     name: "{{ packages }}"
-    state: present
+    state: latest
     update_cache: true
   vars:
     packages:
       - apt-file
-      - bash-completion
-      - cron
-      - git
-      - lrzsz
-      - rsync
-      - screen
-      - tree
-      - vim
-      - wget
-      - psmisc               #pstree
+      - bind9-dnsutils        #dig
+      - inetutils-ping
+      - linux-tools-common    #perf
+      - nethogs
       - python3-pip
       - python3-setuptools
-      - smartmontools
-      - zip
+      - vim
 
-- name: Install debug software
-  apt: 
-    name: "{{ packages }}"
-    state: present
-  vars:
-    packages:
-      - bind9-dnsutils        #dig
-      - lsof
-      - linux-tools-common    #perf
-      - iptraf
-      - iftop
-      - iotop
-      - inetutils-ping
-      - nload
-      - net-tools
-      - nethogs
-      - mtr
-      - strace
-      - sysstat
-      - tcpdump
-      - telnet
-      - traceroute
-#       - rkhunter
 

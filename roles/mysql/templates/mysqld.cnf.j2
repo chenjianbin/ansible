@@ -1,21 +1,21 @@
 {{ ansible_managed | comment }}
 
-[mysqld]
+[mysqld{{ _mysql_defaults_group_suffix }}]
 ###### Mysql Global ######
 bind_address        = 0.0.0.0
 port                = {{ mysql_port }}
-socket              = {{ mysql_data_path }}/{{ mysql_port }}/mysql.sock 
+socket              = {{ mysql_instance_dir }}/mysql.sock 
 user                = {{ mysql_os_user }}
 mysqlx_bind_address = 127.0.0.1
 mysqlx_port         = {{ mysql_port }}0
-mysqlx_socket       = {{ mysql_data_path }}/{{ mysql_port }}/mysqlx.sock
+mysqlx_socket       = {{ mysql_instance_dir }}/mysqlx.sock
 #启用admin_port，连接数爆满等紧急情况下给管理员留个后门
 admin_address       = 127.0.0.1
 admin_port          = {{ mysql_port }}2
-datadir             = {{ mysql_data_path }}/{{ mysql_port }}/data
-pid_file            = {{ mysql_data_path }}/{{ mysql_port }}/mysql.pid
-log_error           = {{ mysql_data_path }}/{{ mysql_port }}/logs/errorlog/mysql-error.log
-slow_query_log_file = {{ mysql_data_path }}/{{ mysql_port }}/logs/slowlog/mysql-slow.log
+datadir             = {{ mysql_instance_dir }}/data
+pid_file            = {{ mysql_instance_dir }}/mysql.pid
+log_error           = {{ mysql_instance_dir }}/logs/errorlog/mysql-error.log
+slow_query_log_file = {{ mysql_instance_dir }}/logs/slowlog/mysql-slow.log
 slow_query_log      = 1
 long_query_time     = 0.1
 #log_queries_not_using_indexes    = 1
@@ -49,7 +49,7 @@ interactive_timeout          = 31536000
 wait_timeout                 = 31536000
 
 ### Binlog ###
-server_id                    = {{ 10000000 | random(seed=inventory_hostname) | int }}
+server_id                    = {{ 10000000 | random(seed=inventory_hostname ~ mysql_port) | int }}
 sync_binlog                  = 1
 gtid_mode                    = ON
 enforce_gtid_consistency     = ON
@@ -57,15 +57,12 @@ binlog_expire_logs_seconds   = 604800
 binlog_cache_size            = 8M
 max_binlog_cache_size        = 10G
 max_binlog_size              = 1G
-log_bin                      = {{ mysql_data_path }}/{{ mysql_port }}/logs/binlog/mysql-bin
-log_bin_index                = {{ mysql_data_path }}/{{ mysql_port }}/logs/binlog/mysql-bin.index
+log_bin                      = {{ mysql_instance_dir }}/logs/binlog/mysql-bin
+log_bin_index                = {{ mysql_instance_dir }}/logs/binlog/mysql-bin.index
 
-###  Slave  ###
-{% if mode == 'master' %}
+###  Replica  ###
 read_only                    = 0
-{% else %}
-read_only                    = 1
-{% endif %}
+super_read_only              = 0
 auto_increment_offset        = 1
 auto_increment_increment     = 1
 log_replica_updates          = 1      
@@ -73,23 +70,16 @@ log_replica_updates          = 1
 replica_net_timeout          = 60
 sync_source_info             = 100000
 sync_relay_log               = 100000
-relay_log                    = {{ mysql_data_path }}/{{ mysql_port }}/logs/relaylog/mysql-relay-bin
-relay_log_index              = {{ mysql_data_path }}/{{ mysql_port }}/logs/relaylog/mysql-relay-bin.index
+relay_log                    = {{ mysql_instance_dir }}/logs/relaylog/mysql-relay-bin
+relay_log_index              = {{ mysql_instance_dir }}/logs/relaylog/mysql-relay-bin.index
 replica_parallel_workers = 4
 relay_log_recovery     = 1
-
-###### Myisam ######
-key_buffer_size                       = 16M
-read_buffer_size                      = 1M
-bulk_insert_buffer_size               = 64M 
-myisam_sort_buffer_size               = 128M
 
 ###### Innodb ######
 transaction_isolation                 = READ-COMMITTED
 innodb_data_file_path                 = ibdata1:1024M:autoextend
-innodb_buffer_pool_size               = {{ (ansible_memtotal_mb // 128 // 2 * 128) if ansible_memtotal_mb > 2048 else (ansible_memtotal_mb // 128 // 4 * 128) }}M
+innodb_buffer_pool_size               = {{ [((ansible_memtotal_mb // 128 // 2 * 128) if ansible_memtotal_mb > 4096 else (ansible_memtotal_mb // 128 // 8 * 128)), 128] | max }}M
 innodb_redo_log_capacity              = 2G
-innodb_log_files_in_group             = 2
 innodb_log_buffer_size                = 8M
 innodb_file_per_table                 = 1
 innodb_stats_persistent               = 1
@@ -109,3 +99,9 @@ innodb_io_capacity                    = 2000
 #master_info_repository       = TABLE
 #relay_log_info_repository    = TABLE
 #replica_parallel_type    = LOGICAL_CLOCK
+#innodb_log_files_in_group             = 2
+###### Myisam ######
+#key_buffer_size                       = 16M
+#read_buffer_size                      = 1M
+#bulk_insert_buffer_size               = 64M 
+#myisam_sort_buffer_size               = 128M

@@ -2,14 +2,4 @@
 
 [client]
 port	= {{ mysql_port }}
-socket	= {{ mysql_data_path }}/{{ mysql_port }}/mysql.sock
-
-[mysql]
-prompt  ="\R:\m:\\s \u@\d >"
-no-auto-rehash
-safe_updates = 1
-
-[mysqldump]
-quick
-single-transaction
-order-by-primary
+socket	= {{ mysql_instance_dir }}/mysql.sock

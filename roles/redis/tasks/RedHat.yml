@@ -1,0 +1,11 @@
+- name: Import Redis GPG key
+  ansible.builtin.rpm_key:
+    key: "https://packages.redis.io/gpg"
+    state: present
+  when: ansible_distribution_major_version >= "8"
+
+- name: Add redis repo
+  ansible.builtin.template:
+    src: "redis.repo.j2"
+    dest: "/etc/yum.repos.d/redis.repo"
+  when: ansible_distribution_major_version >= "8"

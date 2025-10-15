@@ -1,4 +1,7 @@
 ---
+- name: Include OS task
+  include_tasks: "{{ ansible_os_family }}.yml"
+
 - name: Install redis
   package:
     name: "{{ item }}"

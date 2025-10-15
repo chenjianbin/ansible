@@ -1,3 +1,4 @@
+bind {{ redis_listen_addr }}
 port {{ redis_listen_port }}
 requirepass {{ redis_password }}
 maxmemory {{ ansible_memtotal_mb // 16 }}mb

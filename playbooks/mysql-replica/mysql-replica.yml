@@ -1,13 +1,6 @@
 ---
 - hosts: all
-  tasks:
-    - name: Install MySQL
-      include_role:
-        name: mysql
-        public: true
+  roles:
+    - role: mysql
       vars:
         mode: "replica"
-
-    - name: Set MySQL replication
-      include_role:
-        name: mysql-replica

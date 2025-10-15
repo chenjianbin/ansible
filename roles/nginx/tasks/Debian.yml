@@ -5,18 +5,11 @@
     keyring: /usr/share/keyrings/nginx-archive-keyring.gpg
     state: present
 
-#  ansible.builtin.get_url:
-#    url: https://nginx.org/keys/nginx_signing.key
-#    dest: /usr/share/keyrings/nginx-archive-keyring.gpg
-
 - name: Add nginx apt repository
   ansible.builtin.apt_repository:
     repo: "deb [signed-by=/usr/share/keyrings/nginx-archive-keyring.gpg] http://nginx.org/packages/ubuntu {{ ansible_distribution_release }} nginx"
     filename: nginx
     state: present
-
-- name: Update apt cache
-  apt:
     update_cache: true
 
 - name: Allow http and https connections

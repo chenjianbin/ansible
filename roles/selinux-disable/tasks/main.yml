@@ -1,4 +1,4 @@
-- name: Install selinux python packages [RedHat]
+- name: Install selinux python packages [ RedHat ]
   ansible.builtin.package:
     name: "{{ ['libselinux-python', 'policycoreutils-python']
            if ansible_python_version is version('3', '<') else
@@ -8,7 +8,7 @@
   delay: 2
   when: ansible_os_family | lower == "redhat"
 
-- name: Install selinux python packages [clearlinux]
+- name: Install selinux python packages [ ClearLinux ]
   ansible.builtin.package:
     name: sysadmin-basic
     state: present
@@ -21,4 +21,4 @@
   ansible.posix.selinux:
     state: disabled
   when:
-    - ansible_selinux.status == "enabled"
+    - ansible_selinux.status != "disabled"

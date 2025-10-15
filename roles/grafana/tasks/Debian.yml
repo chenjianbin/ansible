@@ -11,9 +11,6 @@
     filename: grafana
     state: present
 
-- name: Install grafana
+- name: Update apt cache
   apt:
-    name: "grafana"
-    state: latest
     update_cache: true
-  notify: restart grafana-server

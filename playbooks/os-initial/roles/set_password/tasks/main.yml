@@ -27,7 +27,7 @@
       _grub_password: "{{ (_grub_password_output.stdout | regex_search('grub.pbkdf2.[^\n]+', '\\0'))[0] }}"
     no_log: true 
   
-  - name: Set grub superuser password [{{ ansible_os_family }}]
+  - name: Set grub superuser password
     include_tasks: "grub_password_{{ ansible_os_family }}.yml"
   when: grub_plain_password
 

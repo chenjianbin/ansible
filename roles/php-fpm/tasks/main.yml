@@ -2,12 +2,14 @@
 - name: Add PHP group
   group:
     name: "{{ php_os_group }}"
+    gid: 302
     state: present
 
 - name: Add PHP user
   user:
     name: "{{ php_os_user }}"
     group: "{{ php_os_group }}"
+    uid: 302
     createhome: false
     shell: /sbin/nologin
     state: present

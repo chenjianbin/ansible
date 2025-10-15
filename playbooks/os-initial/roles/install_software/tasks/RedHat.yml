@@ -1,65 +1,19 @@
 ---
-- name: Install basic software
+- name: Install system software [ {{ ansible_os_family }} ]
   yum: 
     name: "{{ packages }}"
-    state: present
-  vars:
-    packages:
-      - automake
-      - autoconf
-      - bash-completion
-      - bzip2
-        #- gcc
-        #- gcc-c++
-        #- glibc
-        #- glibc-devel
-        #- glib2
-        #- glib2-devel
-      - git
-      - httpd-tools
-        #- libffi-devel
-      - lrzsz
-      - make
-      - psmisc
-      - rsync
-      - smartmontools
-        #- subversion
-      - screen
-      - tree
-      - unzip
-      - vim-enhanced
-      - wget
-      - zip
-      - tar
-
-- name: Install debug software
-  yum: 
-    name: "{{ packages }}"
-    state: present
+    state: latest
   vars:
     packages:
       - bind-utils
-      - iptraf
-      - iftop
-      - iotop
-      - lsof
-      - net-tools
-      - nethogs
-      - nload
-      - mtr
+#      - nethogs  #RHEL == 10.0 not supported
       - perf
-      - strace
-      - sysstat
-      - tcpdump
-      - telnet
-      - traceroute
-#       - tcping
-#       - rkhunter
-       
-- name: Install software [ RHEL == "7" ]
+      - vim-enhanced
+
+- name: Install system software [ {{ ansible_os_family }} == "7" ]
   yum: 
     name: "{{ packages }}"
-    state: present
+    state: latest
   when: ansible_distribution_major_version == "7"
   vars:
     packages:
@@ -70,10 +24,10 @@
       - python-httplib2
       - python-setuptools
 
-- name: Install software [ RHEL >= "8" ]
+- name: Install system software [ {{ ansible_os_family }} >= "8" ]
   yum: 
     name: "{{ packages }}"
-    state: present
+    state: latest
   when: ansible_distribution_major_version >= "8"
   vars:
     packages:

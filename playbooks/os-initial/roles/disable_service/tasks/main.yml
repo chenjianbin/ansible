@@ -5,6 +5,22 @@
     env: yes
     value: ""
 
-- name: Include os tasks
+- name: Include OS tasks
   include_tasks: "{{ ansible_os_family }}.yml"
 
+- name: Gather systemd services facts
+  ansible.builtin.service_facts:
+
+- name: Disable services if they exist
+  ansible.builtin.systemd:
+    name: "{{ item }}"
+    state: stopped
+    enabled: false
+    masked: true
+    daemon_reload: true
+  loop:
+    - cups-browsed
+    - cups
+    - ntpd
+    - postfix
+  when: item in ansible_facts.services

@@ -1,2 +1,4 @@
 [php]
+[php:vars]
+#php_version=8.4
 

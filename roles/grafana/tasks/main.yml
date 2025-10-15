@@ -2,6 +2,12 @@
 - name: Include OS tasks
   include_tasks: "{{ ansible_os_family }}.yml"
 
+- name: Install Grafana
+  package:
+    name: "grafana"
+    state: latest
+  notify: restart grafana-server
+
 - name: Inlude MySQL tasks
   include_tasks: "mysql_set.yml"
   when: grafana_db_type == "mysql"

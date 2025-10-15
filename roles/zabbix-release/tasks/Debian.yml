@@ -3,4 +3,5 @@
   apt: 
     deb: "{{ zabbix_deb_repo }}"
     state: present
+    update_cache: true
 

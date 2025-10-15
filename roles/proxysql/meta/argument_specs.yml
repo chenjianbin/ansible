@@ -1,0 +1,86 @@
+---
+argument_specs:
+  # roles/proxysql/tasks/main.yml entry point
+  main:
+    short_description: Main entry point for the proxysql role
+    options:
+      proxysql_version:
+        description: "ProxySQL version to install"
+        type: str
+        default: "3.0.x"
+      
+      proxysql_admin_username:
+        description: "ProxySQL admin username"
+        type: str
+        default: "admin"
+      
+      proxysql_admin_password:
+        description: "ProxySQL admin password"
+        type: str
+        default: "admin"
+      
+      proxysql_admin_mysql_ifaces:
+        description: "MySQL admin interface address and port"
+        type: str
+        default: "127.0.0.1:6032"
+      
+      proxysql_admin_pgsql_ifaces:
+        description: "PostgreSQL admin interface address and port"
+        type: str
+        default: "127.0.0.1:6132"
+      
+      writer_hostgroup_id:
+        description: "Hostgroup ID for writer backend servers"
+        type: int
+        default: 1
+      
+      reader_hostgroup_id:
+        description: "Hostgroup ID for reader backend servers"
+        type: int
+        default: 2
+      
+      hostgroup_comment:
+        description: "Comment for the hostgroup"
+        type: str
+        default: "cluster{{ writer_hostgroup_id }}"
+      
+      mysql_monitor_username:
+        description: "Username for ProxySQL monitoring"
+        type: str
+        default: "proxysql-monitor"
+      
+      mysql_monitor_password:
+        description: "Password for ProxySQL monitoring"
+        type: str
+        default: "WnDr/y7CaI2KwcniPQ="
+      
+      mysql_backend_servers:
+        description: "List of backend MySQL servers"
+        type: list
+        elements: dict
+        default: []
+        suboptions:
+          host:
+            description: "Backend MySQL server IP or hostname"
+            type: str
+            required: true
+          port:
+            description: "Backend MySQL server port"
+            type: int
+            default: 3306
+      
+      mysql_backend_users:
+        description: "List of backend MySQL users"
+        type: list
+        elements: dict
+        default: []
+        suboptions:
+          username:
+            description: "Backend MySQL server username"
+            type: str
+            required: true
+          password:
+            description: "Backend MySQL server user password"
+            type: str
+            required: true
+      

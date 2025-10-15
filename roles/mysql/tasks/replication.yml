@@ -1,0 +1,128 @@
+---
+- name: Set MySQL basic replication facts
+  set_fact:
+    _primary_host: "{{ primary_host }}"
+    _primary_port: "{{ primary_port | default(3306) }}"
+    _primary_user: "replica"
+    _primary_password: "{{ primary_password | default(lookup('community.general.random_string', min_lower=1, min_upper=1, min_special=1, override_special='_', min_numeric=1, length=16)) }}"
+    _clone_user: "clone"
+    _clone_password: "{{ clone_password | default(lookup('community.general.random_string', min_lower=1, min_upper=1, min_special=1, override_special='_', min_numeric=1, length=16)) }}"
+
+- name: Set MySQL socket facts
+  set_fact:
+    _primary_unix_socket: "{{ primary_unix_socket | default(mysql_instance_root_dir ~ '/' ~ _primary_port | string ~ '/mysql.sock') }}"
+    _replica_unix_socket: "{{ replica_unix_socket | default(mysql_unix_socket) }}"
+
+- name: Get MySQL instance info
+  community.mysql.mysql_info:
+    login_user: root
+    login_unix_socket: "{{ _replica_unix_socket }}"
+    filter:
+      - databases
+  register: mysql_info_result
+
+- name: Extract databases
+  set_fact:
+    all_dbs: "{{ mysql_info_result.databases }}"
+
+- name: Filter non-system databases
+  set_fact:
+    non_system_dbs: >-
+      {{ all_dbs
+         | reject('match', '^(mysql|sys|information_schema|performance_schema)$')
+         | list }}
+
+- name: Prompt if non-system databases exist
+  when: non_system_dbs | length > 0
+  pause:
+    prompt: |
+      
+      ╔════════════════════════════════════════════════════════════╗
+      ║                       ⚠️  WARNING  ⚠️                      ║
+      ╚════════════════════════════════════════════════════════════╝
+      
+      Found the following user DATABASES:
+      
+      {% for db in non_system_dbs %}
+        • {{ db }}
+      {% endfor %}
+      
+      ⚠️  Cloning will OVERWRITE all data in these databases!
+      
+      ────────────────────────────────────────────────────────────
+      Type "yes" to confirm and continue: 
+  register: user_confirm
+
+- name: Abort if user did not confirm
+  when:
+    - non_system_dbs | length > 0
+    - user_confirm.user_input | lower != 'yes'
+  fail:
+    msg: "Aborted by user — clone operation cancelled."
+
+- name: Include primary host execution tasks
+  include_tasks: "primary.yml"
+
+- name: Set valid donor list
+  community.mysql.mysql_variables:
+    login_user: "root"
+    login_unix_socket: "{{ _replica_unix_socket }}"
+    variable: clone_valid_donor_list
+    value: "{{ _primary_host }}:{{ _primary_port }}"
+    mode: global
+
+- name: Disable super user readonly
+  community.mysql.mysql_variables:
+    login_user: "root"
+    login_unix_socket: "{{ _replica_unix_socket }}"
+    variable: super_read_only
+    value: 0
+    mode: global
+
+- name: Clone instance from primary
+  changed_when: true
+  community.mysql.mysql_query:
+    login_user: root
+    login_unix_socket: "{{ _replica_unix_socket }}"
+    query: >
+      CLONE INSTANCE FROM '{{ _clone_user }}'@'{{ _primary_host }}':{{ _primary_port }}
+      IDENTIFIED BY '{{ _clone_password }}';
+
+- name: Make sure mysql service is running
+  ansible.builtin.service_facts: {}
+  register: __service_status
+  until: "__service_status.ansible_facts.services[systemd_mysql_service].state == 'running'"
+  retries: 5
+  delay: 5
+
+- name: Change replication
+  mysql_replication:
+    login_user: "root"
+    login_unix_socket: "{{ _replica_unix_socket }}"
+    primary_host: "{{ _primary_host }}"
+    primary_port: "{{ _primary_port }}"
+    primary_user: "{{ _primary_user }}"
+    primary_password: "{{ _primary_password }}"
+    primary_connect_retry: "50"
+    primary_ssl: "1"
+    primary_auto_position: "1"
+    mode: "changeprimary"
+  no_log: true
+
+- name: Start replication
+  mysql_replication:
+    login_user: "root"
+    login_unix_socket: "{{ _replica_unix_socket }}"
+    mode: "startreplica"
+
+- name: Set readonly for MySQL instance
+  community.mysql.mysql_variables:
+    login_user: "root"
+    login_unix_socket: "{{ _replica_unix_socket }}"
+    variable: "{{ item }}"
+    value: 1
+    mode: persist
+  loop:
+    - "super_read_only"
+    - "read_only"
+

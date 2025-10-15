@@ -1,0 +1,63 @@
+---
+# Ensure that subsequent setup can store facts in hostvars.
+- name: Add host to inventory
+  add_host:
+    name: "{{ _primary_host }}"
+    group: "dynamic_primary"
+
+# Task: Gather minimal facts from the designated primary host
+#
+# Behavior:
+# - delegate_to: runs setup on _primary_host instead of current host.
+# - delegate_facts: true ensures gathered facts are stored in hostvars[_primary_host].
+# - ansible_ssh_common_args: '-o ProxyJump={{ inventory_hostname }}' makes Ansible
+#   connect via inventory_hostname as a bastion host.
+#
+# Usage Note:
+# Useful when controller and _primary_host are on isolated networks.
+- name: Gather facts from primary host
+  setup:
+    gather_subset:
+      - min
+    filter:
+      - ansible_os_family
+      - ansible_env
+  delegate_to: "{{ _primary_host }}"
+  delegate_facts: true
+  vars:
+    ansible_ssh_common_args: '-o ProxyJump={{ inventory_hostname }}'
+
+- name: Extract replica IP
+  set_fact:
+    _replica_ip: "{{ hostvars[_primary_host].ansible_env.SSH_CONNECTION.split()[0] }}"
+
+- name: Include primary host tasks [ {{ hostvars[_primary_host].ansible_os_family }} ]
+  include_tasks: "primary-{{ hostvars[_primary_host].ansible_os_family }}.yml"
+
+- name: Add relication user on the primary host
+  mysql_user:
+    name: "{{ _primary_user }}"
+    host: "{{ _replica_ip }}"
+    priv: "*.*:REPLICATION SLAVE,REPLICATION CLIENT"
+    plugin: "caching_sha2_password"
+    plugin_auth_string: "{{ _primary_password }}"
+    login_unix_socket: "{{ _primary_unix_socket }}"
+    login_user: "root"
+    state: present
+  delegate_to: "{{ _primary_host }}"
+
+
+- name: Add clone user on the primary host
+  mysql_user:
+    name: "{{ _clone_user }}"
+    host: "{{ _replica_ip }}"
+    priv: "*.*:BACKUP_ADMIN"
+    plugin: "caching_sha2_password"
+    plugin_auth_string: "{{ _clone_password }}"
+    login_unix_socket: "{{ _primary_unix_socket }}"
+    login_user: "root"
+    state: present
+  delegate_to: "{{ _primary_host }}"
+  notify: delete clone user
+
+

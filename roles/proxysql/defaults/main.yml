@@ -1,0 +1,35 @@
+---
+# defaults file for proxysql
+proxysql_version: "3.0.x"
+proxysql_admin_username: "admin"
+proxysql_admin_password: "admin"
+proxysql_admin_mysql_ifaces: "127.0.0.1:6032"
+proxysql_admin_pgsql_ifaces: "127.0.0.1:6132"
+writer_hostgroup_id: 1
+reader_hostgroup_id: 2
+hostgroup_comment: "cluster{{ writer_hostgroup_id }}"
+
+mysql_monitor_username: "proxysql-monitor"
+mysql_monitor_password: "WnDr/y7CaI2KwcniPQ="
+mysql_backend_servers: []
+# The example of mysql_backend_servers is as follows
+#mysql_backend_servers:
+#  - host: "10.0.0.1"
+#    port: 3306
+#  - host: "10.0.0.2"
+#    port: 3306
+#  - host: "10.0.0.3"
+#    port: 3306
+mysql_backend_users: []
+# The example of mysql_backend_users is as follows
+#mysql_backend_users:
+#  - username: "user1"
+#    password: "password1"
+#  - username: "user2"
+#    password: "password2"
+
+_python_major_version: "{{ ansible_python_version.split('.')[0] }}"
+_python_mysql_client_dict:
+  Debian: "python{{ _python_major_version }}-pymysql"
+  RedHat: "python{{ _python_major_version }}-PyMySQL"
+python_mysql_client: "{{ _python_mysql_client_dict[ansible_os_family] }}"

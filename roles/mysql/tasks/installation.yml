@@ -1,14 +1,18 @@
 ---
+- name: Disable selinux
+  include_role:
+    name: selinux-disable
+
 - name: Include MySQL installation role [ {{ ansible_os_family }} ]
   include_tasks: "installation-{{ ansible_os_family }}.yml"
 
-- name: Add mysql user group
+- name: Add MySQL user group
   group:
     name: "{{ mysql_os_group }}"
     state: present
     system: true
 
-- name: Add mysql user
+- name: Add MySQL user
   user:
     name: "{{ mysql_os_user }}"
     group: "{{ mysql_os_group }}"
@@ -26,23 +30,28 @@
 - name: Enable percona xtrabackup release
   shell: "percona-release enable pxb-{{ mysql_version_alias }}-lts"
 
-- name: Install percona server
+- name: Install percona MySQL server 
   package:
-    name: "percona-server-server"
+    name: "{{ packages }}"
     state: latest
   notify: restart mysql
   environment:
     PERCONA_TELEMETRY_DISABLE: "1"
+  vars:
+    packages:
+      - "percona-server-server"
+      - "percona-server-client"
 
-- name: Install percona server tools
+- name: Install percona MySQL server tools
   package:
-    name: "{{ item }}"
+    name: "{{ packages }}"
     state: latest
-  loop:
-    - "percona-toolkit"
-    - "percona-xtrabackup-{{ mysql_version_alias }}"
+  vars:
+    packages:
+      - "percona-toolkit"
+      - "percona-xtrabackup-{{ mysql_version_alias }}"
 
-- name: Install python mysql client
+- name: Install python MySQL client
   package:
     name: "{{ python_mysql_client }}"
     state: latest
@@ -58,28 +67,27 @@
   blockinfile:
     path: "{{ mysql_config_file }}"
     marker: "# {mark} ANSIBLE MANAGED BLOCK FOR MYSQL"
-    block: "!includedir {{ mysql_config_include_dir }}"
+    block: "{{ lookup('template', 'my.cnf.j2') }}"
 
-- name: Setup regular clean mysql logs
-  template: 
-    src: mysql.logrotate.j2
-    dest: /etc/logrotate.d/mysql
-
-- name: Copy mysql configuration files
+- name: Rander MySQL client configuration
   template:
     src: "{{ item }}.j2"
     dest: "{{ mysql_config_include_dir }}/{{ item }}"
     owner: "{{ mysql_os_user }}"
     group: "{{ mysql_os_group }}"
     mode: "600"
-  notify: restart mysql
+  when: not mysql_multi
   loop:
-    - "mysqld.cnf"
     - "client.cnf"
 
-- name: Create mysql instance directory
+- name: Determine whether the instance has been initialized
+  stat:
+    path: "{{ _is_initialized_file }}"
+  register: __file_status
+
+- name: Create MySQL instance directory
   file:
-    path: "{{ mysql_data_path }}/{{ mysql_port }}/{{ item }}"
+    path: "{{ mysql_instance_dir }}/{{ item }}"
     owner: "{{ mysql_os_user }}"
     group: "{{ mysql_os_group }}"
     recurse: yes
@@ -91,13 +99,19 @@
     - logs/errorlog
     - logs/slowlog
 
-- name: Determine whether the instance has been initialized
-  stat:
-    path: "{{ _is_initialized_file }}"
-  register: __file_status
+- name: Rander MySQL instance configuration
+  template:
+    src: "mysqld.cnf.j2"
+    dest: "{{ mysql_config_include_dir }}/{{ item }}"
+    owner: "{{ mysql_os_user }}"
+    group: "{{ mysql_os_group }}"
+    mode: "600"
+  notify: restart mysql
+  loop:
+    - "mysqld{{ _mysql_defaults_group_suffix }}.cnf"
 
 - name: Initialize instance
-  command: "/usr/sbin/mysqld --initialize-insecure --user={{ mysql_os_user }}"
+  command: "/usr/sbin/mysqld --initialize-insecure --user={{ mysql_os_user }} --datadir={{ mysql_instance_dir }}/data"
   when: not __file_status.stat.exists
   notify: restart mysql
 
@@ -107,5 +121,25 @@
     state: touch
   when: not __file_status.stat.exists
 
+- name: Setup regular clean MySQL logs
+  template: 
+    src: "mysql.logrotate.j2"
+    dest: "/etc/logrotate.d/mysql{{ _mysql_defaults_group_suffix }}"
+
 - name: Force all notified handlers to run at this point, not waiting for normal sync points
   ansible.builtin.meta: flush_handlers
+
+- name: Check if the clone plugin is installed
+  community.mysql.mysql_query:
+    login_unix_socket: "{{ mysql_unix_socket }}"
+    login_user: root
+    query: "SELECT COUNT(*) AS cnt FROM information_schema.plugins WHERE PLUGIN_NAME='clone';"
+  register: plugin_check
+
+- name: Install clone plugin
+  community.mysql.mysql_query:
+    login_unix_socket: "{{ mysql_unix_socket }}"
+    login_user: root
+    query: "INSTALL PLUGIN clone SONAME 'mysql_clone.so';"
+  when: plugin_check.query_result[0][0].cnt | int == 0
+  changed_when: true  

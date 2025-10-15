@@ -10,6 +10,12 @@ argument_specs:
         default: "8.4"
         description: "Mysql version."
 
+      mysql_multi:
+        type: "bool"
+        required: false
+        default: false
+        description: "MySQL database multi-instance mode."
+
       mode:
         type: "str"
         required: false
@@ -25,11 +31,17 @@ argument_specs:
         default: 3306
         description: "Mysql listen port."
 
-      mysql_data_path:
+      mysql_instance_root_dir:
         type: "path"
         required: false
         default: "/data0/mysql"
-        description: "Mysql data path."
+        description: "Mysql instance directory."
+
+      mysql_instance_dir:
+        type: "path"
+        required: false
+        default: "{{ mysql_instance_root_dir }}/{{ mysql_port }}"
+        description: "Mysql instance directory."
 
       mysql_userlist:
         type: list
@@ -54,3 +66,24 @@ argument_specs:
             type: str
             required: true
             description: User's privilege
+
+      primary_host:
+        type: "str"
+        required: true
+        description: "MySQL primary server address."
+
+      primary_port:
+        type: "int"
+        required: false
+        default: 3306
+        description: "MySQL primary server listening port."
+
+      primary_unix_socket:
+        type: "path"
+        required: false
+        description: "MySQL primary server unix socket path."
+
+      replica_unix_socket:
+        type: "path"
+        required: false
+        description: "MySQL replication server unix socket path."

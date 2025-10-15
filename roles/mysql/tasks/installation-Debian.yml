@@ -2,13 +2,4 @@
 - name: Install percona release repo
   apt:
     deb: "{{ percona_release_repo }}"
-
-- name: Install dependent softwares
-  apt:
-    name: "{{ item }}"
-    state: latest
     update_cache: true
-  loop:
-    - "gnupg2"
-    - "lsb-release"
-
